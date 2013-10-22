@@ -62,7 +62,7 @@ public Definition_Function parse_Definition_Function() :
 public Definition_Class parse_Definition_Class() :
 {
 	LType type;
-	Declaration_Inheritance declarationInheritance = null;
+	LType declarationInheritance = null;
 	List<Declaration_LAttribute> attributesDeclarations = new List<Declaration_LAttribute>();
 	List<Definition_Method> methodsDefinitions = new List<Definition_Method>();
 	Token c;
@@ -120,7 +120,7 @@ public Definition_Method parse_Definition_Method() :
 	{ return new Definition_Method(id.beginLine, type, id.image, parameters, actions); }
 }
 
-public Declaration_Inheritance parse_Declaration_Inheritance() :
+public LType parse_Declaration_Inheritance() :
 {
 	LType type;
 	Token inh;
@@ -128,7 +128,7 @@ public Declaration_Inheritance parse_Declaration_Inheritance() :
 {
 	inh = <INH>
 	type = parse_LType()
-	{ return new Declaration_Inheritance(inh.beginLine, type); }
+	{ return type; }
 }
 
 public void parse_Declaration_LAttributes(List<Declaration_LAttribute> attributesDeclarations) :
@@ -378,15 +378,15 @@ public Constructor parse_Constructor() :
 {
 	Token tokenForLine;
 	LType aType;
-	List<Parameter> parameters = new List<Parameter>();
+	List<Expression> arguments = new List<Expression>();
 }
 {
 	tokenForLine = <NEW>
 	aType = parse_LType()
 	<LP>
-	parse_Parameters(parameters)
+	parse_Arguments(arguments)
 	<RP>
-	{ return new Constructor(tokenForLine.beginLine, aType, parameters); }
+	{ return new Constructor(tokenForLine.beginLine, aType, arguments); }
 }
 
 public LObject parse_LObject() :
@@ -418,7 +418,7 @@ public LNumber parse_LNumber() :
 		LOOKAHEAD(<S> <NUMBER>)
 		sign = <S>
 	)?
-	theNumber = <NUMBER> { return new LNumber(theNumber.beginLine, sign.image, theNumber.image); }
+	theNumber = <NUMBER> { return new LNumber(theNumber.beginLine, sign, theNumber.image); }
 }
 
 public LChar parse_LChar() :
@@ -570,7 +570,7 @@ public Parameter parse_Parameter() :
 {
 	type = parse_LType()
 	id = <ID>
-	{ return new Parameter(type, id.image); }	
+	{ return new Parameter(id.beginLine, type, id.image); }	
 }
 
 public LType parse_LType() :

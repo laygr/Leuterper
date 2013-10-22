@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace Leuterper.MachineInstructions
 {
-    abstract class MachineInstruction { }
+    public abstract class MachineInstruction { }
+
+    public class Literal : MachineInstruction
+    {
+        string type;
+        string encodedLiteral;
+        public Literal(string type, string encodedLiteral)
+        {
+            this.type = type;
+            this.encodedLiteral = encodedLiteral;
+        }
+    }
 
     class Number : MachineInstruction
     {
@@ -51,7 +62,7 @@ namespace Leuterper.MachineInstructions
         }
     }
 
-    class JMP : MachineInstruction
+    public class JMP : MachineInstruction
     {
         public int whereToJump { get; set; }
 
@@ -59,14 +70,25 @@ namespace Leuterper.MachineInstructions
         {
             return String.Format("jmp {0}", this.whereToJump);
         }
+
+        public JMP() { }
+
+        public JMP(int whereToJMP)
+        {
+            this.whereToJump = whereToJump;
+        }
     }
 
-    class JMPF : JMP
+    public class JMPF : JMP
     {
         new public string toString()
         {
             return String.Format("jmpf {0}", this.whereToJump);
         }
+
+        public JMPF() : base() { }
+
+        public JMPF(int whereToJump) : base(whereToJump) { }
 
     }
 
@@ -76,6 +98,8 @@ namespace Leuterper.MachineInstructions
         {
             return String.Format("jmpt {0}", this.whereToJump);
         }
+        public JMPT() : base() { }
+        public JMPT(int whereToJump) : base(whereToJump) { }
     }
 
     class Push : MachineInstruction
@@ -85,6 +109,11 @@ namespace Leuterper.MachineInstructions
         public string toString()
         {
             return String.Format("push {0}", this.address);
+        }
+
+        public Push(int address)
+        {
+            this.address = address;
         }
     }
 

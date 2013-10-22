@@ -33,9 +33,10 @@ namespace Leuterper.Constructions
             return 0;
         }
 
-        public string generateCode()
+        override public void generateCode(LeuterperCompiler compiler)
         {
-            return MachineInstructions.push(this.scope.GetScopeManager().getIndexOfVarNamed(this.name));
+            int varIndex = this.scope.GetScopeManager().getIndexOfVarNamed(this.name);
+            compiler.addMI(new MachineInstructions.Push(varIndex));
         }
        
     }

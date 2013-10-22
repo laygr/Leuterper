@@ -8,8 +8,8 @@ namespace Leuterper.Constructions
 {
     abstract class Conditional : LAction
     {
-        Expression booleanExpression;
-        List<LAction> thenActions;
+        public Expression booleanExpression;
+        public List<LAction> thenActions;
 
         public Conditional(int line, Expression booleanExpression, List<LAction> thenActions) : base(line)
         {

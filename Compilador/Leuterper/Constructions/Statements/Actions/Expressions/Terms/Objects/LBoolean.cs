@@ -25,5 +25,16 @@ namespace Leuterper.Constructions
         {
             return LBoolean.type;
         }
+
+        public override string encodeAsString()
+        {
+            return this.value ? "1" : "0";
+        }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            base.generateCode(compiler);
+            compiler.addLiteral(new MachineInstructions.Literal("Boolean", this.encodeAsString()));
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Leuterper.Constructions
 {
     class LString : LList
     {
-        static LType type = LString.LStringType();
+        new static LType type = LString.LStringType();
         public LString(int line, String value) : base(line, LChar.getType(), new List<Expression>())
         {
             LType type = LString.type;
@@ -45,6 +45,17 @@ namespace Leuterper.Constructions
         public new LType getType()
         {
             return LString.type;
+        }
+
+        public override string encodeAsString()
+        {
+            string result = "";
+            for(int i = 0; i < this.elements.Count() - 1; i++)
+            {
+                result += ((LChar)this.elements[i]).encodeAsString() + " ";
+            }
+            result += ((LChar)this.elements[this.elements.Count() - 1]).encodeAsString();
+            return result;
         }
     }
 }

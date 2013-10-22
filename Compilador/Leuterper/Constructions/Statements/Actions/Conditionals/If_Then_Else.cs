@@ -15,5 +15,26 @@ namespace Leuterper.Constructions
         {
             this.elseActions = elseActions;
         }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            this.booleanExpression.generateCode(compiler);
+            MachineInstructions.JMPF jumpToElse = new MachineInstructions.JMPF();
+            compiler.addMI(jumpToElse);
+            foreach(LAction action in this.thenActions)
+            {
+                action.generateCode(compiler);
+            }
+            jumpToElse.whereToJump = compiler.functionInstructionsCounter + 1;
+
+            MachineInstructions.JMPF endOfThenJMP = new MachineInstructions.JMPF();
+            compiler.addMI(endOfThenJMP);
+
+            foreach (LAction action in this.elseActions)
+            {
+                action.generateCode(compiler);
+            }
+            endOfThenJMP.whereToJump = compiler.functionInstructionsCounter;
+        }
     }
 }

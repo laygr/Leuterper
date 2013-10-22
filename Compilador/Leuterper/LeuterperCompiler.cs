@@ -14,17 +14,32 @@ namespace Leuterper
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
-        private List<MachineInstruction> instructions;        
+        public List<MachineInstruction> instructions;
+        public List<Literal> literals;
+        public Stack<MachineInstruction> pendingInstruction;
+        public int functionInstructionsCounter = 0;
 
+        public int classesCount;
+        public int functionsCount;
+        public int literalsCount;
         public LeuterperCompiler(String filePath)
         {
             this.instructions = new List<MachineInstruction>();
+            this.literals = new List<Literal>();
+            this.pendingInstruction = new Stack<MachineInstruction>();
+
             this.filePath = filePath;
         }
 
         public void addMI(MachineInstruction mi)
         {
             this.instructions.Add(mi);
+            this.functionInstructionsCounter++;
+        }
+
+        public void addLiteral(Literal literal)
+        {
+            this.literals.Add(literal);
         }
 
         public void parse()
@@ -57,6 +72,12 @@ namespace Leuterper
             }
         }
 
+        public void printGeneratedCode()
+        {
+            StreamWriter writer = new StreamWriter("out.txt");
+            writer.
+        }
+
         public void compile()
         {
             try
@@ -64,6 +85,7 @@ namespace Leuterper
                 parse();
                 //program.GetScopeManager().validate();
                 program.generateCode(this);
+                printGeneratedCode();
             }
             catch(Exception e)
             {

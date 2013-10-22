@@ -67,7 +67,6 @@
     <Compile Include="Constructions\WildType.cs" />
     <Compile Include="Constructions\Statements\Actions\Declarations\Declaration.cs" />
     <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_LAttribute.cs" />
-    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_Inheritance.cs" />
     <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_Var.cs" />
     <Compile Include="Constructions\Parameter.cs" />
     <Compile Include="Constructions\Program.cs" />

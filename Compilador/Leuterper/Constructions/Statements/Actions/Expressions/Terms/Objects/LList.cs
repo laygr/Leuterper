@@ -8,8 +8,8 @@ namespace Leuterper.Constructions
 {
     class LList : LObject
     {
-        LType instanceType;
-        List<Expression> elements { get; set; }
+        public LType instanceType;
+        public List<Expression> elements { get; set; }
 
         public LList(int line, LType type, List<Expression> elements) : base(line)
         {
@@ -38,6 +38,17 @@ namespace Leuterper.Constructions
             List<Wild_Type> wildTypes = new List<Wild_Type>(new Wild_Type[] { wildType });
 
             return new LType("List", wildTypes);
+        }
+
+        public override string encodeAsString()
+        {
+            
+            throw new NotImplementedException();
+        }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            compiler.addLiteral(new MachineInstructions.Literal("list", this.encodeAsString()));
         }
     }
 }

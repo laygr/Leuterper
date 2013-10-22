@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Leuterper.MachineInstructions;
 
 namespace Leuterper.Constructions
 {
     class Constructor : Term
     {
         public LType instanceType { get; set; }
-        public ParametersList parameters { get; set; }
+        public List<Expression> arguments { get; set; }
         public bool shouldBePushedToStack { get; set; }
-        public Constructor(int line, LType instanceType, List<Parameter> parameters) : base(line)
+        public Constructor(int line, LType instanceType, List<Expression> arguments) : base(line)
         {
             this.instanceType = instanceType;
-            this.parameters = new ParametersList(parameters);
+            arguments.Insert(0, new Var(line, "this"));
+            this.arguments = arguments;
         }
         override public LType getType()
         {
@@ -23,13 +25,24 @@ namespace Leuterper.Constructions
 
         public override void generateCode(LeuterperCompiler compiler)
         {
-            for(int i = 0; i < parameters.Count(); i++)
+            for(int i = 0; i < arguments.Count(); i++)
             {
-                Parameter p = parameters.Get(i);
-                p.generateCode(compiler);
+                Expression e = arguments[i];
+                e.generateCode(compiler);
             }
-            this.sc
 
+            MachineInstruction creationInstruction = null;
+            int classId = this.program.getClassForType(this.instanceType).identifier;
+            int functionId = this.program.GetScopeManager().getFunctionForGivenNameAndArguments("", this.arguments).identifier;
+            if (this.shouldBePushedToStack)
+            {
+                creationInstruction = new MachineInstructions.NewP(classId, functionId);
+            }
+            else
+            {
+                creationInstruction = new MachineInstructions.New(classId, functionId);
+            }
+            compiler.addMI(creationInstruction);
         }
 
     }

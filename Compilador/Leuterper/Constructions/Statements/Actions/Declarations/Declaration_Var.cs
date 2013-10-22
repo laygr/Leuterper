@@ -30,5 +30,10 @@ namespace Leuterper.Constructions
         {
             return String.Format("{0} {1}", this.type.SignatureAsString(), this.name);
         }
+        
+        override public void generateCode(LeuterperCompiler compiler)
+        {
+            return;
+        }
     }
 }

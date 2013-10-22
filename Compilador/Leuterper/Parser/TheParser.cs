@@ -56,7 +56,7 @@
 
   public Definition_Class parse_Definition_Class() {
         LType type;
-        InheritanceDeclaration declarationInheritance = null;
+        LType declarationInheritance = null;
         List<Declaration_LAttribute> attributesDeclarations = new List<Declaration_LAttribute>();
         List<Definition_Method> methodsDefinitions = new List<Definition_Method>();
         Token c;
@@ -140,12 +140,12 @@
     throw new System.Exception("Missing return statement in function");
   }
 
-  public InheritanceDeclaration parse_Declaration_Inheritance() {
+  public LType parse_Declaration_Inheritance() {
         LType type;
         Token inh;
     inh = jj_consume_token(INH);
     type = parse_LType();
-          {if (true) return new InheritanceDeclaration(inh.beginLine, type);}
+          {if (true) return type;}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -486,13 +486,13 @@
   public Constructor parse_Constructor() {
         Token tokenForLine;
         LType aType;
-        List<Parameter> parameters = new List<Parameter>();
+        List<Expression> arguments = new List<Expression>();
     tokenForLine = jj_consume_token(NEW);
     aType = parse_LType();
     jj_consume_token(LP);
-    parse_Parameters(parameters);
+    parse_Arguments(arguments);
     jj_consume_token(RP);
-          {if (true) return new Constructor(tokenForLine.beginLine, aType, parameters);}
+          {if (true) return new Constructor(tokenForLine.beginLine, aType, arguments);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -531,7 +531,7 @@
       ;
     }
     theNumber = jj_consume_token(NUMBER);
-                               {if (true) return new LNumber(theNumber.beginLine, sign.image, theNumber.image);}
+                               {if (true) return new LNumber(theNumber.beginLine, sign, theNumber.image);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -717,7 +717,7 @@
         Token id;
     type = parse_LType();
     id = jj_consume_token(ID);
-          {if (true) return new Parameter(type, id.image);}
+          {if (true) return new Parameter(id.beginLine, type, id.image);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -1544,7 +1544,7 @@
     if (jj_scan_token(NEW)) return true;
     if (jj_3R_11()) return true;
     if (jj_scan_token(LP)) return true;
-    if (jj_3R_20()) return true;
+    if (jj_3R_54()) return true;
     if (jj_scan_token(RP)) return true;
     return false;
   }

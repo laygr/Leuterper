@@ -49,11 +49,15 @@ namespace Leuterper.Constructions
             return this.parameters.HasSameSignatureAs(parameters);
         }
 
-        public String generateCode()
+        override public void generateCode(LeuterperCompiler compiler)
         {
-            String result = "";
-
-            result += this.parameters.Count();
+            compiler.addMI(new MachineInstructions.Number(this.parameters.Count()));
+            compiler.addMI(new MachineInstructions.Number(this.actions.Count()));
+            
+            foreach(LAction action in this.actions)
+            {
+                action.generateCode(compiler);
+            }
 
         }
     }

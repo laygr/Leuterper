@@ -18,5 +18,15 @@ namespace Leuterper.Constructions
         {
             return LVoid.type;
         }
+
+        public override string encodeAsString()
+        {
+            return "";
+        }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            compiler.addLiteral(new MachineInstructions.Literal("Void", encodeAsString()));
+        }
     }
 }

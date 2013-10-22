@@ -152,37 +152,37 @@ namespace Leuterper.Constructions
 
         public void generateCode(LeuterperCompiler compiler)
         {
+            compiler.classesCount = this.classes.Count();
+            compiler.varsCount = this
             compiler.addMI(new Number(this.classes.Count()));
-
-            result += String.Format("%d\n", this.classes.Count());
             for(int i = 0; i < this.classes.Count(); i++)
             {
                 Definition_Class aClass = this.classes.Get(i);
-                result += aClass.generateCode();
+                aClass.generateCode(compiler);
             }
 
-            result += String.Format("%d\n", this.vars.Count());
+            compiler.addMI(new Number(this.vars.Count()));
             for (int i = 0; i < this.vars.Count(); i++ )
             {
                 Declaration_Var aVar = this.vars.Get(i);
-                result += aVar.generateCode();
+                aVar.generateCode(compiler);
             }
 
-                result += String.Format("%d\n", this.functions.Count());
+
+            compiler.addMI(new Number(this.functions.Count()));
             for(int i = 0; i < this.functions.Count(); i++)
             {
                 Definition_Function aFunction = this.functions.Get(i);
-                result += aFunction.generateCode();
+                aFunction.generateCode(compiler);
             }
 
-            result += String.Format("%d\n", this.actions.Count());
+            compiler.addMI(new Number(this.actions.Count()));
             for(int i = 0; i < this.actions.Count(); i++)
             {
                 LAction anAction = this.actions[i];
-                result += anAction.generateCode();
+                anAction.generateCode(compiler);
             }
 
-            return result;
         }
     }
 }

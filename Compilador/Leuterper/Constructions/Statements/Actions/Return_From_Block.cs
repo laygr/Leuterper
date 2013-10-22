@@ -14,5 +14,10 @@ namespace Leuterper.Constructions
         {
             this.returningExpression = returningExpression;
         }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            returningExpression.generateCode(compiler);
+        }
     }
 }

@@ -43,5 +43,15 @@ namespace Leuterper.Constructions
         {
             return new LType("Char");
         }
+
+        public override string encodeAsString()
+        {
+            return String.Format("{0}", this.value);
+        }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            compiler.addLiteral(new MachineInstructions.Literal("Char", this.encodeAsString()));
+        }
     }
 }
