@@ -11,7 +11,7 @@ namespace Leuterper.Constructions
     {
         public int identifier { get; set; }
 
-        public Declaration_Inheritance inheritanceDeclaration { get; set; }
+        public LType parentType { get; set; }
         public UniquesList<Declaration_LAttribute> attributesDeclarations { get; set; }
         public UniquesList<Definition_Method> methodsDefinitions { get; set; }
 
@@ -19,12 +19,12 @@ namespace Leuterper.Constructions
             (
                 int line,
                 LType type,
-                Declaration_Inheritance inheritanceDeclaration,
+                LType parentType,
                 List<Declaration_LAttribute> attributesDeclarations,
                 List<Definition_Method> methodsDefinitions
             ) : base(line, type)
         {
-            this.inheritanceDeclaration = inheritanceDeclaration;
+            this.parentType = parentType;
 
             attributesDeclarations.ForEach(a => a.aClass = this);
             this.attributesDeclarations = new UniquesList<Declaration_LAttribute>(attributesDeclarations);

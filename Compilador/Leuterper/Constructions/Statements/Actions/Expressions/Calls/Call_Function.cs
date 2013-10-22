@@ -20,8 +20,7 @@ namespace Leuterper.Constructions
         public override LType getType()
         {
             Definition_Function func = this.program.scopeManager.getFunctionForGivenNameAndParameters(
-                this.functionName, ParametersList.getParametersFromArguments(
-                this.scope, this.arguments));
+                this.functionName, ParametersList.getParametersFromArguments(this.arguments));
 
             return func.type;
         }
@@ -32,15 +31,13 @@ namespace Leuterper.Constructions
             return fun.identifier;
         }
 
-        public string generateCode()
+        override public void generateCode(LeuterperCompiler compiler)
         {
-            string result = "";
             foreach(Expression argument in arguments)
             {
-                result += argument.generateCode();
+                argument.generateCode(compiler);
             }
-            result += MachineInstructions.call(this.getFunctionIdentifier());
-            return result;
+            compiler.addMI(new MachineInstructions.Call(this.getFunctionIdentifier()));
         }
     }
 }

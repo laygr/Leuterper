@@ -56,7 +56,7 @@
 
   public Definition_Class parse_Definition_Class() {
         LType type;
-        Declaration_Inheritance declarationInheritance = null;
+        InheritanceDeclaration declarationInheritance = null;
         List<Declaration_LAttribute> attributesDeclarations = new List<Declaration_LAttribute>();
         List<Definition_Method> methodsDefinitions = new List<Definition_Method>();
         Token c;
@@ -140,12 +140,12 @@
     throw new System.Exception("Missing return statement in function");
   }
 
-  public Declaration_Inheritance parse_Declaration_Inheritance() {
+  public InheritanceDeclaration parse_Declaration_Inheritance() {
         LType type;
         Token inh;
     inh = jj_consume_token(INH);
     type = parse_LType();
-          {if (true) return new Declaration_Inheritance(inh.beginLine, type);}
+          {if (true) return new InheritanceDeclaration(inh.beginLine, type);}
     throw new System.Exception("Missing return statement in function");
   }
 

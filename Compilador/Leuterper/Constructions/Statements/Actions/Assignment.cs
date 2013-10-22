@@ -18,8 +18,9 @@ namespace Leuterper.Constructions
             this.rhs = rhs;
         }
 
-        public void generateCode(LeuterperCompiler compiler)
+        override public void generateCode(LeuterperCompiler compiler)
         {
+            rhs.generateCode(compiler);
             compiler.addMI(new MachineInstructions.Assignment(lhs.getIndex()));
         }
     }

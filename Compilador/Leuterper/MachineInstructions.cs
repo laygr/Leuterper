@@ -18,7 +18,7 @@ namespace Leuterper.MachineInstructions
 
         public string toString()
         {
-            return String.Format("%d", value);
+            return String.Format("{0}", value);
         }
     }
 
@@ -34,16 +34,20 @@ namespace Leuterper.MachineInstructions
 
         public string toString()
         {
-            return String.Format("ass\t%d\t%d", originAddress, destinationAddress);
+            return String.Format("ass {0} {1}", originAddress, destinationAddress);
         }
     }
 
     class Call : MachineInstruction
     {
         public int functionId { get; set; }
+        public Call(int functionId)
+        {
+            this.functionId = functionId;
+        }
         public string toString(int n)
         {
-            return String.Format("call\t%d", this.functionId);
+            return String.Format("call {0}", this.functionId);
         }
     }
 
@@ -53,7 +57,7 @@ namespace Leuterper.MachineInstructions
 
         public string toString()
         {
-            return String.Format("%jmp\t%d", this.whereToJump);
+            return String.Format("jmp {0}", this.whereToJump);
         }
     }
 
@@ -61,7 +65,7 @@ namespace Leuterper.MachineInstructions
     {
         new public string toString()
         {
-            return String.Format("%jmpf\t%d", this.whereToJump);
+            return String.Format("jmpf {0}", this.whereToJump);
         }
 
     }
@@ -70,7 +74,7 @@ namespace Leuterper.MachineInstructions
     {
         new public string toString()
         {
-            return String.Format("%jmpt\t%d", this.whereToJump);
+            return String.Format("jmpt {0}", this.whereToJump);
         }
     }
 
@@ -80,7 +84,33 @@ namespace Leuterper.MachineInstructions
 
         public string toString()
         {
-            return String.Format("push\t%d", this.address);
+            return String.Format("push {0}", this.address);
+        }
+    }
+
+    class New : MachineInstruction
+    {
+        public int classId;
+        public int functionId;
+
+        public New(int classId, int functionId)
+        {
+            this.functionId = functionId;
+            this.classId = classId;
+        }
+
+        public string toString()
+        {
+            return String.Format("new {0} {1}",classId, functionId);
+        }
+    }
+
+    class NewP : New
+    {
+        public NewP(int classId, int functionId) : base(classId, functionId) { }
+        public string toString()
+        {
+            return String.Format("newp {0} {1}", classId, functionId);
         }
     }
 }

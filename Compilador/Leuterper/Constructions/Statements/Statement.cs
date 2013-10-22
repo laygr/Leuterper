@@ -16,6 +16,6 @@ namespace Leuterper.Constructions
         }
         public Program program { get; set; }
 
-        public abstract void generateCode(LeuterperCompiler compiler);
+        abstract public void generateCode(LeuterperCompiler compiler);
     }
 }
