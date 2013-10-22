@@ -1,0 +1,4 @@
+﻿Incrustar las clases de la libreria estandar (Number, String, List<A>, etc).
+
+
+IScopables: Program, Class,		Function, Method

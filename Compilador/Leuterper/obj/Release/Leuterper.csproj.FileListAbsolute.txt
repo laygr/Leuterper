@@ -1,0 +1,6 @@
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\bin\Release\Leuterper.exe.config
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\bin\Release\Leuterper.exe
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\bin\Release\Leuterper.pdb
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\obj\Release\Leuterper.exe
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\obj\Release\Leuterper.pdb
+C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\obj\Release\Leuterper.csprojResolveAssemblyReference.cache

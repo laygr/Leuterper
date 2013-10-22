@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3DB51871-901F-4E17-8683-03F70467C933}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Leuterper</RootNamespace>
+    <AssemblyName>Leuterper</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LVoid.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\This.cs" />
+    <Compile Include="Constructions\Statements\Actions\LAction.cs" />
+    <Compile Include="Constructions\Statements\Actions\Assignment.cs" />
+    <Compile Include="Constructions\Statements\Actions\Conditionals\Conditional.cs" />
+    <Compile Include="Constructions\Statements\Actions\Conditionals\If_Then_Else.cs" />
+    <Compile Include="Constructions\Statements\Actions\Conditionals\Loop_Do_While.cs" />
+    <Compile Include="Constructions\Statements\Actions\Conditionals\Loop_While.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Calls\Call_Function.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Calls\Call_Method.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Expression.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Constructor.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Vars\LAttributeAccess.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LBoolean.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Term.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Vars\Var.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LChar.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LList.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LNumber.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LObject.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LString.cs" />
+    <Compile Include="Constructions\Statements\Actions\Return_From_Block.cs" />
+    <Compile Include="Constructions\WildType.cs" />
+    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration.cs" />
+    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_LAttribute.cs" />
+    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_Inheritance.cs" />
+    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_Var.cs" />
+    <Compile Include="Constructions\Parameter.cs" />
+    <Compile Include="Constructions\Program.cs" />
+    <Compile Include="Constructions\LType.cs" />
+    <Compile Include="Constructions\Statements\Definitions\Definition.cs" />
+    <Compile Include="Constructions\Statements\Definitions\Definition_Class.cs" />
+    <Compile Include="Constructions\Statements\Definitions\Definition_Function.cs" />
+    <Compile Include="Constructions\Statements\Definitions\Definition_Method.cs" />
+    <Compile Include="Constructions\Statements\Statement.cs" />
+    <Compile Include="Exceptions\AlreadyDeclaredException.cs" />
+    <Compile Include="ICodeGenerator.cs" />
+    <Compile Include="Identifiable.cs" />
+    <Compile Include="MachineInstructions.cs" />
+    <Compile Include="ParametersList.cs" />
+    <Compile Include="Parser\ParseException.cs" />
+    <Compile Include="Parser\SimpleCharStream.cs" />
+    <Compile Include="Parser\TheParser.cs" />
+    <Compile Include="Parser\TheParserConstants.cs" />
+    <Compile Include="Parser\TheParserTokenManager.cs" />
+    <Compile Include="Parser\Token.cs" />
+    <Compile Include="Parser\TokenMgrError.cs" />
+    <Compile Include="LeuterperCompiler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IScopable.cs" />
+    <Compile Include="ScopeManager.cs" />
+    <Compile Include="UniquesList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Parser\Leuterper.jj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Parser\csjavacc.jar" />
+    <Content Include="TODO.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

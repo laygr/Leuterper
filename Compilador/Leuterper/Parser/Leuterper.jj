@@ -1,0 +1,745 @@
+options{ STATIC = false;  }
+
+PARSER_BEGIN(TheParser)
+
+  using System;
+  using System.IO;
+  using System.Collections.Generic;
+  using Leuterper.Constructions;
+
+  // A few nested classes to make things simpler
+  class TheParser{
+    
+  }
+
+PARSER_END(TheParser)
+
+public Program parse_Program() :
+{
+	List<Statement> statements = new List<Statement>();
+}
+{
+	parse_Statements(statements)
+
+	{ return new Program(statements); }
+}
+
+public Definition parse_Definition() :
+{
+	Definition definition;
+}
+{
+	(
+		LOOKAHEAD(parse_Definition_Function())
+		definition = parse_Definition_Function()
+		|
+		definition = parse_Definition_Method()
+		|
+		definition = parse_Definition_Class()
+	)
+	{ return definition; }
+}
+
+public Definition_Function parse_Definition_Function() :
+{
+	LType type;
+	Token id;
+	List<Parameter> parameters = new List<Parameter>();
+	List<LAction> actions = new List<LAction>();
+}
+{
+	type = parse_LType()
+	id = <ID>
+	<LP>
+	parse_Parameters(parameters)
+	<RP>
+	<LC>
+	parse_LActions(actions)
+	<RC>
+	{ return new Definition_Function(id.beginLine, type, id.image, parameters, actions); }
+}
+
+public Definition_Class parse_Definition_Class() :
+{
+	LType type;
+	Declaration_Inheritance declarationInheritance = null;
+	List<Declaration_LAttribute> attributesDeclarations = new List<Declaration_LAttribute>();
+	List<Definition_Method> methodsDefinitions = new List<Definition_Method>();
+	Token c;
+}
+{
+	c = <CLASS>
+	type = parse_LType()
+	[declarationInheritance = parse_Declaration_Inheritance()]
+	<LC>
+	parse_Declaration_LAttributes(attributesDeclarations)
+	parse_Definition_Methods(methodsDefinitions)
+	<RC>
+	{ return new Definition_Class(c.beginLine, type, declarationInheritance, attributesDeclarations, methodsDefinitions); }
+}
+
+public void parse_Definition_Methods(List<Definition_Method> methodsDefinitions) :
+{
+	Definition_Method methodDefinition;
+}
+{
+	(
+		methodDefinition = parse_Definition_Method() { methodsDefinitions.Add(methodDefinition); }
+	)*
+}
+
+public Definition_Method parse_Definition_Method() :
+{
+	LType type = null;
+	Token id;
+	List<Parameter> parameters = new List<Parameter>();
+	List<LAction> actions = new List<LAction>();
+}
+{
+
+	(
+		LOOKAHEAD(parse_LType() <LP> )
+		id = <ID>
+		|
+		(
+			type = parse_LType()
+			(
+				id = <ID>
+			|
+				id = <SYMBOLS>
+			)
+		)
+	)
+	
+	<LP>
+	parse_Parameters(parameters)
+	<RP>
+	<LC>
+	parse_LActions(actions)
+	<RC>
+	{ return new Definition_Method(id.beginLine, type, id.image, parameters, actions); }
+}
+
+public Declaration_Inheritance parse_Declaration_Inheritance() :
+{
+	LType type;
+	Token inh;
+}
+{
+	inh = <INH>
+	type = parse_LType()
+	{ return new Declaration_Inheritance(inh.beginLine, type); }
+}
+
+public void parse_Declaration_LAttributes(List<Declaration_LAttribute> attributesDeclarations) :
+{
+	Declaration_LAttribute attributeDeclaration;
+}
+{
+	(
+		LOOKAHEAD(parse_Declaration_LAttribute())
+		attributeDeclaration = parse_Declaration_LAttribute() { attributesDeclarations.Add(attributeDeclaration); }
+	)*
+}
+
+public Declaration_LAttribute parse_Declaration_LAttribute() :
+{
+	LType type;
+	Token id;
+	Expression expression;
+}
+{
+	type = parse_LType()
+	id = <ID>
+	(
+		<ASS>
+		expression = parse_Expression()
+		<SC> { return new Declaration_LAttribute(id.beginLine, type, id.image, expression); }
+		|
+		<SC>{ return new Declaration_LAttribute(id.beginLine, type, id.image); }
+	)
+}
+
+public Declaration_Var parse_Declaration_Var() :
+{
+	LType type;
+	Token id;
+	Expression expression;
+}
+{
+	type = parse_LType()
+	id = <ID>
+	(
+		<ASS>
+		expression = parse_Expression() { return new Declaration_Var(id.beginLine, type, id.image, expression); }
+		|
+		{ return new Declaration_Var(id.beginLine, type, id.image); }
+	)
+}
+
+public Assignment parse_Assignment() :
+{
+	Var lhs;
+	Expression rhs;
+	Token ass;
+}
+{
+	lhs = parse_Var()
+	ass = <ASS>
+	rhs = parse_Expression()
+	{ return new Assignment(ass.beginLine, lhs, rhs); }
+}
+
+public LAction parse_LAction() :
+{
+	LAction action;
+}
+{
+	(
+		LOOKAHEAD(parse_Declaration_Var())
+		action = parse_Declaration_Var() <SC>
+		|
+		LOOKAHEAD(parse_Assignment())
+		action = parse_Assignment() <SC>
+		|
+		action = parse_Expression() <SC>
+		|
+		action = parse_Conditional()
+		|
+		action = parse_Return_From_Block() <SC>
+	)
+
+	{ return action; }
+}
+
+public Return_From_Block parse_Return_From_Block() :
+{
+	Expression returningExpression;
+	Token rin;
+}
+{
+	rin = <RTN>
+	returningExpression = parse_Expression()
+	{ return new Return_From_Block(rin.beginLine, returningExpression); }
+}
+
+public void parse_Arguments(List<Expression> arguments) :
+{
+	Expression expression;	
+}
+{
+	[
+		expression = parse_Expression() { arguments.Add(expression); }
+		(
+			<COMMA>
+			expression = parse_Expression() { arguments.Add(expression); }
+		)*
+	]
+}
+
+public Expression parse_Expression() :
+{
+	Expression expression;
+}
+{
+	(
+		LOOKAHEAD(parse_Term())
+		expression = parse_Term()
+		|
+		expression = parse_Call_Function()
+		|
+		(
+			<LP>
+			expression = parse_Expression()
+			<RP>
+		)
+		|
+		expression = parse_Null()
+	)
+
+	expression = parse_Expression_Prima(expression)
+	{ return expression; }
+}
+
+public Expression parse_Expression_Prima(Expression theObject) :
+{}
+{
+	(
+		(
+			LOOKAHEAD(parse_Call_Method(theObject))
+			theObject = parse_Call_Method(theObject)
+			|
+			theObject = parse_LAttributeAccess(theObject)
+		)
+	)*
+	{ return theObject; }
+}
+
+public LAttributeAccess parse_LAttributeAccess(Expression theObject) :
+{
+	
+	Token attributeName;
+}
+{
+	<DOT>
+	attributeName = <ID> {  return new LAttributeAccess(attributeName.beginLine, theObject, attributeName.image); }
+}
+
+public Call_Function parse_Call_Function() :
+{
+	Token id;
+	List<Expression> arguments = new List<Expression>();
+}
+{
+	id = <ID>
+	<LP>
+	parse_Arguments(arguments)
+	<RP>
+
+	{ return new Call_Function(id.beginLine, id.image, arguments); }
+}
+
+public Call_Method parse_Call_Method(Expression theObject) :
+{
+	Token methodId;
+	List<Expression> arguments = new List<Expression>();
+	Expression expression;
+}
+{
+	(
+		(
+			<DOT>
+			methodId = <ID>
+			<LP>
+			parse_Arguments(arguments)
+			<RP>
+		)
+		|
+		(
+			methodId = <SYMBOLS>
+			expression = parse_Expression() { arguments.Add(expression); }
+		)
+	)
+
+	{ return new Call_Method(methodId.beginLine, theObject, methodId.image, arguments); }
+}
+
+public Term parse_Term() :
+{
+	Term term;
+}
+{
+	(
+		LOOKAHEAD(parse_Var())
+		term = parse_Var()
+		|
+		term = parse_LObject()
+		|
+		term = parse_Constructor()
+		|
+		term = parse_This()
+	)
+
+	{ return term; }
+}
+
+public This parse_This() :
+{ 
+	Token lthis;
+}
+{
+	lthis = <THIS> { return new This(lthis.beginLine); }
+}
+
+public Var parse_Var() :
+{
+	Var var;
+	This aThis;
+}
+{
+	(
+		aThis = parse_This()
+		var = parse_LAttributeAccess(aThis)
+	|
+		var = parse_SimpleVar()
+	)
+	{ return var; }
+}
+
+public Var parse_SimpleVar() :
+{
+	Token id;
+}
+{
+	id = <ID> { return new Var(id.beginLine, id.image); }
+}
+
+public Constructor parse_Constructor() :
+{
+	Token tokenForLine;
+	LType aType;
+	List<Parameter> parameters = new List<Parameter>();
+}
+{
+	tokenForLine = <NEW>
+	aType = parse_LType()
+	<LP>
+	parse_Parameters(parameters)
+	<RP>
+	{ return new Constructor(tokenForLine.beginLine, aType, parameters); }
+}
+
+public LObject parse_LObject() :
+{
+	LObject theObject;
+}
+{
+	(
+	theObject = parse_LNumber()
+	|
+	theObject = parse_LString()
+	|
+	theObject = parse_LChar()
+	|
+	theObject = parse_LList()
+	)
+
+	{ return theObject; }
+}
+
+public LNumber parse_LNumber() :
+{
+	Token theNumber;
+	Token sign = null;
+}
+{
+
+	(
+		LOOKAHEAD(<S> <NUMBER>)
+		sign = <S>
+	)?
+	theNumber = <NUMBER> { return new LNumber(theNumber.beginLine, sign.image, theNumber.image); }
+}
+
+public LChar parse_LChar() :
+{
+	Token aChar;
+}
+{
+	aChar = <CHAR> { return new LChar(aChar.beginLine, aChar.image); }
+}
+
+public LString parse_LString() :
+{
+	Token aString;
+}
+{
+	aString = <STRING> { return new LString(aString.beginLine, aString.image); }
+}
+
+public LBoolean parse_LBoolean() :
+{
+	Token boolean;
+}
+{
+	boolean = <BOOL> { return new LBoolean(boolean.beginLine, boolean.image); }
+}
+
+public LList parse_LList() :
+{
+	LType type;
+	List<Expression> elements = new List<Expression>() ;
+	Token lb;
+}
+{
+	type = parse_LType()
+	lb = <LB>
+	parse_Arguments(elements)
+	<RB>
+	{ return new LList(lb.beginLine, type, elements); }
+}
+
+public Loop_Do_While parse_Loop_Do_While() :
+{
+	List<LAction> actions = new List<LAction>();
+	Expression expression;
+	Token ldo;
+}
+{
+	ldo = <DO>
+	<LC>
+	parse_LActions(actions)
+	<RC>
+	<WHILE>
+	expression = parse_Expression()
+	<SC>
+	{ return new Loop_Do_While(ldo.beginLine, expression, actions); }
+}
+
+public void parse_LActions(List<LAction> actions) :
+{
+	LAction action;
+}
+{
+	(
+		action = parse_LAction() { actions.Add(action); }
+	)*
+}
+
+public Loop_While parse_Loop_While() :
+{
+	Expression expression;
+	List<LAction> actions = new List<LAction>();
+	Token lwhile;
+}
+{
+	lwhile = <WHILE>
+	expression = parse_Expression()
+	<LC>
+	parse_LActions(actions)
+	<RC>
+	{ return new Loop_While(lwhile.beginLine, expression, actions); }
+}
+
+public Conditional parse_Conditional() :
+{
+	Conditional conditional;
+}
+{
+	(
+		conditional = parse_If_Then_Else()
+		|
+		conditional = parse_Loop_While()
+		|
+		conditional = parse_Loop_Do_While()
+	)
+	{ return conditional; }
+}
+
+public If_Then_Else parse_If_Then_Else() :
+{
+	Expression expression;
+	List<LAction> thenLActions = new List<LAction>();
+	List<LAction> elseLActions = new List<LAction>();
+	Token lif;
+}
+{
+	lif = <IF>
+	expression = parse_Expression()
+	<LC>
+	parse_LActions(thenLActions)
+	<RC>
+	[
+		<ELSE>
+		<LC>
+		parse_LActions(elseLActions)
+		<RC>
+	]
+
+	{ return new If_Then_Else(lif.beginLine, expression, thenLActions, elseLActions); }
+}
+
+public void parse_Parameters(List<Parameter> parameters) :
+{
+	Parameter parameter;
+}
+{
+	[
+		parameter = parse_Parameter() { parameters.Add(parameter); }
+		(
+			<COMMA>
+			parameter = parse_Parameter() { parameters.Add(parameter); }
+		)*
+	]
+}
+
+public LVoid parse_Null() :
+{
+	Token lnull;
+}
+{
+	lnull = <NULL> { return new LVoid(lnull.beginLine); }
+}
+
+
+public Parameter parse_Parameter() :
+{
+	LType type;
+	Token id;
+}
+{
+	type = parse_LType()
+	id = <ID>
+	{ return new Parameter(type, id.image); }	
+}
+
+public LType parse_LType() :
+{
+	LType type;
+}
+{
+	(
+		LOOKAHEAD(parse_LType_Generic())
+		type = parse_LType_Generic()
+		|
+		type = parse_LType_Simple()
+	)
+
+	{ return type; }
+}
+
+public LType parse_LType_Simple() :
+{
+	Token id;
+}
+{
+	id = <ID>
+	{ return new LType(id.image); }
+}
+
+public LType parse_LType_Generic() :
+{
+	Token id;
+	List<Wild_Type> wildTypes = new List<Wild_Type>();
+}
+{
+	id = <ID>
+	<LB>
+	parse_Wild_Types(wildTypes)
+	<RB>
+	{ return new LType(id.image, wildTypes); }
+}
+
+public void parse_Wild_Types(List<Wild_Type> wildTypes) :
+{
+	Wild_Type wildType;
+}
+{
+	[
+		wildType = parse_Wild_Type() { wildTypes.Add(wildType); }
+		(
+			<COMMA>
+			wildType = parse_Wild_Type() { wildTypes.Add(wildType); }
+		)*
+	]
+}
+
+public Wild_Type parse_Wild_Type() :
+{
+	Token wildType;
+}
+{
+	wildType = <ID>
+	{ return new Wild_Type(wildType.image); }
+}
+
+public void parse_LTypes(List<LType> types) :
+{
+	LType type;
+}
+{
+	[
+		type = parse_LType() { types.Add(type); }
+		(
+			<COMMA>
+			type = parse_LType() { types.Add(type); }
+		)*
+	]
+}
+
+public void parse_Statements(List<Statement> statements) :
+{
+	Statement statement;
+}
+{
+	(
+		statement = parse_Statement() { statements.Add(statement); }
+	)*
+
+}
+
+public Statement parse_Statement() :
+{
+	Statement statement;
+}
+{
+	(	
+		LOOKAHEAD(parse_LAction())
+		statement = parse_LAction()
+		|
+		statement = parse_Definition()
+	)
+	{ return statement; }
+}
+
+// Lexer Definitions
+SKIP : { " " | "\t" | "\n" | "\r" | "\r\n" }
+SKIP : { <"//" (~["\n","\r"])* ("\n" | "\r\n")> }
+SKIP : { <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">}
+
+TOKEN :
+{
+	<LC: "{">
+	|
+	<RC: "}">
+	|
+	<LP: "(">
+	|
+	<RP: ")">
+	|
+	<LB: "[">
+	|
+	<RB: "]">
+	|
+	<ASS: "=">
+	|
+	<SC: ";">
+	|
+	<COMMA: ",">
+	|
+	<DOT: ".">
+	|
+	<CLASS: "class">
+	|
+	<DO: "do">
+	|
+	<ELSE: "else">
+	|
+	<INH: "inherits">
+	|
+	<IF: "if">
+	|
+	<NULL: "null">
+	|
+	<NEW: "new">
+	|
+	<RTN: "return">
+	|
+	<THIS: "this">
+	|
+	<WHILE: "while">
+	|
+	<BOOL: ("true" | "false")>
+	|
+	<NUMBER: (<D>)+ ("\\."<D>)? >
+}
+
+TOKEN :
+{
+	<ID: <L>(<L>|<D>)* >
+	|
+	< SYMBOLS: (<S>)+ >
+}
+
+TOKEN :
+{
+	<D: ["0"-"9"]>
+	|
+	<L: ["a"-"z","A"-"Z","_"]>
+	|
+	<S: ("==" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
+	|
+	<CHAR: "'" ( ("\\" ~[]) | ( ~["'"] )) "'">
+	|
+	<STRING: "\"" ("\\" ~[] | (~["\""]) )* "\"" >
+}
