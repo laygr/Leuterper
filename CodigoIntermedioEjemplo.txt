@@ -1,0 +1,35 @@
+Number factorial(Number n){
+	if(n == 1){
+		return 1;
+	}
+	else{
+		return n*factorial(n-1);
+	}
+}
+
+Number a = 3;
+Number b = 4;
+
+Void main(List[String] params){
+
+	if(params.count() == 0)
+		return;
+
+	c = a + b;
+	d = factorial(c);
+	d = d + stringToInteger(params.get(0));
+
+	
+
+}
+
+
+5
+8
+Number	1
+Number	1
+Number	1
+Number	3
+Number	4
+Number	0
+Number	0
