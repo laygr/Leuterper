@@ -1,24 +1,24 @@
-0 - Boolean ==(Object)
+0 - Boolean ==(Object, Object)
 1 - String toString(Object)
 
-2 - Boolean ==(Number)
+2 - Boolean ==(Number, Number)
 3 - String toString(Number)
 4 - Number +(Number, Number)
 5 - Number -(Number, Number)
 6 - Number *(Number, Number)
 7 - Number /(Number, Number)
 
-8 - Boolean ==(LList<A>)
+8 - Boolean ==(LList<A>, LList<A>)
 9 - String toString(LList<A>)
 10 - Void add(LList<A>, A other)
 11 - Number count(LList<A>)
 12 - A get(LList<A>, Number)
 13 - Void set(LList<A>, A, Number)
 
-14 - Boolean ==(Char)
+14 - Boolean ==(Char, Char)
 15 - String toString(Char)
 
-16 - Boolean ==(String)
+16 - Boolean ==(String, String)
 
 17 - String read()
 18 - Void write(String)
