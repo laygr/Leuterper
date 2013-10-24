@@ -12,7 +12,7 @@ namespace Leuterper
     class LeuterperCompiler
     {
         public static int STANDARD_CLASES = 5;
-        public static int STANDARD_FUNCTIONS = 17;
+        public static int STANDARD_FUNCTIONS = Program.specialFunctions.Count();
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
@@ -173,45 +173,6 @@ namespace Leuterper
         public static String callToMain()
         {
             return "main(read());";
-        }
-
-        public static String standardLibrary()
-        {
-            return
-                "class Object { " +
-                    "Boolean equals(Object other) { }" +
-                    "String toString() { }" +
-                "}\n" +
-
-                "class Number {" +
-                    "String toString() { }" +
-                    "Number +(Number other){ }" +
-                    "Number -(Number other){ }" +
-                    "Number *(Number other){ }" +
-                    "Number /(Number other){ }" +
-                "}\n" +
-
-                "class List[A] {" +
-                    "String toString() { }" +
-                    "void Add(A other) { }" +
-                    "Number Count() { }" +
-                    "A Get(Number index){ }" +
-                    "Void Set(A element, Number index) { }" +
-
-                "}\n" +
-
-                "class Char { " +
-                    "String toString() { }" +
-                "}\n" +
-
-                "class String inherits List[Char] {" +
-                    "String toString() { } " +
-                "}\n" +
-
-                 "Void write(String text) { }\n" +
-                 "String read() { }\n" +
-                 "Void exit() { }\n";
-
         }
     }
 }

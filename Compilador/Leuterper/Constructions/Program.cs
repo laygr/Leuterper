@@ -125,49 +125,47 @@ namespace Leuterper.Constructions
         static List<LType> n = new List<LType>(new LType[] { LNumber.type });
         static List<LType> nn = new List<LType>(new LType[] { LNumber.type, LNumber.type });
         static List<LType> l = new List<LType>(new LType[] { LList.type });
+        static List<LType> ll = new List<LType>(new LType[] { LList.type, LList.type });
         static List<LType> la = new List<LType>(new LType[] { LList.type, Wild_Type.wildTypePlaceHolder() });
         static List<LType> ln = new List<LType>(new LType[] { LList.type, LNumber.type });
         static List<LType> lan = new List<LType>(new LType[] { LList.type, Wild_Type.wildTypePlaceHolder(), LNumber.type });
         static List<LType> c = new List<LType>(new LType[] { LChar.type });
+        static List<LType> cc = new List<LType>(new LType[] { LChar.type, LChar.type });
         static List<LType> s = new List<LType>(new LType[] { LString.type });
+        static List<LType> ss = new List<LType>(new LType[] { LString.type, LString.type });
 
-        static Definition_Function zero = new Definition_Function(0, LBoolean.type, "equals", Parameter.typesToParameter(oo), null, 0);
-        static Definition_Function one = new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(oo), null, 1);
-        static Definition_Function two = new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(n), null, 2);
-        static Definition_Function three = new Definition_Function(0, LNumber.type, "+", Parameter.typesToParameter(nn), null, 3);
-        static Definition_Function four = new Definition_Function(0, LNumber.type, "-", Parameter.typesToParameter(o), null, 4);
-        static Definition_Function five = new Definition_Function(0, LNumber.type, "*", Parameter.typesToParameter(o), null, 5);
-        static Definition_Function six = new Definition_Function(0, LNumber.type, "/", Parameter.typesToParameter(o), null, 6);
-        static Definition_Function seven = new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(l), null, 7);
-        static Definition_Function eight = new Definition_Function(0, LVoid.type, "add", Parameter.typesToParameter(la), null, 8);
-        static Definition_Function nine = new Definition_Function(0, LNumber.type, "count", Parameter.typesToParameter(l), null, 9);
-        static Definition_Function ten = new Definition_Function(0, Wild_Type.wildTypePlaceHolder(), "get", Parameter.typesToParameter(ln), null, 10);
-        static Definition_Function eleven = new Definition_Function(0, LVoid.type, "set", Parameter.typesToParameter(lan), null, 11);
-        static Definition_Function twelve = new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(c), null, 12);
-        static Definition_Function thirteen = new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(s), null, 13);
-        static Definition_Function fourteen = new Definition_Function(0, LVoid.type, "write", Parameter.typesToParameter(s), null, 14);
-        static Definition_Function fifteen = new Definition_Function(0, LString.type, "read", Parameter.typesToParameter(e), null, 15);
-        static Definition_Function sixteen = new Definition_Function(0, LVoid.type, "exit", Parameter.typesToParameter(e), null, 16);
+        public static List<Definition_Function> specialFunctions = new List<Definition_Function>(new Definition_Function[]{
+            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(oo), null, 0),
+            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(oo), null, 1),
+            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(nn), null, 2),
+            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(n), null, 3),
+            new Definition_Function(0, LNumber.type, "+", Parameter.typesToParameter(nn), null, 4),
+            new Definition_Function(0, LNumber.type, "-", Parameter.typesToParameter(o), null, 5),
+            new Definition_Function(0, LNumber.type, "*", Parameter.typesToParameter(o), null, 6),
+            new Definition_Function(0, LNumber.type, "/", Parameter.typesToParameter(o), null, 7),
+            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(ll), null, 8),
+            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(l), null, 9),
+            new Definition_Function(0, LVoid.type, "add", Parameter.typesToParameter(la), null, 10),
+            new Definition_Function(0, LNumber.type, "count", Parameter.typesToParameter(l), null, 11),
+            new Definition_Function(0, Wild_Type.wildTypePlaceHolder(), "get", Parameter.typesToParameter(ln), null, 12),
+            new Definition_Function(0, LVoid.type, "set", Parameter.typesToParameter(lan), null, 13),
+            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(cc), null, 14),
+            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(c), null, 15),
+            new Definition_Function(0, LString.type, "==", Parameter.typesToParameter(ss), null, 16),
+            new Definition_Function(0, LString.type, "read", Parameter.typesToParameter(e), null, 17),
+            new Definition_Function(0, LVoid.type, "write", Parameter.typesToParameter(s), null, 18),
+            new Definition_Function(0, LNumber.type, "stringToNumber", Parameter.typesToParameter(s), null, 19)});
 
         public Definition_Function getFunctionWithNameAndParametersTypes(string name, List<LType> parametersTypes)
         {
-            if (name.Equals("equals") && LType.listOfTypesMatch(oo, parametersTypes)) return zero;
-            if (name.Equals("toString") && LType.listOfTypesMatch(o, parametersTypes)) return one;
-            if (name.Equals("toString") && LType.listOfTypesMatch(n, parametersTypes)) return two;
-            if (name.Equals("+") && LType.listOfTypesMatch(nn, parametersTypes)) return three;
-            if (name.Equals("-") && LType.listOfTypesMatch(o, parametersTypes)) return four;
-            if (name.Equals("*") && LType.listOfTypesMatch(o, parametersTypes)) return five;
-            if (name.Equals("/") && LType.listOfTypesMatch(o, parametersTypes)) return six;
-            if (name.Equals("toString") && LType.listOfTypesMatch(l, parametersTypes)) return seven;
-            if (name.Equals("add") && LType.listOfTypesMatch(la, parametersTypes)) return eight;
-            if (name.Equals("count") && LType.listOfTypesMatch(l, parametersTypes)) return nine;
-            if (name.Equals("get") && LType.listOfTypesMatch(ln, parametersTypes)) return ten;
-            if (name.Equals("set") && LType.listOfTypesMatch(lan, parametersTypes)) return eleven;
-            if (name.Equals("toString") && LType.listOfTypesMatch(c, parametersTypes)) return twelve;
-            if (name.Equals("toString") && LType.listOfTypesMatch(s, parametersTypes)) return thirteen;
-            if (name.Equals("write") && LType.listOfTypesMatch(s, parametersTypes)) return fourteen;
-            if (name.Equals("read") && LType.listOfTypesMatch(e, parametersTypes)) return fifteen;
-            if (name.Equals("exit") && LType.listOfTypesMatch(e, parametersTypes)) return sixteen;
+            for (int i = 0; i < Program.specialFunctions.Count(); i++)
+            {
+                Definition_Function fun = Program.specialFunctions[i];
+                if (fun.matchesWithNameAndTypes(name, parametersTypes))
+                {
+                    return fun;
+                }
+            }
 
             for (int i = 0; i < this.functions.Count(); i++)
             {
@@ -181,30 +179,21 @@ namespace Leuterper.Constructions
         }
         public int getIndexOfFunctionWithNameAndParametersTypes(string name, List<LType> parametersTypes)
         {
-            if (name.Equals("equals") && LType.listOfTypesMatch(oo, parametersTypes)) return 0;
-            if (name.Equals("toString") && LType.listOfTypesMatch(o, parametersTypes)) return 1;
-            if (name.Equals("toString") && LType.listOfTypesMatch(n, parametersTypes)) return 2;
-            if (name.Equals("+") && LType.listOfTypesMatch(nn, parametersTypes)) return 3;
-            if (name.Equals("-") && LType.listOfTypesMatch(o, parametersTypes)) return 4;
-            if (name.Equals("*") && LType.listOfTypesMatch(o, parametersTypes)) return 5;
-            if (name.Equals("/") && LType.listOfTypesMatch(o, parametersTypes)) return 6;
-            if (name.Equals("toString") && LType.listOfTypesMatch(l, parametersTypes)) return 7;
-            if (name.Equals("add") && LType.listOfTypesMatch(la, parametersTypes)) return 8;
-            if (name.Equals("count") && LType.listOfTypesMatch(l, parametersTypes)) return 9;
-            if (name.Equals("get") && LType.listOfTypesMatch(ln, parametersTypes)) return 10;
-            if (name.Equals("set") && LType.listOfTypesMatch(lan, parametersTypes)) return 11;
-            if (name.Equals("toString") && LType.listOfTypesMatch(c, parametersTypes)) return 12;
-            if (name.Equals("toString") && LType.listOfTypesMatch(s, parametersTypes)) return 13;
-            if (name.Equals("write") && LType.listOfTypesMatch(s, parametersTypes)) return 14;
-            if (name.Equals("read") && LType.listOfTypesMatch(e, parametersTypes)) return 15;
-            if (name.Equals("exit") && LType.listOfTypesMatch(e, parametersTypes)) return 16;
-
+            for (int i = 0; i < Program.specialFunctions.Count(); i++)
+            {
+                Definition_Function fun = Program.specialFunctions[i];
+                if (fun.matchesWithNameAndTypes(name, parametersTypes))
+                {
+                    return fun.identifier;
+                }
+            }
+            
             for (int i = 0; i < this.functions.Count(); i++)
             {
                 Definition_Function fun = this.functions[i];
                 if (fun.matchesWithNameAndTypes(name, parametersTypes))
                 {
-                    return i + LeuterperCompiler.STANDARD_FUNCTIONS;
+                    return fun.identifier;
                 }
             }
             return -1;

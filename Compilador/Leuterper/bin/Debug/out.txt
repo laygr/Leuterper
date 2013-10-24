@@ -6,17 +6,17 @@ push 0
 jmpf 12
 push 6
 push 7
-call 3
+call 4
 push 1
 jmpf 11
 push 6
 push 7
-call 3
+call 4
 jmpt 5
 jmpt 0
 push 6
 push 7
-callp 3
+callp 4
 rtn
 1
 8
@@ -26,7 +26,7 @@ push 3
 ass 5
 push 4
 push 5
-callp 17
+callp 20
 ass 5
 8
 4
@@ -35,5 +35,5 @@ Boolean 1
 Number 3
 Number 4
 2
-callp 15
-call 18
+callp 17
+call 21
