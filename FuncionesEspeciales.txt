@@ -22,4 +22,4 @@
 
 17 - String read()
 18 - Void write(String)
-19 - Number stringToInteger(String)
+19 - Number stringToNumber(String)
