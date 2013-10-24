@@ -18,10 +18,19 @@ namespace Leuterper.Constructions
             this.rhs = rhs;
         }
 
+        override public void secondPass()
+        {
+            lhs.scope = this.scope;
+            rhs.scope = this.scope;
+            rhs.shouldBePushedToStack = true;
+            lhs.secondPass();
+            rhs.secondPass();
+        }
+
         override public void generateCode(LeuterperCompiler compiler)
         {
             rhs.generateCode(compiler);
-            compiler.addMI(new MachineInstructions.Assignment(lhs.getIndex()));
+            compiler.addAction(new MachineInstructions.Assignment(lhs.getIndex()));
         }
     }
 }

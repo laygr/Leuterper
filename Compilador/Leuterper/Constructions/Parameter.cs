@@ -6,11 +6,24 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    class Parameter : Declaration_Var
+    class Parameter : ICompilable
     {
-
-        public Parameter(int line, LType type, String name) : base(line, type, name)
+        public IScopable scope;
+        public LType type;
+        public string name;
+        public Parameter(LType type, String name)
         {
+            this.type = type;
+            this.name = name;
+        }
+
+        public void secondPass()
+        {
+        }
+
+        public void generateCode(LeuterperCompiler compiler)
+        {
+
         }
     }
 }

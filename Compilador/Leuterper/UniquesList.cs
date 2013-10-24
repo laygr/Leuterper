@@ -36,6 +36,11 @@ namespace Leuterper
             return this.elements.Count();
         }
 
+        public List<A> toList()
+        {
+            return this.elements;
+        }
+
         public void Add(A newElement)
         {
             if (null != elements.Find(e => e.HasSameSignatureAs(newElement)))

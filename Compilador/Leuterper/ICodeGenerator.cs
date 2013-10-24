@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Leuterper
 {
-    interface ICodeGenerator
+    interface ICompilable
     {
-
+        void secondPass();
         void generateCode(LeuterperCompiler compiler);
 
     }

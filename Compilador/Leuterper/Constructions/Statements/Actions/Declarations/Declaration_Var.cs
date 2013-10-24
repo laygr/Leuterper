@@ -30,10 +30,18 @@ namespace Leuterper.Constructions
         {
             return String.Format("{0} {1}", this.type.SignatureAsString(), this.name);
         }
-        
+
+        public override void secondPass()
+        {
+            if (this.initialValue != null)
+            {
+                this.initialValue.scope = this.scope;
+                this.initialValue.shouldBePushedToStack = true;
+            }
+        }
         override public void generateCode(LeuterperCompiler compiler)
         {
-            return;
+            throw new NotImplementedException();
         }
     }
 }

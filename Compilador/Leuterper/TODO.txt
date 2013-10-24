@@ -1,4 +1,7 @@
-﻿Incrustar las clases de la libreria estandar (Number, String, List<A>, etc).
+﻿Aceptar funciones aunque los tipos sean distintos si son compatibles.
+Regresar el metodo/funcion mas bajo (cercano al tipo dado)
 
 
-IScopables: Program, Class,		Function, Method
+Top level actions
+count global variables
+count max variables in function

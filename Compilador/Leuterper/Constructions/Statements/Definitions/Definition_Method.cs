@@ -16,7 +16,14 @@ namespace Leuterper.Constructions
 
         public Definition_Method(int line, LType type, String name, List<Parameter> parameters, List<LAction> actions)
             : base(line, type, name, parameters, actions)
-        { }
+        {
+        }
+
+        public override void secondPass()
+        {
+            this.parameters.Insert(0, new Parameter(this.aClass.type, "this"));
+            base.secondPass();
+        }
 
         public bool HasSameSignatureAs(Definition_Method otherElement)
         {

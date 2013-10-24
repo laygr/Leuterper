@@ -42,8 +42,11 @@ namespace Leuterper.Constructions
             return String.Format("{0}", this.value);
         }
 
+        public override void secondPass(){ }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
+            base.generateCode(compiler);
             compiler.addLiteral(new MachineInstructions.Literal("Number", this.encodeAsString()));
         }
     }

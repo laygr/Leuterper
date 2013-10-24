@@ -11,14 +11,11 @@ namespace Leuterper
     {
         IScopable GetParentScope();
         ScopeManager GetScopeManager();
-        List<Definition_Class> getClasses();
-        List<Definition_Function> getFunctions();
-        List<LType> getParameters();
         List<Declaration_Var> getVars(); //vars including parameters
         List<LAction> getActions();
 
+        Program getProgram();
         
-        int getIndexOfFunctionWithNameAndParameters(string name, ParametersList parameters);
         
     }
 }

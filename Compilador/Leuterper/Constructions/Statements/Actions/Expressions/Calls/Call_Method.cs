@@ -14,7 +14,12 @@ namespace Leuterper.Constructions
             : base(line, methodId, arguments)
         {
             this.theObject = theObject;
+        }
+
+        public override void secondPass()
+        {
             this.arguments.Insert(0, theObject);
+            base.secondPass();
         }
 
     }

@@ -14,34 +14,44 @@ namespace Leuterper
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
-        public List<MachineInstruction> instructions;
-        public List<Literal> literals;
-        public Stack<MachineInstruction> pendingInstruction;
-        public int functionInstructionsCounter = 0;
 
-        public int classesCount;
-        public int functionsCount;
-        public int literalsCount;
+        public int globalVariablesCounter;
+        public int mostVaribalesInAFunction;
+
+        public bool compilingTopLevelActions;
+
+        public List<int> classDefinitions;
+        public List<int> functionsParameters;
+        public List<List<MachineInstruction>> functionActions;
+        public List<MachineInstructions.Literal> literals;
+        public List<MachineInstructions.MachineInstruction> topLevelActions;
+
+
         public LeuterperCompiler(String filePath)
         {
-            this.instructions = new List<MachineInstruction>();
-            this.literals = new List<Literal>();
-            this.pendingInstruction = new Stack<MachineInstruction>();
+            this.globalVariablesCounter = 0;
+            this.mostVaribalesInAFunction = 0;
+            this.compilingTopLevelActions = false;
+
+            this.classDefinitions = new List<int>();
+            this.functionsParameters = new List<int>();
+            this.functionActions = new List<List<MachineInstruction>>();
+            this.literals = new List<MachineInstructions.Literal>();
+            this.topLevelActions = new List<MachineInstruction>();
 
             this.filePath = filePath;
         }
 
-        public void addMI(MachineInstruction mi)
+        public void compile()
         {
-            this.instructions.Add(mi);
-            this.functionInstructionsCounter++;
-        }
+            parse();
+            program.secondPass();
+            //program.GetScopeManager().validate();
+            program.generateCode(this);
+            printGeneratedCode();
 
-        public void addLiteral(Literal literal)
-        {
-            this.literals.Add(literal);
-        }
 
+        }
         public void parse()
         {
             Stream s = null;
@@ -51,7 +61,6 @@ namespace Leuterper
                 StreamReader f = new StreamReader(this.filePath);
                 temp.WriteLine(LeuterperCompiler.standardLibrary());
                 temp.WriteLine(f.ReadToEnd());
-                temp.WriteLine();
                 temp.WriteLine(LeuterperCompiler.callToMain());
                 f.Close();
                 temp.Close();
@@ -63,61 +72,115 @@ namespace Leuterper
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine("File not found");
+                throw new Exception("File not found");
             }
             finally
             {
-                s.Close();
-                File.Delete(tempFile);
+                if (s != null)
+                {
+                    s.Close();
+                    //File.Delete(tempFile);
+                }
+
             }
         }
 
         public void printGeneratedCode()
         {
             StreamWriter writer = new StreamWriter("out.txt");
-            writer.
+
+            writer.WriteLine(this.classDefinitions.Count());
+            foreach (int aClassDefinition in this.classDefinitions)
+            {
+                writer.WriteLine(aClassDefinition);
+            }
+
+            writer.WriteLine(this.functionActions.Count());
+
+            int i = 0;
+            foreach (List<MachineInstruction> funcDef in this.functionActions)
+            {
+                writer.WriteLine(this.functionsParameters[i]);
+                writer.WriteLine(funcDef.Count());
+                foreach (MachineInstruction mi in funcDef)
+                {
+                    writer.WriteLine(mi);
+                }
+                i++;
+            }
+
+            //Max number of vars in memory
+            writer.WriteLine(this.literals.Count() + this.globalVariablesCounter + this.mostVaribalesInAFunction);
+
+            writer.WriteLine(this.literals.Count());
+            foreach (MachineInstructions.Literal literal in this.literals)
+            {
+                writer.WriteLine(literal);
+            }
+
+            writer.WriteLine(this.topLevelActions.Count());
+            foreach (MachineInstruction m in this.topLevelActions)
+            {
+                writer.WriteLine(m);
+            }
+            writer.Close();
         }
 
-        public void compile()
+        public void addClassDefinition(int numberOfAttributes)
         {
-            try
+            this.classDefinitions.Add(numberOfAttributes);
+        }
+
+        public void addAction(MachineInstruction action)
+        {
+            if (this.compilingTopLevelActions)
             {
-                parse();
-                //program.GetScopeManager().validate();
-                program.generateCode(this);
-                printGeneratedCode();
+                this.topLevelActions.Add(action);
             }
-            catch(Exception e)
+            else
             {
-                Console.WriteLine(e);
-                Environment.Exit(0);
+                int indexOfCurrentFunction = this.functionActions.Count() - 1;
+                this.functionActions[indexOfCurrentFunction].Add(action);
             }
         }
 
+        public int getIndexOfNextActionInCurrentFunction()
+        {
+            int indexOfCurrentFunction = this.functionActions.Count() - 1;
+            return this.functionActions[indexOfCurrentFunction].Count();
+        }
 
+        public void addLiteral(Literal literal)
+        {
+            this.literals.Add(literal);
+        }
 
         public static void Main(String[] args)
         {
-            do
+            try
             {
                 Console.WriteLine("Introduzca el nombre del archivo a compilar.");
                 new LeuterperCompiler(Console.ReadLine()).compile();
                 Console.WriteLine("El archivo se compilo con exito.");
-                Console.WriteLine("Presione 0 para parsear otro archivo");
-                if (!Console.ReadLine().Equals("0")) { break; }
-            } while (true);
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.ReadKey();
+            }
         }
 
         public static String callToMain()
         {
-            return "main(read());\n";
+            return "main(read());";
         }
 
         public static String standardLibrary()
         {
             return
                 "class Object { " +
-                    "Boolean equals(Object other) {}" +
+                    "Boolean equals(Object other) { }" +
                     "String toString() { }" +
                 "}\n" +
 
@@ -135,7 +198,7 @@ namespace Leuterper
                     "Number Count() { }" +
                     "A Get(Number index){ }" +
                     "Void Set(A element, Number index) { }" +
-                    
+
                 "}\n" +
 
                 "class Char { " +
@@ -145,14 +208,11 @@ namespace Leuterper
                 "class String inherits List[Char] {" +
                     "String toString() { } " +
                 "}\n" +
-                
-                "class System {" +
-                    "Void write(String text) { }" +
-                    "String read() { }" +
-                    "Void exit() { }" +
-                "}\n"
-                ;
-                    
+
+                 "Void write(String text) { }\n" +
+                 "String read() { }\n" +
+                 "Void exit() { }\n";
+
         }
     }
 }

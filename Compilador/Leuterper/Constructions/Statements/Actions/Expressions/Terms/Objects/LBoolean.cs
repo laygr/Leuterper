@@ -31,6 +31,11 @@ namespace Leuterper.Constructions
             return this.value ? "1" : "0";
         }
 
+        public override void secondPass()
+        {
+            
+        }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
             base.generateCode(compiler);

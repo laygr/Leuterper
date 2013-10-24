@@ -8,16 +8,18 @@ namespace Leuterper.Constructions
 {
     class LVoid : LObject
     {
-        static LType type = new LType("Void");
+        new static LType type = new LType("Void");
         public LVoid(int line) : base(line)
         {
 
         }
 
-        public LType getType()
+        public override LType getType()
         {
             return LVoid.type;
         }
+
+        public override void secondPass() { }
 
         public override string encodeAsString()
         {

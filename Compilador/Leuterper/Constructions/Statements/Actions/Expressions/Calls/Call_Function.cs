@@ -19,7 +19,7 @@ namespace Leuterper.Constructions
 
         public override LType getType()
         {
-            Definition_Function func = this.program.scopeManager.getFunctionForGivenNameAndParameters(
+            Definition_Function func = this.scope.GetScopeManager().getFunctionForGivenNameAndParameters(
                 this.functionName, ParametersList.getParametersFromArguments(this.arguments));
 
             return func.type;
@@ -30,6 +30,15 @@ namespace Leuterper.Constructions
             Definition_Function fun = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(this.functionName, this.arguments);
             return fun.identifier;
         }
+        override public void secondPass()
+        {
+            foreach(Expression e in arguments)
+            {
+                e.scope = this.scope;
+                e.shouldBePushedToStack = true;
+                e.secondPass();
+            }
+        }
 
         override public void generateCode(LeuterperCompiler compiler)
         {
@@ -37,7 +46,14 @@ namespace Leuterper.Constructions
             {
                 argument.generateCode(compiler);
             }
-            compiler.addMI(new MachineInstructions.Call(this.getFunctionIdentifier()));
+            if (this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.CallP(this.getFunctionIdentifier()));
+            }
+            else
+            {
+                compiler.addAction(new MachineInstructions.Call(this.getFunctionIdentifier()));
+            }
         }
     }
 }

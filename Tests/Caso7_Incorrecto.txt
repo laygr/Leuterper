@@ -1,0 +1,10 @@
+a - 1 ;
+
+this.hola;
+
+void hola(){
+}
+
+void hola()
+{
+}

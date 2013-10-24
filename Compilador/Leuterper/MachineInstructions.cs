@@ -7,32 +7,6 @@ using System.Threading.Tasks;
 namespace Leuterper.MachineInstructions
 {
     public abstract class MachineInstruction { }
-
-    public class Literal : MachineInstruction
-    {
-        string type;
-        string encodedLiteral;
-        public Literal(string type, string encodedLiteral)
-        {
-            this.type = type;
-            this.encodedLiteral = encodedLiteral;
-        }
-    }
-
-    class Number : MachineInstruction
-    {
-        public int value { get; set; }
-        public Number(int value)
-        {
-            this.value = value;
-        }
-
-        public string toString()
-        {
-            return String.Format("{0}", value);
-        }
-    }
-
     class Assignment : MachineInstruction
     {
         public int originAddress { get; set; }
@@ -43,12 +17,11 @@ namespace Leuterper.MachineInstructions
             this.destinationAddress = destinationAddress;
         }
 
-        public string toString()
+        public override string ToString()
         {
-            return String.Format("ass {0} {1}", originAddress, destinationAddress);
+            return String.Format("ass {0}", destinationAddress);
         }
     }
-
     class Call : MachineInstruction
     {
         public int functionId { get; set; }
@@ -56,17 +29,27 @@ namespace Leuterper.MachineInstructions
         {
             this.functionId = functionId;
         }
-        public string toString(int n)
+        public override string ToString()
         {
             return String.Format("call {0}", this.functionId);
         }
     }
-
+    class CallP : Call
+    {
+        public CallP(int functionId)
+            : base(functionId)
+        {
+        }
+        public override string ToString()
+        {
+            return String.Format("callp {0}", this.functionId);
+        }
+    }
     public class JMP : MachineInstruction
     {
         public int whereToJump { get; set; }
 
-        public string toString()
+        public override string ToString()
         {
             return String.Format("jmp {0}", this.whereToJump);
         }
@@ -78,10 +61,9 @@ namespace Leuterper.MachineInstructions
             this.whereToJump = whereToJump;
         }
     }
-
     public class JMPF : JMP
     {
-        new public string toString()
+        public override string ToString()
         {
             return String.Format("jmpf {0}", this.whereToJump);
         }
@@ -91,32 +73,30 @@ namespace Leuterper.MachineInstructions
         public JMPF(int whereToJump) : base(whereToJump) { }
 
     }
-
     class JMPT : JMP
     {
-        new public string toString()
+        public override string ToString()
         {
             return String.Format("jmpt {0}", this.whereToJump);
         }
         public JMPT() : base() { }
         public JMPT(int whereToJump) : base(whereToJump) { }
     }
-
-    class Push : MachineInstruction
+    public class Literal : MachineInstruction
     {
-        public int address { get; set; }
-
-        public string toString()
+        string type;
+        string encodedLiteral;
+        public Literal(string type, string encodedLiteral)
         {
-            return String.Format("push {0}", this.address);
+            this.type = type;
+            this.encodedLiteral = encodedLiteral;
         }
 
-        public Push(int address)
+        public override string ToString()
         {
-            this.address = address;
+            return String.Format("{0} {1}", type, encodedLiteral);
         }
     }
-
     class New : MachineInstruction
     {
         public int classId;
@@ -128,18 +108,52 @@ namespace Leuterper.MachineInstructions
             this.classId = classId;
         }
 
-        public string toString()
+        public override string ToString()
         {
-            return String.Format("new {0} {1}",classId, functionId);
+            return String.Format("new {0} {1}", classId, functionId);
         }
     }
-
     class NewP : New
     {
         public NewP(int classId, int functionId) : base(classId, functionId) { }
-        public string toString()
+        public override string ToString()
         {
             return String.Format("newp {0} {1}", classId, functionId);
+        }
+    }
+    class Number : MachineInstruction
+    {
+        public int value { get; set; }
+        public Number(int value)
+        {
+            this.value = value;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0}", value);
+        }
+    }
+    class Push : MachineInstruction
+    {
+        public int address { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format("push {0}", this.address);
+        }
+
+        public Push(int address)
+        {
+            this.address = address;
+        }
+    }
+
+    class Rtn : MachineInstruction
+    {
+        public override string ToString()
+        {
+            return "rtn";
         }
     }
 }

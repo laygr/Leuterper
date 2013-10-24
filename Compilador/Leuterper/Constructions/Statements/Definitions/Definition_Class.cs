@@ -11,8 +11,10 @@ namespace Leuterper.Constructions
     {
         public int identifier { get; set; }
         public LType parentType { get; set; }
-        public UniquesList<Declaration_LAttribute> attributesDeclarations { get; set; }
-        public UniquesList<Definition_Method> methodsDefinitions { get; set; }
+        public List<Declaration_LAttribute> attributesDeclarations { get; set; }
+        public List<Definition_Method> methodsDefinitions { get; set; }
+
+        public int numberOfAttributes = -1;
 
         public Definition_Class
             (
@@ -23,13 +25,20 @@ namespace Leuterper.Constructions
                 List<Definition_Method> methodsDefinitions
             ) : base(line, type)
         {
-            this.parentType = parentType;
+            if(parentType == null)
+            {
+                this.parentType = LObject.type;
+            }
+            else
+            {
+                this.parentType = parentType;
+            }
 
             attributesDeclarations.ForEach(a => a.aClass = this);
-            this.attributesDeclarations = new UniquesList<Declaration_LAttribute>(attributesDeclarations);
+            this.attributesDeclarations = new List<Declaration_LAttribute>(attributesDeclarations);
 
             methodsDefinitions.ForEach(m => m.aClass = this);
-            this.methodsDefinitions = new UniquesList<Definition_Method>(methodsDefinitions);
+            this.methodsDefinitions = new List<Definition_Method>(methodsDefinitions);
             
         }
 
@@ -42,20 +51,36 @@ namespace Leuterper.Constructions
         {
             return this.type.SignatureAsString();
         }
-        public int getNumberOfVars()
-        {
-            int acum = 0;
-            if(this.parentType != null)
-            {
-                acum += this.program.getClassForType(this.parentType).getNumberOfVars();
-            }
-            acum += this.attributesDeclarations.Count();
-            return acum;
-        }
 
+        public int getNumberOfAttributes()
+        {
+            if (this.numberOfAttributes == -1)
+            {
+                this.calculateNumberOfAttributes();
+            }
+            return this.numberOfAttributes;
+        }
+        public void calculateNumberOfAttributes()
+        {
+            this.numberOfAttributes = 0;
+            if (this.parentType != null)
+            {
+                this.numberOfAttributes += this.scope.getProgram().getClassForType(this.parentType).getNumberOfAttributes();
+            }
+            this.numberOfAttributes += this.attributesDeclarations.Count();
+        }
+        public override void secondPass()
+        {
+            this.calculateNumberOfAttributes();
+            foreach(Declaration_LAttribute a in this.attributesDeclarations)
+            {
+                a.scope = this.scope;
+                a.secondPass();
+            }
+        }
         public override void generateCode(LeuterperCompiler compiler)
         {
-            this.program.getClassForType(this.type);
+            compiler.addClassDefinition(this.getNumberOfAttributes());
         }
     }
 }

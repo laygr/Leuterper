@@ -41,10 +41,15 @@ namespace Leuterper.Constructions
             return null;
         }
 
+        public override void secondPass() { }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
             int index = this.scope.GetScopeManager().getIndexOfVarNamed("this");
-            compiler.addMI(new MachineInstructions.Push(index));
+            if (this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.Push(index));
+            }
         }
     }
 }

@@ -20,8 +20,14 @@ namespace Leuterper
         }
         public int GetIndexOfFirstVarInScope()
         {
-            if (scopable.GetParentScope() == null) return 0;
-            return scopable.GetParentScope().GetScopeManager().GetIndexOfFirstVarInScope() + scopable.GetParentScope().GetScopeManager().getNumOfVars();
+            if (scopable.GetParentScope() == null)
+            {
+                return LObject.literalsCounter;
+            }
+            else
+            {
+                return scopable.GetParentScope().GetScopeManager().GetIndexOfFirstVarInScope() + scopable.GetParentScope().GetScopeManager().getNumOfVars();
+            }
         }
         public int getIndexOfVarNamed(string name)
         {
@@ -32,6 +38,12 @@ namespace Leuterper
                 {
                     return i + scopable.GetScopeManager().GetIndexOfFirstVarInScope();
                 }
+            }
+
+            IScopable parentScope = this.scopable.GetParentScope();
+            if(parentScope != null)
+            {
+                return parentScope.GetScopeManager().getIndexOfVarNamed(name);
             }
 
             Console.WriteLine(String.Format("Using undeclared var {0}", name));
@@ -50,9 +62,14 @@ namespace Leuterper
             }
             return null;
         }
+        int getIndexOfFunctionWithNameAndParameters(string name, ParametersList parameters)
+        {
+            return this.getFunctionForGivenNameAndParameters(name, parameters).identifier;
+        }
+
         public Definition_Function getFunctionForGivenNameAndParameters(string name, ParametersList parameters)
         {
-            foreach (Definition_Function func in this.scopable.getFunctions())
+            foreach (Definition_Function func in this.scopable.getProgram().getFunctions())
             {
                 if (func.matchesWithNameAndParameters(name, parameters))
                 {
@@ -69,7 +86,7 @@ namespace Leuterper
 
         Definition_Class getClassForType(LType type)
         {
-            foreach (Definition_Class aClassD in this.scopable.getClasses())
+            foreach (Definition_Class aClassD in this.scopable.getProgram().getClasses())
             {
                 if (aClassD.type.MatchesWith(type))
                 {
@@ -125,9 +142,8 @@ namespace Leuterper
         }
         void validateThatOnlyDefinedClassesAreUsed()
         {
-
             List<Declaration> declarations = LAction.GetDeclarations(scopable.getActions());
-            List<LType> definedTypes = scopable.getClasses().ConvertAll(new Converter<Definition_Class, LType>(Definition.definitionToType));
+            List<LType> definedTypes = scopable.getProgram().getClasses().ConvertAll(new Converter<Definition_Class, LType>(Definition.definitionToType));
 
             foreach (Declaration d in declarations)
             {

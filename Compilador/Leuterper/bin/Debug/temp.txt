@@ -1,0 +1,25 @@
+class Object { Boolean equals(Object other) { }String toString() { }}
+class Number {String toString() { }Number +(Number other){ }Number -(Number other){ }Number *(Number other){ }Number /(Number other){ }}
+class List[A] {String toString() { }void Add(A other) { }Number Count() { }A Get(Number index){ }Void Set(A element, Number index) { }}
+class Char { String toString() { }}
+class String inherits List[Char] {String toString() { } }
+Void write(String text) { }
+String read() { }
+Void exit() { }
+
+Number a;
+Number b;
+
+Number suma(Number x, Number y)
+{
+	x + y;
+	return x + y;
+}
+
+Void main(String args)
+{
+	a = 3;
+	b = 4;
+	b = suma(a, b);
+}
+main(read());

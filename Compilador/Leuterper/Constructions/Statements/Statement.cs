@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    abstract class Statement : ICodeGenerator
+    abstract class Statement : ICompilable
     {
         public int line { get; set; }
         public IScopable scope { get; set; }
@@ -14,8 +14,8 @@ namespace Leuterper.Constructions
         {
             this.line = line;
         }
-        public Program program { get; set; }
 
+        abstract public void secondPass();
         abstract public void generateCode(LeuterperCompiler compiler);
     }
 }

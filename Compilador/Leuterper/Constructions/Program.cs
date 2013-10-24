@@ -7,12 +7,12 @@ using Leuterper.MachineInstructions;
 
 namespace Leuterper.Constructions
 {
-    class Program : IScopable, ICodeGenerator
+    class Program : IScopable, ICompilable
     {
         //Definitions
         public UniquesList<Definition_Class> classes { get; set; }
-        public UniquesList<Declaration_Var> vars { get; set; }
-        public UniquesList<Definition_Function> functions { get; set; }
+        public List<Declaration_Var> vars { get; set; }
+        public List<Definition_Function> functions { get; set; }
 
         //Actions
         public List<LAction> actions { get; set; }
@@ -20,15 +20,13 @@ namespace Leuterper.Constructions
         public Program(List<Statement> statements)
         {
             this.classes = new UniquesList<Definition_Class>();
-            this.functions = new UniquesList<Definition_Function>();
-            this.vars = new UniquesList<Declaration_Var>();
+            this.functions = new List<Definition_Function>();
+            this.vars = new List<Declaration_Var>();
             this.actions = new List<LAction>();
             this.scopeManager = new ScopeManager(this);
 
             foreach (Statement s in statements)
             {
-                s.program = this;
-
                 if (s is Definition_Class)
                 {
                     this.classes.Add(s as Definition_Class);
@@ -55,7 +53,7 @@ namespace Leuterper.Constructions
                 Definition_Class aClass = this.classes.Get(i);
                 for (int j = 0; j < aClass.methodsDefinitions.Count(); j++)
                 {
-                    this.functions.Add(aClass.methodsDefinitions.Get(j));
+                    this.functions.Add(aClass.methodsDefinitions[j]);
                 }
             }
 
@@ -71,7 +69,7 @@ namespace Leuterper.Constructions
 
             for (int i = 0; i < this.functions.Count(); i++)
             {
-                this.functions.Get(i).identifier = i;
+                this.functions[i].identifier = i;
             }
         }
 
@@ -102,22 +100,6 @@ namespace Leuterper.Constructions
 
         public List<Declaration_Var> getVars()
         {
-            /*
-            LType listOfStringsType = LList.CreateLListType();
-            listOfStringsType.wildTypes[0].statedType = LString.type;
-            ParametersList parametersOfMain = new ParametersList(new List<Parameter>());
-            String paramsName = "params";
-            parametersOfMain.Add(new Parameter(listOfStringsType, paramsName));
-            Definition_Function mainFunc = this.scopeManager.getFunctionForGivenNameAndParameters("main", parametersOfMain);
-            if (mainFunc != null)
-            {
-                paramsName = mainFunc.parameters.Get(0).name;
-            }
-
-            List<Declaration_Var> vars = this.vars.ToList();
-            vars.Insert(0, new Declaration_Var(0, listOfStringsType, paramsName));
-            return vars;
-             */
             return this.vars.ToList();
         }
         public List<LAction> getActions()
@@ -141,7 +123,7 @@ namespace Leuterper.Constructions
         {
             for(int i = 0; i < this.functions.Count(); i++)
             {
-                Definition_Function fun = this.functions.Get(i);
+                Definition_Function fun = this.functions[i];
                 if(fun.matchesWithNameAndParameters(name, parameters))
                 {
                     return i;
@@ -150,39 +132,76 @@ namespace Leuterper.Constructions
             return -1;
         }
 
+        public void secondPass()
+        {
+            for(int i = 0; i < this.classes.Count(); i++)
+            {
+                Definition_Class aClass = this.classes.Get(i);
+                aClass.scope = this;
+                aClass.secondPass();
+            }
+            for (int i = 0; i < this.vars.Count(); i++)
+            {
+                Declaration_Var var = this.vars[i];
+                var.scope = this;
+                var.secondPass();
+            }
+            for (int i = 0; i < this.functions.Count(); i++)
+            {
+                Definition_Function aFunc = this.functions[i];
+                aFunc.scope = this;
+                aFunc.identifier = i;
+                aFunc.secondPass();
+            }
+
+            //Crear acciones de asignacion de las declaraciones de variables con valor inicial.
+            int assignations = 0;
+            foreach(Declaration_Var v in this.vars)
+            {
+                if (v.initialValue != null)
+                {
+                    Var var = new Var(v.line, v.name);
+                    this.actions.Insert(assignations, new Assignment(v.line, var, v.initialValue));
+                    assignations++;
+                }
+            }
+
+            foreach (LAction a in this.actions)
+            {
+                a.scope = this;
+                a.secondPass();
+            }
+        }
+
         public void generateCode(LeuterperCompiler compiler)
         {
-            compiler.classesCount = this.classes.Count();
-            compiler.varsCount = this
-            compiler.addMI(new Number(this.classes.Count()));
+            compiler.globalVariablesCounter = this.vars.Count();
+
             for(int i = 0; i < this.classes.Count(); i++)
             {
                 Definition_Class aClass = this.classes.Get(i);
                 aClass.generateCode(compiler);
             }
 
-            compiler.addMI(new Number(this.vars.Count()));
-            for (int i = 0; i < this.vars.Count(); i++ )
-            {
-                Declaration_Var aVar = this.vars.Get(i);
-                aVar.generateCode(compiler);
-            }
-
-
-            compiler.addMI(new Number(this.functions.Count()));
             for(int i = 0; i < this.functions.Count(); i++)
             {
-                Definition_Function aFunction = this.functions.Get(i);
+                Definition_Function aFunction = this.functions[i];
                 aFunction.generateCode(compiler);
             }
 
-            compiler.addMI(new Number(this.actions.Count()));
+            compiler.compilingTopLevelActions = true;
             for(int i = 0; i < this.actions.Count(); i++)
             {
                 LAction anAction = this.actions[i];
                 anAction.generateCode(compiler);
             }
 
+        }
+
+
+        public Program getProgram()
+        {
+            return this;
         }
     }
 }

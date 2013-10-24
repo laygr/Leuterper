@@ -46,8 +46,12 @@ namespace Leuterper.Constructions
             throw new NotImplementedException();
         }
 
+        public override void secondPass()
+        { }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
+            base.generateCode(compiler);
             compiler.addLiteral(new MachineInstructions.Literal("list", this.encodeAsString()));
         }
     }

@@ -15,9 +15,17 @@ namespace Leuterper.Constructions
             this.returningExpression = returningExpression;
         }
 
+        public override void secondPass()
+        {
+            this.returningExpression.shouldBePushedToStack = true;
+            this.returningExpression.scope = this.scope;
+            this.returningExpression.secondPass();
+        }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
             returningExpression.generateCode(compiler);
+            compiler.addAction(new MachineInstructions.Rtn());
         }
     }
 }

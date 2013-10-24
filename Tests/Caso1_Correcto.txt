@@ -1,0 +1,15 @@
+Number a;
+Number b;
+
+Number suma(Number x, Number y)
+{
+	x + y;
+	return x + y;
+}
+
+Void main(String args)
+{
+	a = 3;
+	b = 4;
+	b = suma(a, b);
+}

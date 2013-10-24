@@ -197,16 +197,26 @@ public LAction parse_LAction() :
 {
 	(
 		LOOKAHEAD(parse_Declaration_Var())
-		action = parse_Declaration_Var() <SC>
+		(
+			action = parse_Declaration_Var() <SC>
+		)
 		|
 		LOOKAHEAD(parse_Assignment())
-		action = parse_Assignment() <SC>
+		(
+			action = parse_Assignment() <SC>
+		)
 		|
-		action = parse_Expression() <SC>
+		(
+			action = parse_Expression() <SC>
+		)
 		|
-		action = parse_Conditional()
+		(
+			action = parse_Conditional()
+		)
 		|
-		action = parse_Return_From_Block() <SC>
+		(
+			action = parse_Return_From_Block() <SC>
+		)
 	)
 
 	{ return action; }
@@ -243,10 +253,15 @@ public Expression parse_Expression() :
 }
 {
 	(
-		LOOKAHEAD(parse_Term())
-		expression = parse_Term()
+		LOOKAHEAD(parse_Call_Function())
+		(
+			expression = parse_Call_Function()
+		)
 		|
-		expression = parse_Call_Function()
+		LOOKAHEAD(parse_Term())
+		(
+			expression = parse_Term()
+		)
 		|
 		(
 			<LP>
@@ -254,7 +269,9 @@ public Expression parse_Expression() :
 			<RP>
 		)
 		|
-		expression = parse_Null()
+		(
+			expression = parse_Null()
+		)
 	)
 
 	expression = parse_Expression_Prima(expression)
@@ -570,7 +587,7 @@ public Parameter parse_Parameter() :
 {
 	type = parse_LType()
 	id = <ID>
-	{ return new Parameter(id.beginLine, type, id.image); }	
+	{ return new Parameter(type, id.image); }	
 }
 
 public LType parse_LType() :
@@ -663,6 +680,7 @@ public Statement parse_Statement() :
 	Statement statement;
 }
 {
+
 	(	
 		LOOKAHEAD(parse_LAction())
 		statement = parse_LAction()

@@ -57,5 +57,15 @@ namespace Leuterper.Constructions
             result += ((LChar)this.elements[this.elements.Count() - 1]).encodeAsString();
             return result;
         }
+
+        public override void generateCode(LeuterperCompiler compiler)
+        {
+            this.literalIndex = compiler.literals.Count();
+            if (this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.Push(this.literalIndex));
+            }
+            compiler.addLiteral(new MachineInstructions.Literal("String", this.encodeAsString()));
+        }
     }
 }

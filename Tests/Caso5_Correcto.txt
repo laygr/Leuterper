@@ -1,0 +1,9 @@
+class Class2[A,B] inherits Class1 {
+
+	
+	Class2()
+	{
+		this.a = 3;
+	}
+}
+seis = cinco + cinco;

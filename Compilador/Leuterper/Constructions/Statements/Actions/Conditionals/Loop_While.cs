@@ -14,18 +14,18 @@ namespace Leuterper.Constructions
 
         public override void generateCode(LeuterperCompiler compiler)
         {
-            MachineInstructions.JMP jumpTotheBeginning = new MachineInstructions.JMPT(compiler.functionInstructionsCounter);
+            MachineInstructions.JMP jumpTotheBeginning = new MachineInstructions.JMPT(compiler.getIndexOfNextActionInCurrentFunction());
             MachineInstructions.JMPF jumpToTheEnd = new MachineInstructions.JMPF();
             
             booleanExpression.generateCode(compiler);
 
-            compiler.addMI(jumpToTheEnd);
+            compiler.addAction(jumpToTheEnd);
             foreach(LAction action in this.thenActions)
             {
                 action.generateCode(compiler);
             }
-            compiler.addMI(jumpToTheEnd);
-            jumpToTheEnd.whereToJump = compiler.functionInstructionsCounter;
+            compiler.addAction(jumpToTheEnd);
+            jumpToTheEnd.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
         }
     }
 }

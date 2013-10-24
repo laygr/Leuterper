@@ -16,25 +16,34 @@ namespace Leuterper.Constructions
             this.elseActions = elseActions;
         }
 
+        public override void secondPass()
+        {
+            foreach(LAction a in elseActions)
+            {
+                a.scope = this.scope;
+                a.secondPass();
+            }
+        }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
             this.booleanExpression.generateCode(compiler);
             MachineInstructions.JMPF jumpToElse = new MachineInstructions.JMPF();
-            compiler.addMI(jumpToElse);
+            compiler.addAction(jumpToElse);
             foreach(LAction action in this.thenActions)
             {
                 action.generateCode(compiler);
             }
-            jumpToElse.whereToJump = compiler.functionInstructionsCounter + 1;
+            jumpToElse.whereToJump = compiler.getIndexOfNextActionInCurrentFunction() + 1;
 
             MachineInstructions.JMPF endOfThenJMP = new MachineInstructions.JMPF();
-            compiler.addMI(endOfThenJMP);
+            compiler.addAction(endOfThenJMP);
 
             foreach (LAction action in this.elseActions)
             {
                 action.generateCode(compiler);
             }
-            endOfThenJMP.whereToJump = compiler.functionInstructionsCounter;
+            endOfThenJMP.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
         }
     }
 }

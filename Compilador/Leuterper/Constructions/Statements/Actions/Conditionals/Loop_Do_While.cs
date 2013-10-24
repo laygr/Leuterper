@@ -14,14 +14,14 @@ namespace Leuterper.Constructions
 
         public override void generateCode(LeuterperCompiler compiler)
         {
-            int beginningOfLoop = compiler.functionInstructionsCounter;
+            int beginningOfLoop = compiler.getIndexOfNextActionInCurrentFunction();
 
             foreach(LAction a in thenActions)
             {
                 a.generateCode(compiler);
             }
             booleanExpression.generateCode(compiler);
-            compiler.addMI(new MachineInstructions.JMPT(beginningOfLoop));
+            compiler.addAction(new MachineInstructions.JMPT(beginningOfLoop));
 
         }
     }

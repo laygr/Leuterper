@@ -9,9 +9,14 @@ namespace Leuterper.Constructions
     abstract class LObject : Term
     {
         public static LType type = new LType("Object");
+        public static int literalsCounter = 0;
         public int literalIndex;
 
-        public LObject(int line) : base(line) { }
+        public LObject(int line) : base(line)
+        {
+            this.literalIndex = literalsCounter;
+            literalsCounter++;
+        }
 
         override public LType getType()
         {
@@ -23,6 +28,10 @@ namespace Leuterper.Constructions
         public override void generateCode(LeuterperCompiler compiler)
         {
             this.literalIndex = compiler.literals.Count();
+            if (this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.Push(this.literalIndex));
+            }
         }
     }
 }

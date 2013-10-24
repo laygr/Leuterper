@@ -16,5 +16,17 @@ namespace Leuterper.Constructions
             this.booleanExpression = booleanExpression;
             this.thenActions = thenActions;
         }
+        public override void secondPass()
+        {
+            booleanExpression.shouldBePushedToStack = true;
+            booleanExpression.scope = this.scope;
+            booleanExpression.secondPass();
+
+            foreach(LAction a in thenActions)
+            {
+                a.scope = this.scope;
+                a.secondPass();
+            }
+        }
     }
 }

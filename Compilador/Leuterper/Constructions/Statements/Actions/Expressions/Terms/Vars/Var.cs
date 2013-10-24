@@ -30,13 +30,15 @@ namespace Leuterper.Constructions
 
         public int getIndex()
         {
-            return 0;
+            return this.scope.GetScopeManager().getIndexOfVarNamed(this.name);
         }
+
+        public override void secondPass() { }
 
         override public void generateCode(LeuterperCompiler compiler)
         {
             int varIndex = this.scope.GetScopeManager().getIndexOfVarNamed(this.name);
-            compiler.addMI(new MachineInstructions.Push(varIndex));
+            compiler.addAction(new MachineInstructions.Push(varIndex));
         }
        
     }

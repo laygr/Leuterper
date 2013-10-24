@@ -11,7 +11,7 @@ namespace Leuterper.Constructions
     {
         public LType instanceType { get; set; }
         public List<Expression> arguments { get; set; }
-        public bool shouldBePushedToStack { get; set; }
+        
         public Constructor(int line, LType instanceType, List<Expression> arguments) : base(line)
         {
             this.instanceType = instanceType;
@@ -23,6 +23,16 @@ namespace Leuterper.Constructions
             return this.instanceType;
         }
 
+        public override void secondPass()
+        {
+            foreach(Expression e in arguments)
+            {
+                e.scope = this.scope;
+                e.shouldBePushedToStack = true;
+                e.secondPass();
+            }
+        }
+
         public override void generateCode(LeuterperCompiler compiler)
         {
             for(int i = 0; i < arguments.Count(); i++)
@@ -32,8 +42,8 @@ namespace Leuterper.Constructions
             }
 
             MachineInstruction creationInstruction = null;
-            int classId = this.program.getClassForType(this.instanceType).identifier;
-            int functionId = this.program.GetScopeManager().getFunctionForGivenNameAndArguments("", this.arguments).identifier;
+            int classId = this.scope.getProgram().getClassForType(this.instanceType).identifier;
+            int functionId = this.scope.getProgram().GetScopeManager().getFunctionForGivenNameAndArguments("", this.arguments).identifier;
             if (this.shouldBePushedToStack)
             {
                 creationInstruction = new MachineInstructions.NewP(classId, functionId);
@@ -42,7 +52,7 @@ namespace Leuterper.Constructions
             {
                 creationInstruction = new MachineInstructions.New(classId, functionId);
             }
-            compiler.addMI(creationInstruction);
+            compiler.addAction(creationInstruction);
         }
 
     }

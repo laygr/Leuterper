@@ -21,6 +21,11 @@ namespace Leuterper
             this.Parameters.Add(parameter);
         }
 
+        public void Insert(int index, Parameter parameter)
+        {
+            this.Parameters.Insert(index, parameter);
+        }
+
         public ParametersList(List<Parameter> parameters)
         {
             this.Parameters = parameters;
@@ -59,7 +64,7 @@ namespace Leuterper
         public static ParametersList getParametersFromArguments(List<Expression> expressionList)
         {
             ParametersList result = new ParametersList();
-            expressionList.ForEach(e => result.Add(new Parameter(0, e.getType(), "")));
+            expressionList.ForEach(e => result.Add(new Parameter(e.getType(), "")));
             return result;
         }
     }
