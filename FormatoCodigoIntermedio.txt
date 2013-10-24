@@ -1,12 +1,6 @@
-# de Clases
+﻿# de Clases
 Atributos clase 1
 Atributos clase 2
-.
-.
-.
-# de Literales
-Literal 1
-Literal 2
 .
 .
 .
@@ -22,9 +16,10 @@ Acción 2
 .
 .
 .
-# de Assignments
-Ass 1
-Ass 2
+# de variables totales (literales + globales + max de funcion)
+# de Literales
+Literal 1
+Literal 2
 .
 .
 .
