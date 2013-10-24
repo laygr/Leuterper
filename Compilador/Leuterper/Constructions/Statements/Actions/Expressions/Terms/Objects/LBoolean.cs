@@ -8,7 +8,7 @@ namespace Leuterper.Constructions
 {
     class LBoolean : LObject
     {
-        new static LType type = new LType("Boolean");
+        new public static LType type = new LType("Boolean");
         Boolean value;
 
         public LBoolean(int line, String value) : base(line)

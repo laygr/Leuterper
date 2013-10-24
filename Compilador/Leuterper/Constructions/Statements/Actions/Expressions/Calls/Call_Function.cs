@@ -19,15 +19,15 @@ namespace Leuterper.Constructions
 
         public override LType getType()
         {
-            Definition_Function func = this.scope.GetScopeManager().getFunctionForGivenNameAndParameters(
-                this.functionName, ParametersList.getParametersFromArguments(this.arguments));
+            Definition_Function func = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(
+                this.functionName, this.arguments);
 
             return func.type;
         }
 
         public int getFunctionIdentifier()
         {
-            Definition_Function fun = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(this.functionName, this.arguments);
+           Definition_Function fun = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(this.functionName, this.arguments);
             return fun.identifier;
         }
         override public void secondPass()
@@ -54,6 +54,16 @@ namespace Leuterper.Constructions
             {
                 compiler.addAction(new MachineInstructions.Call(this.getFunctionIdentifier()));
             }
+        }
+
+        public List<Parameter> argumentsAsParameters()
+        {
+            List<Parameter> result = new List<Parameter>();
+            foreach(Expression e in this.arguments)
+            {
+                result.Add(new Parameter(e.getType(), ""));
+            }
+            return result;
         }
     }
 }

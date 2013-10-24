@@ -9,7 +9,7 @@ namespace Leuterper.Constructions
     class Parameter : ICompilable
     {
         public IScopable scope;
-        public LType type;
+        public LType type { get; set; }
         public string name;
         public Parameter(LType type, String name)
         {
@@ -24,6 +24,36 @@ namespace Leuterper.Constructions
         public void generateCode(LeuterperCompiler compiler)
         {
 
+        }
+
+        public static LType parameterToType(Parameter p)
+        {
+            return p.type;
+        }
+
+        public static Parameter typeToParameter(LType t)
+        {
+            return new Parameter(t, "");
+        }
+
+        public static List<LType> listOfParametersAsListOfTypes(List<Parameter>parameters)
+        {
+            return parameters.ConvertAll(new Converter<Parameter, LType>(parameterToType));
+        }
+
+        public static List<Parameter> typesToParameter(List<LType> types)
+        {
+            return types.ConvertAll(new Converter<LType, Parameter>(typeToParameter));
+        }
+
+        public static String listOfParametersAsString(List<Parameter> parameters)
+        {
+            string result = "";
+            foreach(Parameter p in parameters)
+            {
+                result += p.type.SignatureAsString() + " ";
+            }
+            return result;
         }
     }
 }

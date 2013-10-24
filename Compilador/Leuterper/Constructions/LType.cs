@@ -62,5 +62,15 @@ namespace Leuterper.Constructions
         {
             return String.Format("{0}", this.name);
         }
+
+        public static Boolean listOfTypesMatch(List<LType> a, List<LType> b)
+        {
+            if (a.Count() != b.Count()) return false;
+            for (int i = 0; i < b.Count(); i++)
+            {
+                if (!a[i].MatchesWith(b[i])) return false;
+            }
+            return true;
+        }
     }
 }

@@ -1,0 +1,39 @@
+0
+2
+2
+16
+push 0
+jmpf 12
+push 6
+push 7
+call 3
+push 1
+jmpf 11
+push 6
+push 7
+call 3
+jmpt 5
+jmpt 0
+push 6
+push 7
+callp 3
+rtn
+1
+8
+push 2
+ass 4
+push 3
+ass 5
+push 4
+push 5
+callp 17
+ass 5
+8
+4
+Boolean 1
+Boolean 1
+Number 3
+Number 4
+2
+callp 15
+call 18

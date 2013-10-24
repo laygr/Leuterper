@@ -14,7 +14,8 @@ namespace Leuterper.Constructions
 
         public override void generateCode(LeuterperCompiler compiler)
         {
-            MachineInstructions.JMP jumpTotheBeginning = new MachineInstructions.JMPT(compiler.getIndexOfNextActionInCurrentFunction());
+            int jumpToTheBeginningInstructioIndex = compiler.getIndexOfNextActionInCurrentFunction();
+            MachineInstructions.JMP jumpTotheBeginning = new MachineInstructions.JMPT(jumpToTheBeginningInstructioIndex);
             MachineInstructions.JMPF jumpToTheEnd = new MachineInstructions.JMPF();
             
             booleanExpression.generateCode(compiler);
@@ -24,7 +25,7 @@ namespace Leuterper.Constructions
             {
                 action.generateCode(compiler);
             }
-            compiler.addAction(jumpToTheEnd);
+            compiler.addAction(jumpTotheBeginning);
             jumpToTheEnd.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
         }
     }

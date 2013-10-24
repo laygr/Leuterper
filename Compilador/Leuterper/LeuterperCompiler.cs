@@ -11,6 +11,8 @@ namespace Leuterper
 {
     class LeuterperCompiler
     {
+        public static int STANDARD_CLASES = 5;
+        public static int STANDARD_FUNCTIONS = 17;
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
@@ -59,7 +61,6 @@ namespace Leuterper
             {
                 StreamWriter temp = new StreamWriter(tempFile);
                 StreamReader f = new StreamReader(this.filePath);
-                temp.WriteLine(LeuterperCompiler.standardLibrary());
                 temp.WriteLine(f.ReadToEnd());
                 temp.WriteLine(LeuterperCompiler.callToMain());
                 f.Close();
@@ -90,23 +91,21 @@ namespace Leuterper
             StreamWriter writer = new StreamWriter("out.txt");
 
             writer.WriteLine(this.classDefinitions.Count());
-            foreach (int aClassDefinition in this.classDefinitions)
+            for (int i = STANDARD_CLASES; i < this.classDefinitions.Count(); i++ )
             {
-                writer.WriteLine(aClassDefinition);
+                writer.WriteLine(this.classDefinitions[i]);
             }
 
             writer.WriteLine(this.functionActions.Count());
-
-            int i = 0;
-            foreach (List<MachineInstruction> funcDef in this.functionActions)
+            for (int i = 0; i < this.functionActions.Count(); i++)
             {
+                List<MachineInstruction> funcDef = this.functionActions[i];
                 writer.WriteLine(this.functionsParameters[i]);
                 writer.WriteLine(funcDef.Count());
                 foreach (MachineInstruction mi in funcDef)
                 {
                     writer.WriteLine(mi);
                 }
-                i++;
             }
 
             //Max number of vars in memory

@@ -58,7 +58,7 @@ namespace Leuterper.MachineInstructions
 
         public JMP(int whereToJMP)
         {
-            this.whereToJump = whereToJump;
+            this.whereToJump = whereToJMP;
         }
     }
     public class JMPF : JMP

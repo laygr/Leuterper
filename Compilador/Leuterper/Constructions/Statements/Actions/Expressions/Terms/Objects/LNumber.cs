@@ -9,7 +9,7 @@ namespace Leuterper.Constructions
     class LNumber : LObject
     {
         float value;
-        new static LType type = null;
+        new public static LType type = LNumber.type = new LType("Number");
 
         public LNumber(int line, Token sign, String numberAsString) : base(line)
         {
@@ -26,15 +26,6 @@ namespace Leuterper.Constructions
                     Environment.Exit(0);
                 }
             }
-        }
-        
-        override public LType getType()
-        {
-            if (LNumber.type == null)
-            {
-                LNumber.type = new LType("Number");
-            }
-            return LNumber.type;
         }
 
         public override string encodeAsString()

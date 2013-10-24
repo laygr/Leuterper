@@ -8,6 +8,7 @@ namespace Leuterper.Constructions
 {
     class LList : LObject
     {
+        new public static LType type = LList.CreateLListType();
         public LType instanceType;
         public List<Expression> elements { get; set; }
 

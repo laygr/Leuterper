@@ -419,6 +419,8 @@ public LObject parse_LObject() :
 	theObject = parse_LChar()
 	|
 	theObject = parse_LList()
+	|
+	theObject = parse_LBoolean()
 	)
 
 	{ return theObject; }

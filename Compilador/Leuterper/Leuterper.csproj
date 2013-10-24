@@ -80,7 +80,6 @@
     <Compile Include="ICodeGenerator.cs" />
     <Compile Include="Identifiable.cs" />
     <Compile Include="MachineInstructions.cs" />
-    <Compile Include="ParametersList.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\SimpleCharStream.cs" />
     <Compile Include="Parser\TheParser.cs" />

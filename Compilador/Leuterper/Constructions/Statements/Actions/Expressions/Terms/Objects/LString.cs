@@ -8,7 +8,7 @@ namespace Leuterper.Constructions
 {
     class LString : LList
     {
-        new static LType type = LString.LStringType();
+        new public static LType type = LString.LStringType();
         public LString(int line, String value) : base(line, LChar.getType(), new List<Expression>())
         {
             LType type = LString.type;

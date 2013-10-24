@@ -8,7 +8,7 @@ namespace Leuterper.Constructions
 {
     class LVoid : LObject
     {
-        new static LType type = new LType("Void");
+        new public static LType type = new LType("Void");
         public LVoid(int line) : base(line)
         {
 

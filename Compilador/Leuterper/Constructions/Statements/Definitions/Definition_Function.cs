@@ -10,16 +10,23 @@ namespace Leuterper.Constructions
     {
         public int identifier { get; set; }
         public String name { get; set; }
-        public ParametersList parameters { get; set; }
+        public List<Parameter> parameters { get; set; }
         public List<Declaration_Var> vars { get; set; }
         public List<LAction> actions { get; set; }
         public ScopeManager scopeManager;
-
+        public Definition_Function(int line, LType type, String id, List<Parameter> parameters, List<LAction> actions, int identifier) : this(line, type, id, parameters, actions)
+        {
+            this.identifier = identifier;
+        }
         public Definition_Function(int line, LType type, String id, List<Parameter> parameters, List<LAction> actions)
             : base(line, type)
         {
+            if (actions == null)
+            {
+                actions = new List<LAction>();
+            }
             this.name = id;
-            this.parameters = new ParametersList(parameters);
+            this.parameters = parameters;
             
             actions.ForEach(a => a.function = this);
 
@@ -37,31 +44,41 @@ namespace Leuterper.Constructions
         public bool HasSameSignatureAs(Definition_Function otherElement)
         {
             if (!this.name.Equals(otherElement.name)) return false;
-            return this.parameters.HasSameSignatureAs(otherElement.parameters);
+            return this.listOfParametersMatchesWith(otherElement.parameters);
+        }
+
+        private bool listOfParametersMatchesWith(List<Parameter> other)
+        {
+            if(this.parameters.Count() != other.Count()) return false;
+            for(int i = 0; i < this.parameters.Count(); i++)
+            {
+                if(!this.parameters[i].type.MatchesWith(other[i].type)) return false;
+            }
+            return true;
         }
 
         public string SignatureAsString()
         {
-            return String.Format("{0} {1} {2}", this.type.SignatureAsString(), this.name, this.parameters.SignatureAsString());
+            return String.Format("{0} {1} {2}", this.type.SignatureAsString(), this.name, Parameter.listOfParametersAsString(this.parameters));
         }
 
-        public bool matchesWithNameAndParameters(string name, ParametersList parameters)
+        public bool matchesWithNameAndTypes(string name, List<LType> types)
         {
             if (!this.name.Equals(name)) return false;
-            return this.parameters.HasSameSignatureAs(parameters);
+            return LType.listOfTypesMatch(Parameter.listOfParametersAsListOfTypes(this.parameters), types);
         }
 
         public override void secondPass()
         {
             for(int i = 0; i < this.parameters.Count(); i++)
             {
-                Parameter p = this.parameters.Get(i);
+                Parameter p = this.parameters[i];
                 this.vars.Insert(i, new Declaration_Var(this.line, p.type, p.name));
             }
 
             for(int i = 0; i < this.parameters.Count(); i++)
             {
-                Parameter p = this.parameters.Get(i);
+                Parameter p = this.parameters[i];
                 p.scope = this;
                 p.secondPass();
             }
@@ -96,7 +113,6 @@ namespace Leuterper.Constructions
             {
                 compiler.mostVaribalesInAFunction = this.vars.Count();
             }
-
             compiler.functionsParameters.Add(this.parameters.Count());
             compiler.functionActions.Add(new List<MachineInstructions.MachineInstruction>());
             foreach(LAction action in this.actions)

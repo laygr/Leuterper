@@ -18,6 +18,11 @@ namespace Leuterper.Constructions
             this.statedType = statedType;
         }
 
+        static public LType wildTypePlaceHolder()
+        {
+            return new LType("A");
+        }
+
         public Wild_Type(String id) : this(id, null)
         { }
     }

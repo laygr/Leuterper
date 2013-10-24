@@ -3,7 +3,14 @@ Number b;
 
 Number suma(Number x, Number y)
 {
-	x + y;
+	while(true)
+	{
+		x + y;
+		while(true)
+		{
+			x+y;
+		}
+	}
 	return x + y;
 }
 

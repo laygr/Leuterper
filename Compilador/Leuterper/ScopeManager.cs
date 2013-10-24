@@ -62,26 +62,24 @@ namespace Leuterper
             }
             return null;
         }
-        int getIndexOfFunctionWithNameAndParameters(string name, ParametersList parameters)
+
+        int getIndexOfFunctionWithNameAndArguments(string name, List<Expression> arguments)
         {
-            return this.getFunctionForGivenNameAndParameters(name, parameters).identifier;
+            return this.getFunctionForGivenNameAndArguments(name, arguments).identifier;
+        }
+        public LType expresionToType(Expression e)
+        {
+            return e.getType();
         }
 
-        public Definition_Function getFunctionForGivenNameAndParameters(string name, ParametersList parameters)
+        public Definition_Function getFunctionForGivenNameAndTypes(string name, List<LType> types)
         {
-            foreach (Definition_Function func in this.scopable.getProgram().getFunctions())
-            {
-                if (func.matchesWithNameAndParameters(name, parameters))
-                {
-                    return func;
-                }
-            }
-            return null;
+            return this.scopable.getProgram().getFunctionWithNameAndParametersTypes(name, types);
         }
 
         public Definition_Function getFunctionForGivenNameAndArguments(string name, List<Expression> arguments)
         {
-            return this.getFunctionForGivenNameAndParameters(name, ParametersList.getParametersFromArguments(arguments));
+            return this.getFunctionForGivenNameAndTypes(name, arguments.ConvertAll(new Converter<Expression, LType>(expresionToType)));
         }
 
         Definition_Class getClassForType(LType type)
@@ -107,14 +105,13 @@ namespace Leuterper
             
             foreach(Call_Function f in functionCalls)
             {
-                ParametersList parameters = ParametersList.getParametersFromArguments(f.arguments);
                 String functionName = f.functionName;
                 Definition_Function functionCalled;
-                functionCalled = scopable.GetScopeManager().getFunctionForGivenNameAndParameters(f.functionName, parameters);
+                functionCalled = scopable.GetScopeManager().getFunctionForGivenNameAndArguments(f.functionName, f.arguments);
                 
                 if(functionCalled == null)
                 {
-                    Console.WriteLine(String.Format("Called undefined function with signature: {0}", f.functionName +  parameters));
+                    Console.WriteLine(String.Format("Called undefined function with signature: {0}", f.functionName +  Parameter.listOfParametersAsString(f.argumentsAsParameters())));
                     Console.ReadKey();
                     Environment.Exit(0);
                 }

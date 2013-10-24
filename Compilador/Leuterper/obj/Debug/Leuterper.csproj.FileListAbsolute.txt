@@ -4,9 +4,9 @@ C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\bin\Deb
 C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\bin\Debug\Leuterper.pdb
 C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\obj\Debug\Leuterper.exe
 C:\Users\Laygr\Documents\Visual Studio 2013\Projects\Leuterper\Leuterper\obj\Debug\Leuterper.pdb
+C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\bin\Debug\Leuterper.exe
 C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\bin\Debug\Leuterper.exe.config
 C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\obj\Debug\Leuterper.exe
 C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\obj\Debug\Leuterper.pdb
-C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\obj\Debug\Leuterper.csprojResolveAssemblyReference.cache
-C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\bin\Debug\Leuterper.exe
 C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\bin\Debug\Leuterper.pdb
+C:\Users\Laygr\Desktop\Leuterper\Compilador\Leuterper\obj\Debug\Leuterper.csprojResolveAssemblyReference.cache
