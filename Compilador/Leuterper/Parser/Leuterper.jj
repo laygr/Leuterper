@@ -196,6 +196,11 @@ public LAction parse_LAction() :
 }
 {
 	(
+		LOOKAHEAD(parse_LSet())
+		(
+			action = parse_LSet() <SC>
+		)
+		|
 		LOOKAHEAD(parse_Declaration_Var())
 		(
 			action = parse_Declaration_Var() <SC>
@@ -249,6 +254,20 @@ public void parse_Arguments(List<Expression> arguments) :
 
 public Expression parse_Expression() :
 {
+	Expression result;
+}
+{
+	(
+		LOOKAHEAD(parse_CExpression())
+		result = parse_CExpression()
+		|
+		result = parse_GExpression()
+	)
+	{ return result; }
+}
+
+public Expression parse_GExpression() :
+{
 	Expression expression;
 }
 {
@@ -273,23 +292,56 @@ public Expression parse_Expression() :
 			expression = parse_Null()
 		)
 	)
-
-	expression = parse_Expression_Prima(expression)
 	{ return expression; }
 }
 
-public Expression parse_Expression_Prima(Expression theObject) :
-{}
+public Expression parse_CExpression() :
 {
+	Expression ground;
+}
+{
+	ground = parse_GExpression()
 	(
 		(
-			LOOKAHEAD(parse_Call_Method(theObject))
-			theObject = parse_Call_Method(theObject)
+			LOOKAHEAD(parse_Call_Method(ground))
+			ground = parse_Call_Method(ground)
 			|
-			theObject = parse_LAttributeAccess(theObject)
+			ground = parse_LAttributeAccess(ground)
 		)
-	)*
-	{ return theObject; }
+	)+
+	{ return ground; }
+}
+
+public LAttributeAccess parse_AAExpression() :
+{
+	Expression ground;
+}
+{
+	ground = parse_GExpression()
+	(
+		(
+			LOOKAHEAD(parse_Call_Method(ground))
+			(
+				ground = parse_Call_Method(ground)
+				ground = parse_LAttributeAccess(ground)
+			)
+			|
+			ground = parse_LAttributeAccess(ground)
+		)
+	)+
+	{ return (LAttributeAccess) ground; }
+}
+
+public LSet parse_LSet() :
+{
+	LAttributeAccess lhs;
+	Expression rhs;
+}
+{
+	lhs = parse_AAExpression()
+	<ASS>
+	rhs = parse_Expression()
+	{ return new LSet(lhs.line, lhs, rhs); }
 }
 
 public LAttributeAccess parse_LAttributeAccess(Expression theObject) :
@@ -375,9 +427,6 @@ public Var parse_Var() :
 }
 {
 	(
-		aThis = parse_This()
-		var = parse_LAttributeAccess(aThis)
-	|
 		var = parse_SimpleVar()
 	)
 	{ return var; }

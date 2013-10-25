@@ -6,18 +6,25 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Exceptions
 {
-    class AlreadyDeclaredException : Exception
+    class SemanticErrorException : Exception
     {
-        public AlreadyDeclaredException()
+        public int line { get; set; }
+        public SemanticErrorException()
     {
     }
 
-        public AlreadyDeclaredException(string message)
+        public SemanticErrorException(string message, int line)
             : base(message)
         {
+            this.line = line;
         }
 
-    public AlreadyDeclaredException(string message, Exception inner)
+        public override string ToString()
+        {
+            return String.Format("Semantic error.\n\t{0}\n\tLine {1}.", this.Message, this.line);
+        }
+
+    public SemanticErrorException(string message, Exception inner)
         : base(message, inner)
     {
     }

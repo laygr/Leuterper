@@ -10,12 +10,21 @@ namespace Leuterper.Constructions
     class Definition_Class : Definition, IIdentifiable<Definition_Class>
     {
         public int identifier { get; set; }
-        public LType parentType { get; set; }
+        //public LType parentType { get; set; }
         public List<Declaration_LAttribute> attributesDeclarations { get; set; }
         public List<Definition_Method> methodsDefinitions { get; set; }
 
         public int numberOfAttributes = -1;
-
+        public Definition_Class(
+            int line,
+            LType type,
+            LType parentType,
+            List<Declaration_LAttribute> attributesDeclarations,
+            List<Definition_Method> methodsDefinitions,
+            int classIdentifier) : this(line, type, parentType, attributesDeclarations, methodsDefinitions)
+        {
+            this.identifier = classIdentifier;
+        }
         public Definition_Class
             (
                 int line,
@@ -25,13 +34,13 @@ namespace Leuterper.Constructions
                 List<Definition_Method> methodsDefinitions
             ) : base(line, type)
         {
-            if(parentType == null)
+            if(parentType == null && !this.type.MatchesWith(LObject.type))
             {
-                this.parentType = LObject.type;
+               this.type.parentType = LObject.type;
             }
             else
             {
-                this.parentType = parentType;
+                this.type.parentType = parentType;
             }
 
             attributesDeclarations.ForEach(a => a.aClass = this);
@@ -63,9 +72,10 @@ namespace Leuterper.Constructions
         public void calculateNumberOfAttributes()
         {
             this.numberOfAttributes = 0;
-            if (this.parentType != null)
+            if (this.type.parentType != null)
             {
-                this.numberOfAttributes += this.scope.getProgram().getClassForType(this.parentType).getNumberOfAttributes();
+                Definition_Class parentClass = this.scope.GetScopeManager().getClassForType(this.type.parentType);
+                this.numberOfAttributes += parentClass.getNumberOfAttributes();
             }
             this.numberOfAttributes += this.attributesDeclarations.Count();
         }
@@ -77,10 +87,36 @@ namespace Leuterper.Constructions
                 a.scope = this.scope;
                 a.secondPass();
             }
+            foreach(Definition_Method m in this.methodsDefinitions)
+            {
+                m.scope = this.scope;
+                m.secondPass();
+            }
         }
         public override void generateCode(LeuterperCompiler compiler)
         {
             compiler.addClassDefinition(this.getNumberOfAttributes());
+            foreach(Definition_Method m in this.methodsDefinitions)
+            {
+                m.generateCode(compiler);
+            }
+        }
+
+        internal Definition_Method getMethodWithNameAndTypes(string name, List<LType> types)
+        {
+            foreach(Definition_Method m in this.methodsDefinitions)
+            {
+                if (m.isCompatibleWithNameAndTypes(name, types))
+                {
+                    return m;
+                }
+            }
+            if(this.type.parentType != null)
+            {
+                return this.scope.GetScopeManager().getClassForType(this.type.parentType).getMethodWithNameAndTypes(name, types);
+            }
+            return null;
+
         }
     }
 }

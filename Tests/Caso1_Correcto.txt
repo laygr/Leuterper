@@ -1,22 +1,23 @@
-Number a;
-Number b;
-
-Number suma(Number x, Number y)
+class Foo
 {
-	while(true)
+	Bar x;
+
+	Number hola(Foo b)
 	{
-		x + y;
-		while(true)
-		{
-			x+y;
-		}
+		
 	}
-	return x + y;
+}
+
+class Bar inherits Foo
+{
+	Number y;
 }
 
 Void main(String args)
 {
-	a = 3;
-	b = 4;
-	b = suma(a, b);
+	Object a;
+	Foo f;
+	a = f.x.y;
+	Bar bar;
+	bar.hola(bar);
 }

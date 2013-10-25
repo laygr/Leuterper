@@ -15,7 +15,7 @@ namespace Leuterper.Constructions
         public Constructor(int line, LType instanceType, List<Expression> arguments) : base(line)
         {
             this.instanceType = instanceType;
-            arguments.Insert(0, new Var(line, "this"));
+            arguments.Insert(0, new VarAccess(line, "this"));
             this.arguments = arguments;
         }
         override public LType getType()
@@ -42,7 +42,7 @@ namespace Leuterper.Constructions
             }
 
             MachineInstruction creationInstruction = null;
-            int classId = this.scope.getProgram().getClassForType(this.instanceType).identifier;
+            int classId = this.scope.GetScopeManager().getClassForType(this.instanceType).identifier;
             int functionId = this.scope.getProgram().GetScopeManager().getFunctionForGivenNameAndArguments("", this.arguments).identifier;
             if (this.shouldBePushedToStack)
             {

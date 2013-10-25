@@ -156,4 +156,32 @@ namespace Leuterper.MachineInstructions
             return "rtn";
         }
     }
+
+    class Get : MachineInstruction
+    {
+        public int attributeIndex;
+        public Get(int attributeIndex)
+        {
+            this.attributeIndex = attributeIndex;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("get {0}", this.attributeIndex);
+        }
+    }
+
+    class Set : MachineInstruction
+    {
+        public int attributeIndex;
+        public Set(int attributeIndex)
+        {
+            this.attributeIndex = attributeIndex;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("set {0}", this.attributeIndex);
+        }
+    }
 }

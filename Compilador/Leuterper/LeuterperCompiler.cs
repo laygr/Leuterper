@@ -13,6 +13,7 @@ namespace Leuterper
     {
         public static int STANDARD_CLASES = 5;
         public static int STANDARD_FUNCTIONS = Program.specialFunctions.Count();
+
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
@@ -32,7 +33,7 @@ namespace Leuterper
         public LeuterperCompiler(String filePath)
         {
             this.globalVariablesCounter = 0;
-            this.mostVaribalesInAFunction = 0;
+            this.mostVaribalesInAFunction = 3;
             this.compilingTopLevelActions = false;
 
             this.classDefinitions = new List<int>();
@@ -49,6 +50,7 @@ namespace Leuterper
             parse();
             program.secondPass();
             //program.GetScopeManager().validate();
+            int i = Program.specialFunctions.Count();
             program.generateCode(this);
             printGeneratedCode();
 
@@ -91,7 +93,7 @@ namespace Leuterper
             StreamWriter writer = new StreamWriter("out.txt");
 
             writer.WriteLine(this.classDefinitions.Count());
-            for (int i = STANDARD_CLASES; i < this.classDefinitions.Count(); i++ )
+            for (int i = 0; i < this.classDefinitions.Count(); i++ )
             {
                 writer.WriteLine(this.classDefinitions[i]);
             }

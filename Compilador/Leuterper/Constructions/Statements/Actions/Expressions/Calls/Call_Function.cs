@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,17 +18,24 @@ namespace Leuterper.Constructions
             this.arguments = arguments;
         }
 
-        public override LType getType()
+        public Definition_Function getFunctionDefinition()
         {
-            Definition_Function func = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(
-                this.functionName, this.arguments);
-
-            return func.type;
+            return this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(this.functionName, this.arguments);
         }
 
-        public int getFunctionIdentifier()
+        public override LType getType()
+        {
+            return this.getFunctionDefinition().type;
+        }
+
+        virtual public int getFunctionIdentifier()
         {
            Definition_Function fun = this.scope.GetScopeManager().getFunctionForGivenNameAndArguments(this.functionName, this.arguments);
+           if(fun == null)
+           {
+               String errorMessage = String.Format("Called an undefined function\n\tName: {0}\n\tParameters: {1}", this.functionName, LType.listOfTypesAsString(Expression.expressionsToTypes(this.arguments)));
+               throw new SemanticErrorException(errorMessage, this.line);
+           }
             return fun.identifier;
         }
         override public void secondPass()

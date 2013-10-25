@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Leuterper.MachineInstructions;
+using Leuterper.Exceptions;
 
 namespace Leuterper.Constructions
 {
@@ -47,7 +48,7 @@ namespace Leuterper.Constructions
                     this.actions.Add(s as LAction);
                 }
             }
-
+            /*
             for (int i = 0; i < this.classes.Count(); i++)
             {
                 Definition_Class aClass = this.classes.Get(i);
@@ -56,21 +57,17 @@ namespace Leuterper.Constructions
                     this.functions.Add(aClass.methodsDefinitions[j]);
                 }
             }
-
-            this.setIdentifiers();
-        }
-
-        public void setIdentifiers()
-        {
-            for (int i = 0; i < this.classes.Count(); i++)
+            */
+            SortedList<string, string> names = new SortedList<string, string>();
+            foreach (Declaration_Var v in this.vars)
             {
-                this.classes.Get(i).identifier = i;
+                if (names.ContainsValue(v.name))
+                {
+                    throw new SemanticErrorException("Variable redeclared: " + v.name, v.line);
+                }
+                names.Add(v.name, v.name);
             }
 
-            for (int i = 0; i < this.functions.Count(); i++)
-            {
-                this.functions[i].identifier = i;
-            }
         }
 
         public IScopable GetParentScope()
@@ -81,42 +78,6 @@ namespace Leuterper.Constructions
         public ScopeManager GetScopeManager()
         {
             return this.scopeManager;
-        }
-
-        public List<Definition_Class> getClasses()
-        {
-            return this.classes.ToList();
-        }
-
-        public List<Definition_Function> getFunctions()
-        {
-            return this.functions.ToList();
-        }
-
-        public List<LType> getParameters()
-        {
-            return new List<LType>(new LType[] { LString.type });
-        }
-
-        public List<Declaration_Var> getVars()
-        {
-            return this.vars.ToList();
-        }
-        public List<LAction> getActions()
-        {
-            return this.actions;
-        }
-
-        public Definition_Class getClassForType(LType type)
-        {
-            foreach (Definition_Class aClass in this.classes.ToList())
-            {
-                if (aClass.type.MatchesWith(type))
-                {
-                    return aClass;
-                }
-            }
-            return null;
         }
 
         static List<LType> e = new List<LType>();
@@ -135,26 +96,31 @@ namespace Leuterper.Constructions
         static List<LType> ss = new List<LType>(new LType[] { LString.type, LString.type });
 
         public static List<Definition_Function> specialFunctions = new List<Definition_Function>(new Definition_Function[]{
-            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(oo), null, 0),
-            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(oo), null, 1),
-            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(nn), null, 2),
-            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(n), null, 3),
-            new Definition_Function(0, LNumber.type, "+", Parameter.typesToParameter(nn), null, 4),
-            new Definition_Function(0, LNumber.type, "-", Parameter.typesToParameter(o), null, 5),
-            new Definition_Function(0, LNumber.type, "*", Parameter.typesToParameter(o), null, 6),
-            new Definition_Function(0, LNumber.type, "/", Parameter.typesToParameter(o), null, 7),
-            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(ll), null, 8),
-            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(l), null, 9),
-            new Definition_Function(0, LVoid.type, "add", Parameter.typesToParameter(la), null, 10),
-            new Definition_Function(0, LNumber.type, "count", Parameter.typesToParameter(l), null, 11),
-            new Definition_Function(0, Wild_Type.wildTypePlaceHolder(), "get", Parameter.typesToParameter(ln), null, 12),
-            new Definition_Function(0, LVoid.type, "set", Parameter.typesToParameter(lan), null, 13),
-            new Definition_Function(0, LBoolean.type, "==", Parameter.typesToParameter(cc), null, 14),
-            new Definition_Function(0, LString.type, "toString", Parameter.typesToParameter(c), null, 15),
-            new Definition_Function(0, LString.type, "==", Parameter.typesToParameter(ss), null, 16),
-            new Definition_Function(0, LString.type, "read", Parameter.typesToParameter(e), null, 17),
-            new Definition_Function(0, LVoid.type, "write", Parameter.typesToParameter(s), null, 18),
-            new Definition_Function(0, LNumber.type, "stringToNumber", Parameter.typesToParameter(s), null, 19)});
+            new Definition_Method(0, LBoolean.type, "==", LType.typesToParameters(oo), null, 0),
+            new Definition_Method(0, LString.type, "toString", LType.typesToParameters(oo), null, 1),
+           
+            new Definition_Method(0, LBoolean.type, "==", LType.typesToParameters(nn), null, 2),
+            new Definition_Method(0, LString.type, "toString", LType.typesToParameters(n), null, 3),
+            new Definition_Method(0, LNumber.type, "+", LType.typesToParameters(nn), null, 4),
+            new Definition_Method(0, LNumber.type, "-", LType.typesToParameters(o), null, 5),
+            new Definition_Method(0, LNumber.type, "*", LType.typesToParameters(o), null, 6),
+            new Definition_Method(0, LNumber.type, "/", LType.typesToParameters(o), null, 7),
+           
+            new Definition_Method(0, LBoolean.type, "==", LType.typesToParameters(ll), null, 8),
+            new Definition_Method(0, LString.type, "toString", LType.typesToParameters(l), null, 9),
+            new Definition_Method(0, LVoid.type, "add", LType.typesToParameters(la), null, 10),
+            new Definition_Method(0, LNumber.type, "count", LType.typesToParameters(l), null, 11),
+            new Definition_Method(0, Wild_Type.wildTypePlaceHolder(), "get", LType.typesToParameters(ln), null, 12),
+            new Definition_Method(0, LVoid.type, "set", LType.typesToParameters(lan), null, 13),
+            
+            new Definition_Method(0, LBoolean.type, "==", LType.typesToParameters(cc), null, 14),
+            new Definition_Method(0, LString.type, "toString", LType.typesToParameters(c), null, 15),
+            
+            new Definition_Method(0, LString.type, "==", LType.typesToParameters(ss), null, 16),
+            
+            new Definition_Function(0, LString.type, "read", LType.typesToParameters(e), null, 17),
+            new Definition_Function(0, LVoid.type, "write", LType.typesToParameters(s), null, 18),
+            new Definition_Function(0, LNumber.type, "stringToNumber", LType.typesToParameters(s), null, 19)});
 
         public Definition_Function getFunctionWithNameAndParametersTypes(string name, List<LType> parametersTypes)
         {
@@ -179,33 +145,24 @@ namespace Leuterper.Constructions
         }
         public int getIndexOfFunctionWithNameAndParametersTypes(string name, List<LType> parametersTypes)
         {
-            for (int i = 0; i < Program.specialFunctions.Count(); i++)
-            {
-                Definition_Function fun = Program.specialFunctions[i];
-                if (fun.matchesWithNameAndTypes(name, parametersTypes))
-                {
-                    return fun.identifier;
-                }
-            }
-            
-            for (int i = 0; i < this.functions.Count(); i++)
-            {
-                Definition_Function fun = this.functions[i];
-                if (fun.matchesWithNameAndTypes(name, parametersTypes))
-                {
-                    return fun.identifier;
-                }
-            }
+            Definition_Function fun = this.getFunctionWithNameAndParametersTypes(name, parametersTypes);
+            if (fun != null) return fun.identifier;
             return -1;
         }
 
         public void secondPass()
         {
+            int funcIdentifierCounter = Program.specialFunctions.Count();
             for (int i = 0; i < this.classes.Count(); i++)
             {
                 Definition_Class aClass = this.classes.Get(i);
                 aClass.scope = this;
-                aClass.identifier = i;
+                aClass.identifier = i + StandardLibrary.specialClasses.Count();
+                foreach(Definition_Method m in aClass.methodsDefinitions)
+                {
+                    m.identifier = funcIdentifierCounter;
+                    funcIdentifierCounter++;
+                }
                 aClass.secondPass();
             }
             for (int i = 0; i < this.vars.Count(); i++)
@@ -218,7 +175,8 @@ namespace Leuterper.Constructions
             {
                 Definition_Function aFunc = this.functions[i];
                 aFunc.scope = this;
-                aFunc.identifier = i + LeuterperCompiler.STANDARD_FUNCTIONS;
+                aFunc.identifier = funcIdentifierCounter;
+                funcIdentifierCounter++;
                 aFunc.secondPass();
             }
 
@@ -228,7 +186,7 @@ namespace Leuterper.Constructions
             {
                 if (v.initialValue != null)
                 {
-                    Var var = new Var(v.line, v.name);
+                    VarAccess var = new VarAccess(v.line, v.name);
                     this.actions.Insert(assignations, new Assignment(v.line, var, v.initialValue));
                     assignations++;
                 }
@@ -264,6 +222,21 @@ namespace Leuterper.Constructions
                 anAction.generateCode(compiler);
             }
 
+        }
+
+        public List<Definition_Class> getClasses()
+        {
+            return this.classes.toList();
+        }
+
+        public List<Declaration_Var> getVars()
+        {
+            return this.vars;
+        }
+
+        public List<LAction> getActions()
+        {
+            return this.actions;
         }
 
 

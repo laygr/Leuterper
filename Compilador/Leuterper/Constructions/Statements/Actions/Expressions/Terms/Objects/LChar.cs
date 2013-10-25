@@ -9,10 +9,10 @@ namespace Leuterper.Constructions
     class LChar : LObject
     {
         char value;
-
+        new public static LType type = new LType("Char");
         public LChar(int line, String aChar) : base(line)
         {
-            aChar = aChar.Substring(1, aChar.Length - 1);
+            aChar = aChar.Substring(1, aChar.Length - 2);
             if(aChar.Length == 1)
             {
                 this.value = aChar[0];

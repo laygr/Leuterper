@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,25 @@ namespace Leuterper.Constructions
                 if (a is Declaration_Var) this.vars.Add((Declaration_Var) a );
             }
             this.scopeManager = new ScopeManager(this);
+
+            for (int i = 0; i < this.parameters.Count(); i++)
+            {
+                Parameter p = this.parameters[i];
+                this.vars.Insert(i, new Declaration_Var(this.line, p.type, p.name));
+            }
+
+            if (this.line != 0)
+            {
+                SortedList<string, string> names = new SortedList<string, string>();
+                foreach (Declaration_Var v in this.vars)
+                {
+                    if (names.ContainsValue(v.name))
+                    {
+                        throw new SemanticErrorException("Variable redeclared: " + v.name, v.line);
+                    }
+                    names.Add(v.name, v.name);
+                }
+            }
         }
 
         public bool HasSameSignatureAs(Definition_Function otherElement)
@@ -62,6 +82,12 @@ namespace Leuterper.Constructions
             return String.Format("{0} {1} {2}", this.type.SignatureAsString(), this.name, Parameter.listOfParametersAsString(this.parameters));
         }
 
+        public bool isCompatibleWithNameAndTypes(string name, List<LType> types)
+        {
+            if (!this.name.Equals(name)) return false;
+            return LType.listOfTypesAreCompatible(Parameter.listOfParametersAsListOfTypes(this.parameters), types);
+
+        }
         public bool matchesWithNameAndTypes(string name, List<LType> types)
         {
             if (!this.name.Equals(name)) return false;
@@ -70,12 +96,6 @@ namespace Leuterper.Constructions
 
         public override void secondPass()
         {
-            for(int i = 0; i < this.parameters.Count(); i++)
-            {
-                Parameter p = this.parameters[i];
-                this.vars.Insert(i, new Declaration_Var(this.line, p.type, p.name));
-            }
-
             for(int i = 0; i < this.parameters.Count(); i++)
             {
                 Parameter p = this.parameters[i];
@@ -94,7 +114,7 @@ namespace Leuterper.Constructions
             {
                 if (v.initialValue != null)
                 {
-                    Var var = new Var(v.line, v.name);
+                    VarAccess var = new VarAccess(v.line, v.name);
                     this.actions.Insert(assignations, new Assignment(v.line, var, v.initialValue));
                     assignations++;
                 }

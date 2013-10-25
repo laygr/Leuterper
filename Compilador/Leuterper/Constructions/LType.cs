@@ -20,7 +20,7 @@ namespace Leuterper.Constructions
         }
 
         public LType(String name, List<Wild_Type> typeVariables)
-            : this(name, typeVariables, LObject.type)
+            : this(name, typeVariables, null)
         { }
 
         public LType(String name)
@@ -63,6 +63,16 @@ namespace Leuterper.Constructions
             return String.Format("{0}", this.name);
         }
 
+        public static Boolean listOfTypesAreCompatible(List<LType> a, List<LType> b)
+        {
+            if (a.Count() != b.Count()) return false;
+            for (int i = 0; i < b.Count(); i++)
+            {
+                if (!b[i].TypeOrSuperTypeMatchWith(a[i])) return false;
+            }
+            return true;
+        }
+
         public static Boolean listOfTypesMatch(List<LType> a, List<LType> b)
         {
             if (a.Count() != b.Count()) return false;
@@ -71,6 +81,30 @@ namespace Leuterper.Constructions
                 if (!a[i].MatchesWith(b[i])) return false;
             }
             return true;
+        }
+
+        public int getIndexOfAttribute(string attributeName)
+        {
+            return 0;
+        }
+
+        public static Parameter typeToParameter(LType t)
+        {
+            return new Parameter(t, "");
+        }
+        public static List<Parameter> typesToParameters(List<LType> types)
+        {
+            return types.ConvertAll(new Converter<LType, Parameter>(typeToParameter));
+        }
+
+        public static String listOfTypesAsString(List<LType> types)
+        {
+            string result = "";
+            foreach(LType t in types)
+            {
+                result += t.SignatureAsString() + ", ";
+            }
+            return result;
         }
     }
 }

@@ -1,39 +1,20 @@
-0
 2
-2
-16
-push 0
-jmpf 12
-push 6
-push 7
-call 4
-push 1
-jmpf 11
-push 6
-push 7
-call 4
-jmpt 5
-jmpt 0
-push 6
-push 7
-callp 4
-rtn
 1
-8
+2
+2
+2
+0
+1
+7
 push 2
-ass 4
+get 0
+get 0
+ass 1
 push 3
-ass 5
-push 4
-push 5
-callp 20
-ass 5
-8
+push 3
+call 20
 4
-Boolean 1
-Boolean 1
-Number 3
-Number 4
+0
 2
 callp 17
 call 21

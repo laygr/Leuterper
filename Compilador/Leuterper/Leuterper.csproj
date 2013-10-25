@@ -54,16 +54,17 @@
     <Compile Include="Constructions\Statements\Actions\Expressions\Calls\Call_Method.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Expression.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Constructor.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Vars\LAttributeAccess.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\LAttributeAccess.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LBoolean.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Term.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Vars\Var.cs" />
+    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\VarAccess.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LChar.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LList.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LNumber.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LObject.cs" />
     <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LString.cs" />
     <Compile Include="Constructions\Statements\Actions\Return_From_Block.cs" />
+    <Compile Include="Constructions\Statements\LSet.cs" />
     <Compile Include="Constructions\WildType.cs" />
     <Compile Include="Constructions\Statements\Actions\Declarations\Declaration.cs" />
     <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_LAttribute.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IScopable.cs" />
     <Compile Include="ScopeManager.cs" />
+    <Compile Include="StandardLibrary.cs" />
     <Compile Include="UniquesList.cs" />
   </ItemGroup>
   <ItemGroup>

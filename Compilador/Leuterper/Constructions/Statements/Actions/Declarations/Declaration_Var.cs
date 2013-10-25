@@ -38,6 +38,7 @@ namespace Leuterper.Constructions
                 this.initialValue.scope = this.scope;
                 this.initialValue.shouldBePushedToStack = true;
             }
+            this.type = this.scope.GetScopeManager().getClassForType(this.type).type;
         }
         override public void generateCode(LeuterperCompiler compiler)
         {

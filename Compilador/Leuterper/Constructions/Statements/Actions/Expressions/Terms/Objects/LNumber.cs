@@ -27,7 +27,10 @@ namespace Leuterper.Constructions
                 }
             }
         }
-
+        override public LType getType()
+        {
+            return type;
+        }
         public override string encodeAsString()
         {
             return String.Format("{0}", this.value);

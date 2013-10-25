@@ -31,19 +31,11 @@ namespace Leuterper.Constructions
             return p.type;
         }
 
-        public static Parameter typeToParameter(LType t)
-        {
-            return new Parameter(t, "");
-        }
+        
 
         public static List<LType> listOfParametersAsListOfTypes(List<Parameter>parameters)
         {
             return parameters.ConvertAll(new Converter<Parameter, LType>(parameterToType));
-        }
-
-        public static List<Parameter> typesToParameter(List<LType> types)
-        {
-            return types.ConvertAll(new Converter<LType, Parameter>(typeToParameter));
         }
 
         public static String listOfParametersAsString(List<Parameter> parameters)

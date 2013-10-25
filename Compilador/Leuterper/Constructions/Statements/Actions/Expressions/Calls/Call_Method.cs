@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,24 @@ namespace Leuterper.Constructions
         {
             this.arguments.Insert(0, theObject);
             base.secondPass();
+        }
+
+        public override int getFunctionIdentifier()
+        {
+            Definition_Method m = this.getMethodWithNameAndTypes();
+
+           if(m == null)
+           {
+               String errorMessage = String.Format("Called an undefined method\n\tName: {0}\n\tParameters: {1}", this.functionName, LType.listOfTypesAsString(Expression.expressionsToTypes(this.arguments)));
+               throw new SemanticErrorException(errorMessage, this.line);
+           }
+            return m.identifier;
+        }
+        public Definition_Method getMethodWithNameAndTypes ()
+        {
+            LType calleeType = theObject.getType();
+            Definition_Class typesClass = this.scope.GetScopeManager().getClassForType(calleeType);
+            return typesClass.getMethodWithNameAndTypes(this.functionName, Expression.expressionsToTypes(this.arguments));
         }
 
     }

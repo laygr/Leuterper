@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,6 +47,10 @@ namespace Leuterper.Constructions
         public override void generateCode(LeuterperCompiler compiler)
         {
             int index = this.scope.GetScopeManager().getIndexOfVarNamed("this");
+            if(index == -1)
+            {
+                throw new SemanticErrorException("This missplaced", this.line);
+            }
             if (this.shouldBePushedToStack)
             {
                 compiler.addAction(new MachineInstructions.Push(index));

@@ -11,7 +11,6 @@ namespace Leuterper.Constructions
         public static LType type = new LType("Object");
         public static int literalsCounter = 0;
         public int literalIndex;
-
         public LObject(int line) : base(line)
         {
             this.literalIndex = literalsCounter;

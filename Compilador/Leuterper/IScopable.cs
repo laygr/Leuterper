@@ -13,7 +13,6 @@ namespace Leuterper
         ScopeManager GetScopeManager();
         List<Declaration_Var> getVars(); //vars including parameters
         List<LAction> getActions();
-
         Program getProgram();
         
         

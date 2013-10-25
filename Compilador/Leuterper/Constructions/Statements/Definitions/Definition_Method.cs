@@ -14,6 +14,10 @@ namespace Leuterper.Constructions
             set;
         }
 
+        public Definition_Method(int line, LType type, String name, List<Parameter> parameters, List<LAction> actions, int identifier) : this(line, type, name, parameters, actions)
+        {
+            this.identifier = identifier;
+        }
         public Definition_Method(int line, LType type, String name, List<Parameter> parameters, List<LAction> actions)
             : base(line, type, name, parameters, actions)
         {

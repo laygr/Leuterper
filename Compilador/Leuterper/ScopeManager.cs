@@ -46,10 +46,7 @@ namespace Leuterper
                 return parentScope.GetScopeManager().getIndexOfVarNamed(name);
             }
 
-            Console.WriteLine(String.Format("Using undeclared var {0}", name));
-            Console.ReadKey();
-            Environment.Exit(0);
-            return 0;
+            return -1;
         }
         public Declaration_Var getVarNamed(string name)
         {
@@ -67,10 +64,7 @@ namespace Leuterper
         {
             return this.getFunctionForGivenNameAndArguments(name, arguments).identifier;
         }
-        public LType expresionToType(Expression e)
-        {
-            return e.getType();
-        }
+        
 
         public Definition_Function getFunctionForGivenNameAndTypes(string name, List<LType> types)
         {
@@ -79,12 +73,20 @@ namespace Leuterper
 
         public Definition_Function getFunctionForGivenNameAndArguments(string name, List<Expression> arguments)
         {
-            return this.getFunctionForGivenNameAndTypes(name, arguments.ConvertAll(new Converter<Expression, LType>(expresionToType)));
+            return this.getFunctionForGivenNameAndTypes(name, Expression.expressionsToTypes(arguments));
         }
 
-        Definition_Class getClassForType(LType type)
+        public Definition_Class getClassForType(LType type)
         {
             foreach (Definition_Class aClassD in this.scopable.getProgram().getClasses())
+            {
+                if (aClassD.type.MatchesWith(type))
+                {
+                    return aClassD;
+                }
+            }
+
+            foreach(Definition_Class aClassD in StandardLibrary.specialClasses)
             {
                 if (aClassD.type.MatchesWith(type))
                 {
