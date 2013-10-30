@@ -5,3 +5,13 @@ Regresar el metodo/funcion mas bajo (cercano al tipo dado)
 Top level actions
 count global variables
 count max variables in function
+
+
+
+Validaciones:
+	Variables y accesos solos no deben de dejar basura en el stack.
+
+
+
+Reinstanciacion:
+type -> class -> attributes, methods

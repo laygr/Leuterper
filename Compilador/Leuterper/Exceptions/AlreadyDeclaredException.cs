@@ -8,7 +8,12 @@ namespace Leuterper.Exceptions
 {
     class SemanticErrorException : Exception
     {
-        public int line { get; set; }
+        private string p1;
+        private Constructions.LType lType;
+        private Constructions.LType newType;
+        private int p2;
+
+        private int line;
         public SemanticErrorException()
     {
     }

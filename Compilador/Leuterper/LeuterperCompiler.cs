@@ -12,8 +12,7 @@ namespace Leuterper
     class LeuterperCompiler
     {
         public static int STANDARD_CLASES = 5;
-        public static int STANDARD_FUNCTIONS = Program.specialFunctions.Count();
-
+        public static int STANDARD_PROCEDURES = 20;
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
@@ -21,26 +20,30 @@ namespace Leuterper
         public int globalVariablesCounter;
         public int mostVaribalesInAFunction;
 
-        public bool compilingTopLevelActions;
+        public bool compilingTopLeveIActions;
+
+        public int classesCounter = STANDARD_CLASES;
+        private int proceduresCounter = STANDARD_PROCEDURES;
 
         public List<int> classDefinitions;
         public List<int> functionsParameters;
         public List<List<MachineInstruction>> functionActions;
         public List<MachineInstructions.Literal> literals;
-        public List<MachineInstructions.MachineInstruction> topLevelActions;
+        public List<MachineInstructions.MachineInstruction> topLeveIActions;
 
 
         public LeuterperCompiler(String filePath)
         {
             this.globalVariablesCounter = 0;
             this.mostVaribalesInAFunction = 3;
-            this.compilingTopLevelActions = false;
+            this.compilingTopLeveIActions = false;
+
 
             this.classDefinitions = new List<int>();
             this.functionsParameters = new List<int>();
             this.functionActions = new List<List<MachineInstruction>>();
             this.literals = new List<MachineInstructions.Literal>();
-            this.topLevelActions = new List<MachineInstruction>();
+            this.topLeveIActions = new List<MachineInstruction>();
 
             this.filePath = filePath;
         }
@@ -48,12 +51,12 @@ namespace Leuterper
         public void compile()
         {
             parse();
-            program.secondPass();
-            //program.GetScopeManager().validate();
-            int i = Program.specialFunctions.Count();
+            program.secondPass(this);
+            program.thirdPass();
+            //program.getScopeManager().validate();
             program.generateCode(this);
             printGeneratedCode();
-
+            printSymbols();
 
         }
         public void parse()
@@ -93,7 +96,7 @@ namespace Leuterper
             StreamWriter writer = new StreamWriter("out.txt");
 
             writer.WriteLine(this.classDefinitions.Count());
-            for (int i = 0; i < this.classDefinitions.Count(); i++ )
+            for (int i = 0; i < this.classDefinitions.Count(); i++)
             {
                 writer.WriteLine(this.classDefinitions[i]);
             }
@@ -119,8 +122,8 @@ namespace Leuterper
                 writer.WriteLine(literal);
             }
 
-            writer.WriteLine(this.topLevelActions.Count());
-            foreach (MachineInstruction m in this.topLevelActions)
+            writer.WriteLine(this.topLeveIActions.Count());
+            foreach (MachineInstruction m in this.topLeveIActions)
             {
                 writer.WriteLine(m);
             }
@@ -134,9 +137,9 @@ namespace Leuterper
 
         public void addAction(MachineInstruction action)
         {
-            if (this.compilingTopLevelActions)
+            if (this.compilingTopLeveIActions)
             {
-                this.topLevelActions.Add(action);
+                this.topLeveIActions.Add(action);
             }
             else
             {
@@ -156,8 +159,32 @@ namespace Leuterper
             this.literals.Add(literal);
         }
 
+        public void assignIdentifierToClass(LClass c)
+        {
+            if (c is LClassSpecial) return;
+
+            c.identifier = this.classesCounter;
+            this.classesCounter++;
+        }
+        public void assignIdentifierToProcedure(Procedure p)
+        {
+            if (p is FunctionSpecial || p is MethodSpecial) return;
+
+            p.identifier = this.proceduresCounter;
+            this.proceduresCounter++;
+        }
+
+        public void printSymbols()
+        {
+            Console.WriteLine("Classes:");
+            this.program.classes.ForEach(c => Console.WriteLine(c));
+            Console.WriteLine("Functions:");
+            this.program.functions.ForEach(f => Console.WriteLine(f));
+        }
+
         public static void Main(String[] args)
         {
+            StandardLibrary.initializeStandardLibrary();
             try
             {
                 Console.WriteLine("Introduzca el nombre del archivo a compilar.");

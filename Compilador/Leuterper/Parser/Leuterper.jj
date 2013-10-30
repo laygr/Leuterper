@@ -5,7 +5,9 @@ PARSER_BEGIN(TheParser)
   using System;
   using System.IO;
   using System.Collections.Generic;
+  using Leuterper;
   using Leuterper.Constructions;
+  using Leuterper.Exceptions;
 
   // A few nested classes to make things simpler
   class TheParser{
@@ -16,45 +18,33 @@ PARSER_END(TheParser)
 
 public Program parse_Program() :
 {
-	List<Statement> statements = new List<Statement>();
+	List<LClass> classes = new List<LClass>();
+	List<Function> functions = new List<Function>();
+	List<IAction> actions = new List<IAction>();
 }
 {
-	parse_Statements(statements)
+	parse_Classes(classes);
+	parse_Functions(functions);
+	parse_IActions(actions);
 
-	{ return new Program(statements); }
-}
-
-public Definition parse_Definition() :
-{
-	Definition definition;
-}
-{
-	(
-		LOOKAHEAD(parse_Definition_Function())
-		definition = parse_Definition_Function()
-		|
-		definition = parse_Definition_Method()
-		|
-		definition = parse_Definition_Class()
-	)
-	{ return definition; }
+	{ return new Program(classes, functions, actions); }
 }
 
 public Definition_Function parse_Definition_Function() :
 {
 	LType type;
 	Token id;
-	List<Parameter> parameters = new List<Parameter>();
-	List<LAction> actions = new List<LAction>();
+	List<Declaration_Parameter> parameters = new List<Declaration_Parameter>();
+	List<IAction> actions = new List<IAction>();
 }
 {
 	type = parse_LType()
-	id = <ID>
+	id = parse_SID()
 	<LP>
 	parse_Parameters(parameters)
 	<RP>
 	<LC>
-	parse_LActions(actions)
+	parse_IActions(actions)
 	<RC>
 	{ return new Definition_Function(id.beginLine, type, id.image, parameters, actions); }
 }
@@ -63,8 +53,8 @@ public Definition_Class parse_Definition_Class() :
 {
 	LType type;
 	LType declarationInheritance = null;
-	List<Declaration_LAttribute> attributesDeclarations = new List<Declaration_LAttribute>();
-	List<Definition_Method> methodsDefinitions = new List<Definition_Method>();
+	List<Declaration_Attribute> attributesDeclarations = new List<Declaration_Attribute>();
+	List<Class_Procedure> classProcedures = new List<Class_Procedure>();
 	Token c;
 }
 {
@@ -72,50 +62,63 @@ public Definition_Class parse_Definition_Class() :
 	type = parse_LType()
 	[declarationInheritance = parse_Declaration_Inheritance()]
 	<LC>
-	parse_Declaration_LAttributes(attributesDeclarations)
-	parse_Definition_Methods(methodsDefinitions)
+	parse_Declaration_Attributes(attributesDeclarations)
+	parse_Class_Procedures(classProcedures)
 	<RC>
-	{ return new Definition_Class(c.beginLine, type, declarationInheritance, attributesDeclarations, methodsDefinitions); }
+	{ return new Definition_Class(c.beginLine, type, declarationInheritance, attributesDeclarations, classProcedures); }
 }
 
-public void parse_Definition_Methods(List<Definition_Method> methodsDefinitions) :
+public void parse_Class_Procedures(List<Class_Procedure> classProcedures) :
 {
-	Definition_Method methodDefinition;
+	Class_Procedure classProcedure;
 }
 {
 	(
-		methodDefinition = parse_Definition_Method() { methodsDefinitions.Add(methodDefinition); }
+		LOOKAHEAD(parse_Definition_Method())
+		classProcedure = parse_Definition_Method() { classProcedures.Add(classProcedure); }
+		|
+		classProcedure = parse_Definition_Constructor() { classProcedures.Add(classProcedure); }
 	)*
+}
+
+public Definition_Constructor parse_Definition_Constructor() :
+{
+	Token id;
+	List<Declaration_Parameter> parameters = new List<Declaration_Parameter>();
+	List<IAction> actions = new List<IAction>();
+}
+{
+	id = parse_BID()
+	<LP>
+	parse_Parameters(parameters)
+	<RP>
+	<LC>
+	parse_IActions(actions)
+	<RC>
+	{ return new Definition_Constructor(id.beginLine, id.image, parameters, actions); }
 }
 
 public Definition_Method parse_Definition_Method() :
 {
 	LType type = null;
 	Token id;
-	List<Parameter> parameters = new List<Parameter>();
-	List<LAction> actions = new List<LAction>();
+	List<Declaration_Parameter> parameters = new List<Declaration_Parameter>();
+	List<IAction> actions = new List<IAction>();
 }
 {
 
+	type = parse_LType()
 	(
-		LOOKAHEAD(parse_LType() <LP> )
-		id = <ID>
-		|
-		(
-			type = parse_LType()
-			(
-				id = <ID>
-			|
-				id = <SYMBOLS>
-			)
-		)
+		id = parse_BID()
+	|
+		id = <SYMBOLS>
 	)
 	
 	<LP>
 	parse_Parameters(parameters)
 	<RP>
 	<LC>
-	parse_LActions(actions)
+	parse_IActions(actions)
 	<RC>
 	{ return new Definition_Method(id.beginLine, type, id.image, parameters, actions); }
 }
@@ -131,18 +134,18 @@ public LType parse_Declaration_Inheritance() :
 	{ return type; }
 }
 
-public void parse_Declaration_LAttributes(List<Declaration_LAttribute> attributesDeclarations) :
+public void parse_Declaration_Attributes(List<Declaration_Attribute> attributesDeclarations) :
 {
-	Declaration_LAttribute attributeDeclaration;
+	Declaration_Attribute attributeDeclaration;
 }
 {
 	(
-		LOOKAHEAD(parse_Declaration_LAttribute())
-		attributeDeclaration = parse_Declaration_LAttribute() { attributesDeclarations.Add(attributeDeclaration); }
+		LOOKAHEAD(parse_Declaration_Attribute())
+		attributeDeclaration = parse_Declaration_Attribute() { attributesDeclarations.Add(attributeDeclaration); }
 	)*
 }
 
-public Declaration_LAttribute parse_Declaration_LAttribute() :
+public Declaration_Attribute parse_Declaration_Attribute() :
 {
 	LType type;
 	Token id;
@@ -150,14 +153,9 @@ public Declaration_LAttribute parse_Declaration_LAttribute() :
 }
 {
 	type = parse_LType()
-	id = <ID>
-	(
-		<ASS>
-		expression = parse_Expression()
-		<SC> { return new Declaration_LAttribute(id.beginLine, type, id.image, expression); }
-		|
-		<SC>{ return new Declaration_LAttribute(id.beginLine, type, id.image); }
-	)
+	id = parse_SID()
+	<SC>
+	{ return new Declaration_Attribute(id.beginLine, type, id.image); }
 }
 
 public Declaration_Var parse_Declaration_Var() :
@@ -168,42 +166,62 @@ public Declaration_Var parse_Declaration_Var() :
 }
 {
 	type = parse_LType()
-	id = <ID>
+	id = parse_SID()
 	(
 		<ASS>
-		expression = parse_Expression() { return new Declaration_Var(id.beginLine, type, id.image, expression); }
+		expression = parse_Expression()
+		<SC>
+		{ return new Declaration_Var(id.beginLine, type, id.image, expression); }
 		|
+		<SC>
 		{ return new Declaration_Var(id.beginLine, type, id.image); }
 	)
 }
 
+public Token parse_BID() :
+{
+	Token id;
+}
+{
+	id = <BID>
+	{
+		return id;
+	}
+}
+
+public Token parse_SID() :
+{
+	Token id;
+}
+{
+	id = <SID>
+	{
+		return id;
+	}
+}
+
 public Assignment parse_Assignment() :
 {
-	Var lhs;
+	VarAccess lhs;
 	Expression rhs;
 	Token ass;
 }
 {
-	lhs = parse_Var()
+	lhs = parse_VarAccess()
 	ass = <ASS>
 	rhs = parse_Expression()
 	{ return new Assignment(ass.beginLine, lhs, rhs); }
 }
 
-public LAction parse_LAction() :
+public Statement parse_IAction() :
 {
-	LAction action;
+	Statement action;
 }
 {
 	(
 		LOOKAHEAD(parse_LSet())
 		(
 			action = parse_LSet() <SC>
-		)
-		|
-		LOOKAHEAD(parse_Declaration_Var())
-		(
-			action = parse_Declaration_Var() <SC>
 		)
 		|
 		LOOKAHEAD(parse_Assignment())
@@ -277,6 +295,8 @@ public Expression parse_GExpression() :
 			expression = parse_Call_Function()
 		)
 		|
+			expression = parse_Call_Constructor()
+		|
 		LOOKAHEAD(parse_Term())
 		(
 			expression = parse_Term()
@@ -306,13 +326,13 @@ public Expression parse_CExpression() :
 			LOOKAHEAD(parse_Call_Method(ground))
 			ground = parse_Call_Method(ground)
 			|
-			ground = parse_LAttributeAccess(ground)
+			ground = parse_AttributeAccess(ground)
 		)
 	)+
 	{ return ground; }
 }
 
-public LAttributeAccess parse_AAExpression() :
+public AttributeAccess parse_AAExpression() :
 {
 	Expression ground;
 }
@@ -323,35 +343,35 @@ public LAttributeAccess parse_AAExpression() :
 			LOOKAHEAD(parse_Call_Method(ground))
 			(
 				ground = parse_Call_Method(ground)
-				ground = parse_LAttributeAccess(ground)
+				ground = parse_AttributeAccess(ground)
 			)
 			|
-			ground = parse_LAttributeAccess(ground)
+			ground = parse_AttributeAccess(ground)
 		)
 	)+
-	{ return (LAttributeAccess) ground; }
+	{ return (AttributeAccess) ground; }
 }
 
 public LSet parse_LSet() :
 {
-	LAttributeAccess lhs;
+	AttributeAccess lhs;
 	Expression rhs;
 }
 {
 	lhs = parse_AAExpression()
 	<ASS>
 	rhs = parse_Expression()
-	{ return new LSet(lhs.line, lhs, rhs); }
+	{ return new LSet(lhs.getLine(), lhs, rhs); }
 }
 
-public LAttributeAccess parse_LAttributeAccess(Expression theObject) :
+public AttributeAccess parse_AttributeAccess(Expression theObject) :
 {
 	
 	Token attributeName;
 }
 {
 	<DOT>
-	attributeName = <ID> {  return new LAttributeAccess(attributeName.beginLine, theObject, attributeName.image); }
+	attributeName = parse_SID() {  return new AttributeAccess(attributeName.beginLine, theObject, attributeName.image); }
 }
 
 public Call_Function parse_Call_Function() :
@@ -360,7 +380,7 @@ public Call_Function parse_Call_Function() :
 	List<Expression> arguments = new List<Expression>();
 }
 {
-	id = <ID>
+	id = parse_SID()
 	<LP>
 	parse_Arguments(arguments)
 	<RP>
@@ -378,7 +398,7 @@ public Call_Method parse_Call_Method(Expression theObject) :
 	(
 		(
 			<DOT>
-			methodId = <ID>
+			methodId = parse_SID()
 			<LP>
 			parse_Arguments(arguments)
 			<RP>
@@ -399,60 +419,35 @@ public Term parse_Term() :
 }
 {
 	(
-		LOOKAHEAD(parse_Var())
-		term = parse_Var()
+		LOOKAHEAD(parse_VarAccess())
+		term = parse_VarAccess()
 		|
 		term = parse_LObject()
-		|
-		term = parse_Constructor()
-		|
-		term = parse_This()
 	)
 
 	{ return term; }
 }
 
-public This parse_This() :
-{ 
-	Token lthis;
-}
-{
-	lthis = <THIS> { return new This(lthis.beginLine); }
-}
-
-public Var parse_Var() :
-{
-	Var var;
-	This aThis;
-}
-{
-	(
-		var = parse_SimpleVar()
-	)
-	{ return var; }
-}
-
-public Var parse_SimpleVar() :
+public VarAccess parse_VarAccess() :
 {
 	Token id;
 }
 {
-	id = <ID> { return new Var(id.beginLine, id.image); }
+	id = parse_SID() { return new VarAccess(id.beginLine, id.image); }
 }
 
-public Constructor parse_Constructor() :
+public Call_Constructor parse_Call_Constructor() :
 {
-	Token tokenForLine;
-	LType aType;
+	LType type;
 	List<Expression> arguments = new List<Expression>();
 }
 {
-	tokenForLine = <NEW>
-	aType = parse_LType()
+	<NEW>
+	type = parse_LType()
 	<LP>
 	parse_Arguments(arguments)
 	<RP>
-	{ return new Constructor(tokenForLine.beginLine, aType, arguments); }
+	{ return new Call_Constructor(type.getLine(), type, arguments); }
 }
 
 public LObject parse_LObject() :
@@ -520,23 +515,25 @@ public LList parse_LList() :
 	Token lb;
 }
 {
-	type = parse_LType()
-	lb = <LB>
+	
+	lc = <LB>
 	parse_Arguments(elements)
 	<RB>
+	<C>
+	type = parse_LType()
 	{ return new LList(lb.beginLine, type, elements); }
 }
 
 public Loop_Do_While parse_Loop_Do_While() :
 {
-	List<LAction> actions = new List<LAction>();
+	List<IAction> actions = new List<IAction>();
 	Expression expression;
 	Token ldo;
 }
 {
 	ldo = <DO>
 	<LC>
-	parse_LActions(actions)
+	parse_IActions(actions)
 	<RC>
 	<WHILE>
 	expression = parse_Expression()
@@ -544,27 +541,27 @@ public Loop_Do_While parse_Loop_Do_While() :
 	{ return new Loop_Do_While(ldo.beginLine, expression, actions); }
 }
 
-public void parse_LActions(List<LAction> actions) :
+public void parse_IActions(List<IAction> actions) :
 {
-	LAction action;
+	IAction action;
 }
 {
 	(
-		action = parse_LAction() { actions.Add(action); }
+		action = parse_IAction() { actions.Add(action); }
 	)*
 }
 
 public Loop_While parse_Loop_While() :
 {
 	Expression expression;
-	List<LAction> actions = new List<LAction>();
+	List<IAction> actions = new List<IAction>();
 	Token lwhile;
 }
 {
 	lwhile = <WHILE>
 	expression = parse_Expression()
 	<LC>
-	parse_LActions(actions)
+	parse_IActions(actions)
 	<RC>
 	{ return new Loop_While(lwhile.beginLine, expression, actions); }
 }
@@ -587,29 +584,29 @@ public Conditional parse_Conditional() :
 public If_Then_Else parse_If_Then_Else() :
 {
 	Expression expression;
-	List<LAction> thenLActions = new List<LAction>();
-	List<LAction> elseLActions = new List<LAction>();
+	List<IAction> thenIActions = new List<IAction>();
+	List<IAction> elseIActions = new List<IAction>();
 	Token lif;
 }
 {
 	lif = <IF>
 	expression = parse_Expression()
 	<LC>
-	parse_LActions(thenLActions)
+	parse_IActions(thenIActions)
 	<RC>
 	[
 		<ELSE>
 		<LC>
-		parse_LActions(elseLActions)
+		parse_IActions(elseIActions)
 		<RC>
 	]
 
-	{ return new If_Then_Else(lif.beginLine, expression, thenLActions, elseLActions); }
+	{ return new If_Then_Else(lif.beginLine, expression, thenIActions, elseIActions); }
 }
 
-public void parse_Parameters(List<Parameter> parameters) :
+public void parse_Parameters(List<Declaration_Parameter> parameters) :
 {
-	Parameter parameter;
+	Declaratino_Parameter parameter;
 }
 {
 	[
@@ -630,75 +627,30 @@ public LVoid parse_Null() :
 }
 
 
-public Parameter parse_Parameter() :
+public Declaration_Parameter parse_Parameter() :
 {
 	LType type;
 	Token id;
 }
 {
 	type = parse_LType()
-	id = <ID>
-	{ return new Parameter(type, id.image); }	
+	id = parse_SID()
+	{ return new Declaration_Parameter(id.beginLine, type, id.image); }	
 }
 
 public LType parse_LType() :
 {
-	LType type;
-}
-{
-	(
-		LOOKAHEAD(parse_LType_Generic())
-		type = parse_LType_Generic()
-		|
-		type = parse_LType_Simple()
-	)
-
-	{ return type; }
-}
-
-public LType parse_LType_Simple() :
-{
 	Token id;
+	List<LType> typeVariables = new List<LType>();
 }
 {
-	id = <ID>
-	{ return new LType(id.image); }
-}
-
-public LType parse_LType_Generic() :
-{
-	Token id;
-	List<Wild_Type> wildTypes = new List<Wild_Type>();
-}
-{
-	id = <ID>
-	<LB>
-	parse_Wild_Types(wildTypes)
-	<RB>
-	{ return new LType(id.image, wildTypes); }
-}
-
-public void parse_Wild_Types(List<Wild_Type> wildTypes) :
-{
-	Wild_Type wildType;
-}
-{
+	id = parse_BID()
 	[
-		wildType = parse_Wild_Type() { wildTypes.Add(wildType); }
-		(
-			<COMMA>
-			wildType = parse_Wild_Type() { wildTypes.Add(wildType); }
-		)*
+		<LB>
+		parse_LTypes(typeVariables)
+		<RB>
 	]
-}
-
-public Wild_Type parse_Wild_Type() :
-{
-	Token wildType;
-}
-{
-	wildType = <ID>
-	{ return new Wild_Type(wildType.image); }
+	{ return new LType(id.beginLine, id.image, typeVariables); }
 }
 
 public void parse_LTypes(List<LType> types) :
@@ -733,10 +685,14 @@ public Statement parse_Statement() :
 {
 
 	(	
-		LOOKAHEAD(parse_LAction())
-		statement = parse_LAction()
+		statement = parse_Definition_Class()
 		|
-		statement = parse_Definition()
+		LOOKAHEAD(parse_Definition_Function())
+		statement = parse_Definition_Function()
+		|
+		statement = parse_Declaration_Var()
+		|
+		statement = parse_IAction()
 	)
 	{ return statement; }
 }
@@ -762,6 +718,8 @@ TOKEN :
 	|
 	<ASS: "=">
 	|
+	<C: ":">
+	|
 	<SC: ";">
 	|
 	<COMMA: ",">
@@ -784,8 +742,6 @@ TOKEN :
 	|
 	<RTN: "return">
 	|
-	<THIS: "this">
-	|
 	<WHILE: "while">
 	|
 	<BOOL: ("true" | "false")>
@@ -795,7 +751,9 @@ TOKEN :
 
 TOKEN :
 {
-	<ID: <L>(<L>|<D>)* >
+	<BID: <BL>(<L>|<D>)*>
+	|
+	<SID: <SL>(<L>|<D>)* >
 	|
 	< SYMBOLS: (<S>)+ >
 }
@@ -805,6 +763,10 @@ TOKEN :
 	<D: ["0"-"9"]>
 	|
 	<L: ["a"-"z","A"-"Z","_"]>
+	|
+	<BL: ["A"-"Z"]>
+	|
+	<SL: ["a"-"z"]>
 	|
 	<S: ("==" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
 	|

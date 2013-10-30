@@ -1,23 +1,13 @@
-class Foo
+class Matrix[X]
 {
-	Bar x;
+	List[List[X]] rows;
 
-	Number hola(Foo b)
+	X getElement(Number row, Number column)
 	{
-		
+		return this.rows.get(row).get(column);
 	}
-}
-
-class Bar inherits Foo
-{
-	Number y;
 }
 
 Void main(String args)
 {
-	Object a;
-	Foo f;
-	a = f.x.y;
-	Bar bar;
-	bar.hola(bar);
 }

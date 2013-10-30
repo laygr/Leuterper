@@ -1,20 +1,10 @@
-2
 1
-2
-2
-2
+1
+1
+1
 0
-1
-7
-push 2
-get 0
-get 0
-ass 1
-push 3
-push 3
+3
+0
+2
+callp 18
 call 20
-4
-0
-2
-callp 17
-call 21

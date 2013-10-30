@@ -10,28 +10,31 @@ public class TheParserConstants {
   public const int LB = 12;
   public const int RB = 13;
   public const int ASS = 14;
-  public const int SC = 15;
-  public const int COMMA = 16;
-  public const int DOT = 17;
-  public const int CLASS = 18;
-  public const int DO = 19;
-  public const int ELSE = 20;
-  public const int INH = 21;
-  public const int IF = 22;
-  public const int NULL = 23;
-  public const int NEW = 24;
-  public const int RTN = 25;
-  public const int THIS = 26;
+  public const int C = 15;
+  public const int SC = 16;
+  public const int COMMA = 17;
+  public const int DOT = 18;
+  public const int CLASS = 19;
+  public const int DO = 20;
+  public const int ELSE = 21;
+  public const int INH = 22;
+  public const int IF = 23;
+  public const int NULL = 24;
+  public const int NEW = 25;
+  public const int RTN = 26;
   public const int WHILE = 27;
   public const int BOOL = 28;
   public const int NUMBER = 29;
-  public const int ID = 30;
-  public const int SYMBOLS = 31;
-  public const int D = 32;
-  public const int L = 33;
-  public const int S = 34;
-  public const int CHAR = 35;
-  public const int STRING = 36;
+  public const int BID = 30;
+  public const int SID = 31;
+  public const int SYMBOLS = 32;
+  public const int D = 33;
+  public const int L = 34;
+  public const int BL = 35;
+  public const int SL = 36;
+  public const int S = 37;
+  public const int CHAR = 38;
+  public const int STRING = 39;
 
   public const int DEFAULT = 0;
 
@@ -51,6 +54,7 @@ public class TheParserConstants {
     "\"[\"",
     "\"]\"",
     "\"=\"",
+    "\":\"",
     "\";\"",
     "\",\"",
     "\".\"",
@@ -62,14 +66,16 @@ public class TheParserConstants {
     "\"null\"",
     "\"new\"",
     "\"return\"",
-    "\"this\"",
     "\"while\"",
     "<BOOL>",
     "<NUMBER>",
-    "<ID>",
+    "<BID>",
+    "<SID>",
     "<SYMBOLS>",
     "<D>",
     "<L>",
+    "<BL>",
+    "<SL>",
     "<S>",
     "<CHAR>",
     "<STRING>",

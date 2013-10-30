@@ -42,45 +42,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LVoid.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\This.cs" />
-    <Compile Include="Constructions\Statements\Actions\LAction.cs" />
-    <Compile Include="Constructions\Statements\Actions\Assignment.cs" />
-    <Compile Include="Constructions\Statements\Actions\Conditionals\Conditional.cs" />
-    <Compile Include="Constructions\Statements\Actions\Conditionals\If_Then_Else.cs" />
-    <Compile Include="Constructions\Statements\Actions\Conditionals\Loop_Do_While.cs" />
-    <Compile Include="Constructions\Statements\Actions\Conditionals\Loop_While.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Calls\Call_Function.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Calls\Call_Method.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Expression.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Constructor.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\LAttributeAccess.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LBoolean.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Term.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\VarAccess.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LChar.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LList.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LNumber.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LObject.cs" />
-    <Compile Include="Constructions\Statements\Actions\Expressions\Terms\Objects\LString.cs" />
-    <Compile Include="Constructions\Statements\Actions\Return_From_Block.cs" />
-    <Compile Include="Constructions\Statements\LSet.cs" />
-    <Compile Include="Constructions\WildType.cs" />
-    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration.cs" />
-    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_LAttribute.cs" />
-    <Compile Include="Constructions\Statements\Actions\Declarations\Declaration_Var.cs" />
-    <Compile Include="Constructions\Parameter.cs" />
+    <Compile Include="Constructions\Construction.cs" />
+    <Compile Include="Constructions\Expressions\Calls\Call_Procedure.cs" />
+    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Constructor.cs" />
+    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Class_Procedure.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LVoid.cs" />
+    <Compile Include="Interfaces\IAction.cs" />
+    <Compile Include="Constructions\Assignment.cs" />
+    <Compile Include="Constructions\Conditionals\Conditional.cs" />
+    <Compile Include="Constructions\Conditionals\If_Then_Else.cs" />
+    <Compile Include="Constructions\Conditionals\Loop_Do_While.cs" />
+    <Compile Include="Constructions\Conditionals\Loop_While.cs" />
+    <Compile Include="Constructions\Expressions\Calls\Call_Function.cs" />
+    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Method.cs" />
+    <Compile Include="Constructions\Expressions\Expression.cs" />
+    <Compile Include="Constructions\Expressions\Terms\LAttributeAccess.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LBoolean.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Term.cs" />
+    <Compile Include="Constructions\Expressions\Terms\VarAccess.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LChar.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LList.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LNumber.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LObject.cs" />
+    <Compile Include="Constructions\Expressions\Terms\Objects\LString.cs" />
+    <Compile Include="Constructions\Return_From_Block.cs" />
+    <Compile Include="Constructions\Definitions\Definition_Classes\Definition_Special_Class.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Class_Procedure.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Constructor.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Special_Method.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Definition_Procedure.cs" />
+    <Compile Include="Constructions\LSet.cs" />
+    <Compile Include="Constructions\Class_Declarations\Class_Declaration.cs" />
+    <Compile Include="Constructions\Class_Declarations\Declaration_Attribute.cs" />
+    <Compile Include="Constructions\Declaration_Var.cs" />
+    <Compile Include="Constructions\Class_Declarations\Parameter.cs" />
     <Compile Include="Constructions\Program.cs" />
     <Compile Include="Constructions\LType.cs" />
-    <Compile Include="Constructions\Statements\Definitions\Definition.cs" />
-    <Compile Include="Constructions\Statements\Definitions\Definition_Class.cs" />
-    <Compile Include="Constructions\Statements\Definitions\Definition_Function.cs" />
-    <Compile Include="Constructions\Statements\Definitions\Definition_Method.cs" />
-    <Compile Include="Constructions\Statements\Statement.cs" />
+    <Compile Include="Interfaces\IDeclaration.cs" />
+    <Compile Include="Interfaces\IDefinition.cs" />
+    <Compile Include="Constructions\Definitions\Definition_Classes\Definition_Class.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Definition_Function.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Method.cs" />
+    <Compile Include="Constructions\Definitions\Procedure\Definition_Special_Function.cs" />
+    <Compile Include="Interfaces\IStatement.cs" />
     <Compile Include="Exceptions\AlreadyDeclaredException.cs" />
-    <Compile Include="ICodeGenerator.cs" />
-    <Compile Include="Identifiable.cs" />
-    <Compile Include="MachineInstructions.cs" />
+    <Compile Include="Interfaces\ICompilable.cs" />
+    <Compile Include="Interfaces\Identifiable.cs" />
+    <Compile Include="Interfaces\IScopable.cs" />
+    <Compile Include="Utils\MachineInstructions.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\SimpleCharStream.cs" />
     <Compile Include="Parser\TheParser.cs" />
@@ -90,10 +99,10 @@
     <Compile Include="Parser\TokenMgrError.cs" />
     <Compile Include="LeuterperCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IScopable.cs" />
-    <Compile Include="ScopeManager.cs" />
-    <Compile Include="StandardLibrary.cs" />
-    <Compile Include="UniquesList.cs" />
+    <Compile Include="Interfaces\IScope.cs" />
+    <Compile Include="Utils\ScopeManager.cs" />
+    <Compile Include="Utils\StandardLibrary.cs" />
+    <Compile Include="Utils\UtilFunctions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -102,6 +111,9 @@
   <ItemGroup>
     <Content Include="Parser\csjavacc.jar" />
     <Content Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Constructions\Statements\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
