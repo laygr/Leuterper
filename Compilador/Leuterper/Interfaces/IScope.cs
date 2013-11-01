@@ -7,9 +7,9 @@ using Leuterper.Constructions;
 
 namespace Leuterper
 {
-    interface IScope : IScopable
+    interface IScope
     {
-        ScopeManager getScopeManager();
         List<IDeclaration> getDeclarations();
+        IScope getScope();
     }
 }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Leuterper
 {
-    interface IStatement : ICompilable
+    interface ISignable<X>
     {
+        bool HasSameSignatureAs(X otherElement);
     }
 }

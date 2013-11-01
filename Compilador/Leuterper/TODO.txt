@@ -14,4 +14,4 @@ Validaciones:
 
 
 Reinstanciacion:
-type -> class -> attributes, methods
+type -> class -> LAttributes, methods

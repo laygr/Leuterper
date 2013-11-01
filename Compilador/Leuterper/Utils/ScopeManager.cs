@@ -9,12 +9,7 @@ namespace Leuterper
 {
     class ScopeManager
     {
-        private IScope scope;
-        public ScopeManager(IScope scope)
-        {
-            this.scope = scope;
-        }
-        public int GetIndexOfFirstVarInScope()
+        public static int GetIndexOfFirstVarInScope(IScope scope)
         {
             if (scope.getScope() == null)
             {
@@ -22,71 +17,67 @@ namespace Leuterper
             }
             else
             {
-                return scope.getScope().getScopeManager().GetIndexOfFirstVarInScope() + scope.getScope().getDeclarations().Count();
+                return
+                    ScopeManager.GetIndexOfFirstVarInScope(scope.getScope())
+                    +
+                    scope.getScope().getDeclarations().Count();
             }
         }
-        public int getIndexOfVarNamed(string name)
+        public static int getIndexOfVarNamed(IScope scope, string name)
         {
-            List<IDeclaration> vars = this.scope.getDeclarations();
+            List<IDeclaration> vars = scope.getDeclarations();
             for(int i = 0; i < vars.Count(); i++)
             {
                 if(vars[i].getName().Equals(name))
                 {
-                    return i + scope.getScopeManager().GetIndexOfFirstVarInScope();
+                    return i + ScopeManager.GetIndexOfFirstVarInScope(scope);
                 }
             }
-
-            IScope parentScope = this.getScope().getScope();
+            IScope parentScope = scope.getScope();
             if(parentScope != null)
             {
-                return parentScope.getScopeManager().getIndexOfVarNamed(name);
+                return ScopeManager.getIndexOfVarNamed(parentScope, name);
             }
-
             return -1;
         }
-
-        public Declaration_Var getVarInLineage(string name)
+        public static Declaration getDeclarationLineage(IScope scope, string name)
         {
-            Declaration_Var result = this.getVarNamed(name);
-            if(result == null && this.getScope().getScope() != null)
+            Declaration result = ScopeManager.getDeclarationNamed(scope, name);
+            if(result == null && scope.getScope() != null)
             {
-                return this.getScope().getScope().getScopeManager().getVarNamed(name);
+                return ScopeManager.getDeclarationNamed(scope.getScope(), name);
             }
             return result;
         }
-        public Declaration_Var getVarNamed(string name)
+        public static Declaration getDeclarationNamed(IScope scope, string name)
         {
-            foreach (Declaration_Var var in this.getScope().getDeclarations())
+            foreach (Declaration d in scope.getDeclarations())
             {
-                if (var.getName().Equals(name))
+                if (d.getName().Equals(name))
                 {
-                    return var;
+                    return d;
                 }
             }
             return null;
         }
-
-        int getIndexOfFunctionWithNameAndArguments(string name, List<Expression> arguments)
+        static int getIndexOfFunctionWithNameAndArguments(IScope scope, string name, List<Expression> arguments)
         {
-            return this.getFunctionForGivenNameAndArguments(name, arguments).identifier;
+            return ScopeManager.getFunctionForGivenNameAndArguments(scope, name, arguments).identifier;
         }
-        
-
-        public Function getFunctionForGivenNameAndTypes(string name, List<LType> types)
+        public static Function getFunctionForGivenNameAndTypes(IScope scope, string name, List<LType> types)
         {
-            return this.getProgram().getFunctionForGivenNameAndTypes(name, types);
+            return ScopeManager.getProgram(scope).getFunctionForGivenNameAndTypes(name, types);
         }
 
-        public Function getFunctionForGivenNameAndArguments(string name, List<Expression> arguments)
+        public static Function getFunctionForGivenNameAndArguments(IScope scope, string name, List<Expression> arguments)
         {
-            return this.getFunctionForGivenNameAndTypes(name, Expression.expressionsToTypes(arguments));
+            return ScopeManager.getFunctionForGivenNameAndTypes(scope, name, Expression.expressionsToTypes(arguments));
         }
-
-        public LClass getClassForType(LType type)
+        public static LClass getClassForType(IScope scope, LType type)
         {
             if (type == null) return null;
 
-            foreach (LClass aClassD in this.getProgram().getClasses())
+            foreach (LClass aClassD in ScopeManager.getProgram(scope).getClasses())
             {
                 if (aClassD.getType().getName().Equals(type.getName()))
                 {
@@ -95,108 +86,28 @@ namespace Leuterper
             }
             return null;
         }
+        public static Program getProgram(IScope scope)
+        {
+            if(scope is Program)
+            {
+                return scope as Program;
+            }
+            return ScopeManager.getProgram(scope.getScope());
+        }
 
-        public Program getProgram()
+        public static LClass getClassScope(IScope scope)
         {
-            if(this.scope is Program)
+            if (scope is LClass)
             {
-                return this.scope as Program;
+                return scope as LClass;
             }
-            return this.getScope().getScope().getScopeManager().getProgram();
+            return ScopeManager.getClassScope(scope.getScope());
         }
 
-        public LClass getClassScope()
+        public static LClass getClassForName(IScope scope, String name)
         {
-            if (this.scope is LClass)
-            {
-                return this.scope as LClass;
-            }
-            return this.getScope().getScope().getScopeManager().getClassScope();
-        }
-        /*
-        public void validate()
-        {
-            validateThatOnlyDefinedClassesAreUsed();
-            validateThatOnlyDeclaredVariablesAreUsedAndAreOfTheRightTypeInAssignments();
-            validateThatFunctionCallsUseOnlyDeclaredVariablesAndDefinedFunctions();
-        }
-        void validateThatFunctionCallsUseOnlyDeclaredVariablesAndDefinedFunctions()
-        {
-            List<Call_Function> functionCalls = IAction.GetFunctionCalls(scopable.getActions());
-            
-            foreach(Call_Function f in functionCalls)
-            {
-                String functionName = f.functionName;
-                Definition_Function functionCalled;
-                functionCalled = scopable.getScopeManager().getFunctionForGivenNameAndArguments(f.functionName, f.arguments);
-                
-                if(functionCalled == null)
-                {
-                    Console.WriteLine(String.Format("Called undefined function with signature: {0}", f.functionName +  Parameter.listOfParametersAsString(f.argumentsAsParameters())));
-                    Console.ReadKey();
-                    Environment.Exit(0);
-                }
-            }
-        }
-        void validateThatOnlyDeclaredVariablesAreUsedAndAreOfTheRightTypeInAssignments()
-        {
-            List<Assignment> assignments = IAction.GetAssignments(scopable.getActions());
-            
-            foreach(Assignment a in assignments)
-            {
-                Declaration_Var var = scopable.getScopeManager().getVarNamed(a.lhs.getName());
-                if(var == null)
-                {
-                    Console.WriteLine("Assigning to an undefined var: " + a.lhs.getName());
-                    Console.ReadKey();
-                    Environment.Exit(0);
-                }
-                if(!var.getType().MatchesWith(a.rhs.getType())){
-                    Console.WriteLine("Type mismatch in assignment at line: " + a.getLine());
-                    Console.ReadKey();
-                    Environment.Exit(0);
-                }
-            }
-        }
-        void validateThatOnlyDefinedClassesAreUsed()
-        {
-            List<Declaration> declarations = IAction.GetDeclarations(scopable.getActions());
-            List<LType> definedTypes = scopable.getProgram().getClasses().ConvertAll(new Converter<Definition_Class, LType>(Definition.definitionToType));
-
-            foreach (Declaration d in declarations)
-            {
-                bool match = false;
-                foreach (LType type in definedTypes)
-                {
-                    if (d.getType().MatchesWith(type))
-                    {
-                        match = true;
-                        break;
-                    }
-                }
-                if (!match)
-                {
-                    Console.WriteLine("Using undefined type: " + d.getType().SignatureAsString());
-                    Console.ReadLine();
-                    Environment.Exit(0);
-                }
-            }
-        }
-        */
-        public IScope getScope()
-        {
-            return this.scope;
-        }
-        internal LClass getClassForName(string name)
-        {
-            foreach (LClass aClassD in this.getProgram().getClasses())
-            {
-                if (aClassD.getType().isNamed(name))
-                {
-                    return aClassD;
-                }
-            }
-            foreach (LClass aClassD in StandardLibrary.specialClasses)
+            List<LClass> classes = ScopeManager.getProgram(scope).getClasses();
+            foreach (LClass aClassD in classes)
             {
                 if (aClassD.getType().isNamed(name))
                 {

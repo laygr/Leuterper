@@ -11,8 +11,6 @@ namespace Leuterper
 {
     class LeuterperCompiler
     {
-        public static int STANDARD_CLASES = 5;
-        public static int STANDARD_PROCEDURES = 20;
         static String tempFile = "temp.txt";
         public String filePath;
         public Program program;
@@ -22,8 +20,8 @@ namespace Leuterper
 
         public bool compilingTopLeveIActions;
 
-        public int classesCounter = STANDARD_CLASES;
-        private int proceduresCounter = STANDARD_PROCEDURES;
+        public int classesCounter = StandardLibrary.specialClasses.Count();
+        private int proceduresCounter = StandardLibrary.specialMethods.Count() + StandardLibrary.standardFunctions.Count();
 
         public List<int> classDefinitions;
         public List<int> functionsParameters;
@@ -85,7 +83,7 @@ namespace Leuterper
                 if (s != null)
                 {
                     s.Close();
-                    //File.Delete(tempFile);
+                    File.Delete(tempFile);
                 }
 
             }
@@ -113,10 +111,9 @@ namespace Leuterper
                 }
             }
 
-            //Max number of vars in memory
-            writer.WriteLine(this.literals.Count() + this.globalVariablesCounter + this.mostVaribalesInAFunction);
-
             writer.WriteLine(this.literals.Count());
+            writer.WriteLine(this.globalVariablesCounter);
+            writer.WriteLine(this.mostVaribalesInAFunction);
             foreach (MachineInstructions.Literal literal in this.literals)
             {
                 writer.WriteLine(literal);
@@ -130,9 +127,9 @@ namespace Leuterper
             writer.Close();
         }
 
-        public void addClassDefinition(int numberOfAttributes)
+        public void addClassDefinition(int numberOfLAttributes)
         {
-            this.classDefinitions.Add(numberOfAttributes);
+            this.classDefinitions.Add(numberOfLAttributes);
         }
 
         public void addAction(MachineInstruction action)
@@ -184,7 +181,7 @@ namespace Leuterper
 
         public static void Main(String[] args)
         {
-            StandardLibrary.initializeStandardLibrary();
+            //StandardLibrary.initializeStandardLibrary();
             try
             {
                 Console.WriteLine("Introduzca el nombre del archivo a compilar.");

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Leuterper
 {
-    interface ICompilable : IScopable
+    interface ICompilable
     {
         /*
          * Connect strings to their symbols
@@ -16,8 +16,6 @@ namespace Leuterper
          * get defining classes of each type
          */
         void secondPass(LeuterperCompiler compiler);
-        
-        //Generic classes to non-generic
         void thirdPass();
         void generateCode(LeuterperCompiler compiler);
 

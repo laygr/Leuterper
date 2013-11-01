@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    class Call_Constructor : Call_Class_Procedure
+    class Call_Constructor : Call_Procedure
     {
         public LType type { get; set; }
         public Call_Constructor(int line, LType type, List<Expression> arguments)
@@ -17,7 +17,7 @@ namespace Leuterper.Constructions
 
         public override Procedure getProcedureDefinition()
         {
-            LClass c = this.getScope().getScopeManager().getClassForName(this.procedureName);
+            LClass c = ScopeManager.getClassForName(this.getScope(), this.procedureName);
             return getConstructorFromClass(c);    
         }
         public Constructor getConstructorFromClass(LClass c)

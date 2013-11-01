@@ -12,10 +12,10 @@ namespace Leuterper.Constructions
             int line,
             LType type,
             LType parentType,
-            List<Attribute> attributesDeclarations,
+            List<LAttribute> LAttributesDeclarations,
             List<Class_Procedure> classProcedures,
             int classIdentifier)
-            : base(line, type, parentType, attributesDeclarations, classProcedures)
+            : base(line, type, parentType, LAttributesDeclarations, classProcedures)
         {
             this.identifier = classIdentifier;
         }

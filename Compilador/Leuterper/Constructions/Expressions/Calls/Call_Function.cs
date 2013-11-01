@@ -15,7 +15,7 @@ namespace Leuterper.Constructions
 
         public override Procedure getProcedureDefinition()
         {
-            return this.getScope().getScopeManager().getFunctionForGivenNameAndArguments(this.procedureName, this.arguments);
+            return ScopeManager.getFunctionForGivenNameAndArguments(this.getScope(), this.procedureName, this.arguments);
         }
     }
 }

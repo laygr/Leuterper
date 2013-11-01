@@ -1,10 +1,19 @@
 1
 1
-1
+2
+3
+7
+push 1
+get 0
+push 2
+callp 16
+push 3
+callp 16
+rtn
 1
 0
 3
 0
 2
 callp 18
-call 20
+call 21

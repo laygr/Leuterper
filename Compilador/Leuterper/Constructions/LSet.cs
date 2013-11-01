@@ -9,10 +9,10 @@ namespace Leuterper.Constructions
     //Asignacion al attributo de un objeto.
     class LSet : Construction, IAction
     {
-        public AttributeAccess la { get; set; }
+        public LAttributeAccess la { get; set; }
         public Expression rhs { get; set; }
 
-        public LSet(int line, AttributeAccess la, Expression rhs) : base(line)
+        public LSet(int line, LAttributeAccess la, Expression rhs) : base(line)
         {
             this.la = la;
             this.rhs = rhs;
@@ -37,7 +37,7 @@ namespace Leuterper.Constructions
         {
             la.generateCode(compiler);
             rhs.generateCode(compiler);
-            compiler.addAction(new MachineInstructions.Set(la.getAttributeIndex()));
+            compiler.addAction(new MachineInstructions.Set(la.getLAttributeIndex()));
         }
 
     }

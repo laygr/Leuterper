@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Leuterper.Constructions;
 
 namespace Leuterper
 {
-    interface IAction : IConstruction
+    interface IRedefinable<X>
     {
+        X redefineWithSubstitutionTypes(List<LType> types);
+
     }
 }

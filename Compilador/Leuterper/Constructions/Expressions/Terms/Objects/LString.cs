@@ -36,8 +36,7 @@ namespace Leuterper.Constructions
         public static LType LStringType()
         {
             LType listType = LList.CreateLListType();
-            LType charType = LChar.type;
-            listType.typeVariables[0] = charType;
+            listType.typeVariables[0] = LChar.type;
             LType stringType = new LType(0, "String");
             stringType.parentType = listType;
             return stringType;

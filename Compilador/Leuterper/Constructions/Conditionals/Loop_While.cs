@@ -9,9 +9,7 @@ namespace Leuterper.Constructions
     class Loop_While : Conditional
     {
         public Loop_While(int line, Expression booleanExpression, List<IAction>thenActions)
-            : base(line, booleanExpression, thenActions)
-        { }
-
+            : base(line, booleanExpression, thenActions) { }
         public override void generateCode(LeuterperCompiler compiler)
         {
             int jumpToTheBeginningInstructioIndex = compiler.getIndexOfNextActionInCurrentFunction();
@@ -19,13 +17,10 @@ namespace Leuterper.Constructions
             MachineInstructions.JMPF jumpToTheEnd = new MachineInstructions.JMPF();
             
             booleanExpression.generateCode(compiler);
-
             compiler.addAction(jumpToTheEnd);
-            foreach(IAction action in this.thenActions)
-            {
-                action.generateCode(compiler);
-            }
+            this.thenActions.ForEach(a => a.generateCode(compiler));
             compiler.addAction(jumpTotheBeginning);
+            
             jumpToTheEnd.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
         }
     }

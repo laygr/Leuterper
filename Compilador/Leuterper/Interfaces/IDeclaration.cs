@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Leuterper
 {
-    interface IDeclaration : IDefinition
+    interface IDeclaration : IDefinition, ISignable<IDeclaration>
     {
         String getName();
     }

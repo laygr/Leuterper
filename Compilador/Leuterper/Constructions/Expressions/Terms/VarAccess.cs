@@ -18,24 +18,24 @@ namespace Leuterper.Constructions
 
         override public LType getType()
         {
-            Declaration_Var var = this.getScope().getScopeManager().getVarInLineage(this.getName());
-            if(var == null)
+            Declaration d = ScopeManager.getDeclarationLineage(this.getScope(), this.getName());
+            if(d == null)
             {
                 throw new SemanticErrorException("Using undeclared var " + this.getName(), this.getLine());
             }
-            return var.getType();
+            return d.getType();
         }
 
         public int getIndex()
         {
-            return this.getScope().getScopeManager().getIndexOfVarNamed(this.getName());
+            return ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
         }
 
         public override void secondPass(LeuterperCompiler compiler) { }
-
-        override public void generateCode(LeuterperCompiler compiler)
+        public override void thirdPass() { }
+        public override void generateCode(LeuterperCompiler compiler)
         {
-            int varIndex = this.getScope().getScopeManager().getIndexOfVarNamed(this.getName());
+            int varIndex = ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
             if(varIndex == -1)
             {
                 throw new SemanticErrorException("Using undeclared var: " + this.getName(), this.getLine());
@@ -47,7 +47,5 @@ namespace Leuterper.Constructions
         {
             return this.name;
         }
-       
-        
     }
 }

@@ -17,10 +17,8 @@ namespace Leuterper.Constructions
             if(this.elseActions == null)
             {
                 this.elseActions = new List<IAction>();
-            }
-            
+            }   
         }
-
         public override void secondPass(LeuterperCompiler compiler)
         {
             foreach(IAction a in elseActions)
@@ -30,9 +28,7 @@ namespace Leuterper.Constructions
             }
         }
 
-        public override void thirdPass()
-        {
-        }
+        public override void thirdPass() { }
 
         public override void generateCode(LeuterperCompiler compiler)
         {

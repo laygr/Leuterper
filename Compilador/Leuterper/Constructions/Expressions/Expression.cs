@@ -20,9 +20,6 @@ namespace Leuterper.Constructions
         {
             return expression.ConvertAll(new Converter<Expression, LType>(expresionToType));
         }
-
-        public override void thirdPass()
-        {
-        }
+        
     }
 }

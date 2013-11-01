@@ -7,22 +7,20 @@ using Leuterper;
 
 namespace Leuterper.Constructions
 {
-    class LClass : Construction, IStatement, IDefinition, IScope, IIdentifiable<LClass>
+    class LClass : Construction, IConstruction, IDefinition, IScope, ISignable<LClass>
     {
         private LType type;
-        private ScopeManager scopeManager;
         public int identifier { get; set; }
-        public List<Attribute> attributesDeclarations { get; set; }
-        public List<LClass> classDefinitions { get; set; }
+        public List<LAttribute> attributes { get; set; }
         public List<Constructor> constructorDefinitions { get; set; }
         public List<Method> methodsDefinitions { get; set; }
-        public int numberOfAttributes = -1;
+        public int numberOfLAttributes = -1;
         public LClass
             (
                 int line,
                 LType type,
                 LType parentType,
-                List<Attribute> attributesDeclarations,
+                List<LAttribute> LAttributesDeclarations,
                 List<Class_Procedure> classProcedures
             ) : base(line)
         {
@@ -31,10 +29,9 @@ namespace Leuterper.Constructions
             {
                 this.getType().parentType = parentType;
             }
-            this.scopeManager = new ScopeManager(this);
 
-            attributesDeclarations.ForEach(a => a.setScope(this));
-            this.attributesDeclarations = new List<Attribute>(attributesDeclarations);
+            LAttributesDeclarations.ForEach(a => a.setScope(this));
+            this.attributes = new List<LAttribute>(LAttributesDeclarations);
 
             classProcedures.ForEach(cp => cp.setScope(this));
 
@@ -72,11 +69,12 @@ namespace Leuterper.Constructions
             this.getType().setScope(this);
             if(this.getType().parentType != null)
             {
-                this.getType().parentType.shouldRedefinesItsClass = true;
+                this.getType().parentType.setShouldStartRedefinition(true);
             }
+            this.getType().secondPass(compiler);
 
-            this.calculateNumberOfAttributes();
-            foreach(Attribute a in this.attributesDeclarations)
+            this.calculateNumberOfLAttributes();
+            foreach(LAttribute a in this.attributes)
             {
                 a.setScope(this);
                 a.secondPass(compiler);
@@ -94,11 +92,12 @@ namespace Leuterper.Constructions
         }
         public override void thirdPass()
         {
+            this.attributes.ForEach(a => a.thirdPass());
             this.methodsDefinitions.ForEach(m => m.thirdPass());
         }
         public override void generateCode(LeuterperCompiler compiler)
         {
-            compiler.addClassDefinition(this.getNumberOfAttributes());
+            compiler.addClassDefinition(this.getNumberOfLAttributes());
             this.constructorDefinitions.ForEach(c => c.generateCode(compiler));
             this.methodsDefinitions.ForEach(m => m.generateCode(compiler));
         }
@@ -106,96 +105,90 @@ namespace Leuterper.Constructions
         public LClass getParentClass()
         {
             if(this.getType().parentType == null) return null;
-            return this.getType().parentType.definingClass;
+            return this.getType().parentType.getDefiningClass();
         }
 
-        internal int getIndexOfAttribute(string attributeName)
+        internal int getIndexOfLAttribute(string LAttributeName)
         {
-            for (int i = 0; i < this.attributesDeclarations.Count(); i++ )
+            for (int i = 0; i < this.attributes.Count(); i++ )
             {
-                if(this.attributesDeclarations[i].getName().Equals(attributeName))
+                if(this.attributes[i].getName().Equals(LAttributeName))
                 {
-                    return i + this.getIndexOfFirstAttribute();
+                    return i + this.getIndexOfFirstLAttribute();
                 }
             }
             return -1;
         }
 
-        internal LType getTypeOfAttribute(int p)
+        internal LType getTypeOfLAttribute(int p)
         {
             LClass pC = this.getParentClass();
-            if(this.getIndexOfFirstAttribute() > p)
+            if(this.getIndexOfFirstLAttribute() > p)
             {
-                return pC.getTypeOfAttribute(p);
+                return pC.getTypeOfLAttribute(p);
             }
-            return this.attributesDeclarations[p - pC.getNumberOfAttributes()].getType();
+            return this.attributes[p - pC.getNumberOfLAttributes()].getType();
         }
 
         //Private methods
-        private int getIndexOfFirstAttribute()
+        private int getIndexOfFirstLAttribute()
         {
             LClass p = this.getParentClass();
             if (p == null) return 0;
-            return p.getNumberOfAttributes();
+            return p.getNumberOfLAttributes();
         }
-        private int getNumberOfAttributes()
+        private int getNumberOfLAttributes()
         {
-            if (this.numberOfAttributes == -1)
+            if (this.numberOfLAttributes == -1)
             {
-                this.calculateNumberOfAttributes();
+                this.calculateNumberOfLAttributes();
             }
-            return this.numberOfAttributes;
+            return this.numberOfLAttributes;
         }
-        private void calculateNumberOfAttributes()
+        private void calculateNumberOfLAttributes()
         {
-            this.numberOfAttributes = 0;
+            this.numberOfLAttributes = 0;
             if (this.getType().parentType != null)
             {
-                LClass parentClass = this.getType().parentType.definingClass;
-                this.numberOfAttributes += parentClass.getNumberOfAttributes();
+                LClass parentClass = this.getType().parentType.getDefiningClass();
+                this.numberOfLAttributes += parentClass.getNumberOfLAttributes();
             }
-            this.numberOfAttributes += this.attributesDeclarations.Count();
+            this.numberOfLAttributes += this.attributes.Count();
         }
 
         public LClass reinstantiateWithSubstitution(LType newType, List<LType> instantiatedTypes)
         {
             this.type = newType;
-            List<Attribute> reinstantiatedAttributes = new List<Attribute>();
-            foreach(Attribute a in this.attributesDeclarations)
+            List<LAttribute> reinstantiatedLAttributes = new List<LAttribute>();
+            foreach(LAttribute a in this.attributes)
             {
-                reinstantiatedAttributes.Add(a.reinstantiateWithSubstitution(instantiatedTypes));
+                reinstantiatedLAttributes.Add(a.redefineWithSubstitutionTypes(instantiatedTypes));
             }
             List<Class_Procedure> reinstantiatedProcedures = new List<Class_Procedure>();
             foreach(Method m in this.methodsDefinitions)
             {
-                reinstantiatedProcedures.Add(m.reinstantiateWithSubstitution(instantiatedTypes));
+                reinstantiatedProcedures.Add(m.redefineWithSubstitutionTypes(instantiatedTypes));
             }
             foreach(Constructor c in this.constructorDefinitions)
             {
-                reinstantiatedProcedures.Add(c);
+                reinstantiatedProcedures.Add(c.redefineWithSubstitutionTypes(instantiatedTypes));
             }
-            return new LClass(this.getLine(), this.getType(), this.getType().parentType, reinstantiatedAttributes, reinstantiatedProcedures);
+            return new LClass(this.getLine(), this.getType(), this.getType().parentType, reinstantiatedLAttributes, reinstantiatedProcedures);
         }
 
         public LType getType()
         {
-            return this.getType();
+            return this.type;
         }
         public void setType(LType type)
         {
             this.type = type;
         }
-        public ScopeManager getScopeManager()
-        {
-            return this.scopeManager;
-        }
-
         public List<IDeclaration> getDeclarations()
         {
             List<IDeclaration> result = new List<IDeclaration>();
-            this.attributesDeclarations.ForEach(a => result.Add(a));
+            this.attributes.ForEach(a => result.Add(a));
             return result;
         }
-
     }
 }

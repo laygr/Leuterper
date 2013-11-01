@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Leuterper.Constructions;
 namespace Leuterper
 {
-
-    interface IDefinition : IScopable
+    interface IDefinition
     {
         LType getType();
         void setType(LType type);

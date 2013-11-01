@@ -27,8 +27,6 @@ namespace Leuterper.Constructions
                 a.secondPass(compiler);
             }
         }
-        public override void thirdPass()
-        {
-        }
+        public override void thirdPass() { }
     }
 }

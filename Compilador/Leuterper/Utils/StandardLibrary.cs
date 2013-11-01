@@ -67,21 +67,21 @@ namespace Leuterper
             new MethodSpecial(0, LString.type, "==", LType.typesToParameters(s), null, 18)
         });
 
-        public static List<Function> specialFunctions = new List<Function>(new Function[]{
+        public static List<Function> standardFunctions = new List<Function>(new Function[]{
             new FunctionSpecial(0, LString.type, "read", LType.typesToParameters(e), null, 18),
             new FunctionSpecial(0, LVoid.type, "write", LType.typesToParameters(s), null, 19),
             new FunctionSpecial(0, LNumber.type, "stringToNumber", LType.typesToParameters(s), null, 20)});
         
         public static List<LClass> specialClasses = new List<LClass>(new LClass[]{
             //void
-            new LClassSpecial(0, LVoid.type, null, new List<Attribute>(), new List<Class_Procedure>(), (int)StandardClasses.LVoid),
+            new LClassSpecial(0, LVoid.type, null, new List<LAttribute>(), new List<Class_Procedure>(), (int)StandardClasses.LVoid),
             //object
-            new LClassSpecial(0, LObject.type, null, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LObject.type, null, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[0],
                 specialMethods[1]}), (int)StandardClasses.LObject),
 
             //number
-            new LClassSpecial(0, LNumber.type, LObject.type, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LNumber.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[2],
                 specialMethods[3],
                 specialMethods[4],
@@ -90,17 +90,17 @@ namespace Leuterper
                 specialMethods[7]}), (int)StandardClasses.LNumber),
 
             //boolean
-            new LClassSpecial(0, LBoolean.type, LObject.type, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LBoolean.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[8],
                 specialMethods[9]}), (int)StandardClasses.LChar),
 
             //char
-            new LClassSpecial(0, LChar.type, LObject.type, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LChar.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[10],
                 specialMethods[11]}), (int)StandardClasses.LChar),
 
             //list
-            new LClassSpecial(0, LList.type, LObject.type, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LList.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[12],
                 specialMethods[13],
                 specialMethods[14],
@@ -109,13 +109,14 @@ namespace Leuterper
                 specialMethods[17]}), (int)StandardClasses.LList),
 
             //string
-            new LClassSpecial(0, LString.type, LString.type.parentType, new List<Attribute>(), new List<Class_Procedure>(new Class_Procedure[]{
+            new LClassSpecial(0, LString.type, LString.type.parentType, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                 specialMethods[18]}), (int)StandardClasses.LString)
 
                 });
 
         public static void initializeStandardLibrary()
         {
+            /*
             LVoid.type.definingClass = specialClasses[(int)StandardClasses.LVoid];
             LObject.type.definingClass = specialClasses[(int)StandardClasses.LObject];
             LNumber.type.definingClass = specialClasses[(int)StandardClasses.LNumber];
@@ -123,6 +124,7 @@ namespace Leuterper
             LChar.type.definingClass = specialClasses[(int)StandardClasses.LChar];
             LList.type.definingClass = specialClasses[(int)StandardClasses.LList];
             LString.type.definingClass = specialClasses[(int)StandardClasses.LString];
+             */
         }
     }
 }

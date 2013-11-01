@@ -9,14 +9,24 @@ namespace Leuterper
 {
     class UtilFunctions
     {
-        public static List<Class_Declaration> GetDeclarations(List<IAction> actions)
+        public static LType parameterToType(Parameter p)
         {
-            List<Class_Declaration> declarations = new List<Class_Declaration>();
-            foreach (IAction a in actions)
+            return p.getType();
+        }
+
+        public static List<LType> listOfParametersAsListOfTypes(List<Parameter> parameters)
+        {
+            return parameters.ConvertAll(new Converter<Parameter, LType>(parameterToType));
+        }
+
+        public static String listOfParametersAsString(List<Parameter> parameters)
+        {
+            string result = "";
+            foreach (Parameter p in parameters)
             {
-                if (a is Class_Declaration) declarations.Add(a as Class_Declaration);
+                result += p.getType().SignatureAsString() + " ";
             }
-            return declarations;
+            return result;
         }
 
         public static List<Assignment> GetAssignments(List<IAction> actions)

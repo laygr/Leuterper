@@ -43,9 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constructions\Construction.cs" />
+    <Compile Include="Constructions\Declaration\Declaration.cs" />
     <Compile Include="Constructions\Expressions\Calls\Call_Procedure.cs" />
     <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Constructor.cs" />
-    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Class_Procedure.cs" />
     <Compile Include="Constructions\Expressions\Terms\Objects\LVoid.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Constructions\Assignment.cs" />
@@ -56,7 +56,7 @@
     <Compile Include="Constructions\Expressions\Calls\Call_Function.cs" />
     <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Method.cs" />
     <Compile Include="Constructions\Expressions\Expression.cs" />
-    <Compile Include="Constructions\Expressions\Terms\LAttributeAccess.cs" />
+    <Compile Include="Constructions\Expressions\Terms\AttributeAccess.cs" />
     <Compile Include="Constructions\Expressions\Terms\Objects\LBoolean.cs" />
     <Compile Include="Constructions\Expressions\Terms\Term.cs" />
     <Compile Include="Constructions\Expressions\Terms\VarAccess.cs" />
@@ -66,29 +66,28 @@
     <Compile Include="Constructions\Expressions\Terms\Objects\LObject.cs" />
     <Compile Include="Constructions\Expressions\Terms\Objects\LString.cs" />
     <Compile Include="Constructions\Return_From_Block.cs" />
-    <Compile Include="Constructions\Definitions\Definition_Classes\Definition_Special_Class.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Class_Procedure.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Constructor.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Special_Method.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Definition_Procedure.cs" />
+    <Compile Include="Constructions\Definition_Classes\LClassSpecial.cs" />
+    <Compile Include="Constructions\Procedures\Class_Procedure\Class_Procedure.cs" />
+    <Compile Include="Constructions\Procedures\Class_Procedure\Constructor.cs" />
+    <Compile Include="Constructions\Procedures\Class_Procedure\MethodSpecial.cs" />
+    <Compile Include="Constructions\Procedures\Procedure.cs" />
     <Compile Include="Constructions\LSet.cs" />
-    <Compile Include="Constructions\Class_Declarations\Class_Declaration.cs" />
-    <Compile Include="Constructions\Class_Declarations\Declaration_Attribute.cs" />
-    <Compile Include="Constructions\Declaration_Var.cs" />
-    <Compile Include="Constructions\Class_Declarations\Parameter.cs" />
+    <Compile Include="Constructions\Declaration\Attribute.cs" />
+    <Compile Include="Constructions\Declaration\Var.cs" />
+    <Compile Include="Constructions\Declaration\Parameter.cs" />
     <Compile Include="Constructions\Program.cs" />
     <Compile Include="Constructions\LType.cs" />
     <Compile Include="Interfaces\IDeclaration.cs" />
     <Compile Include="Interfaces\IDefinition.cs" />
-    <Compile Include="Constructions\Definitions\Definition_Classes\Definition_Class.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Definition_Function.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Class_Procedure\Definition_Method.cs" />
-    <Compile Include="Constructions\Definitions\Procedure\Definition_Special_Function.cs" />
-    <Compile Include="Interfaces\IStatement.cs" />
-    <Compile Include="Exceptions\AlreadyDeclaredException.cs" />
+    <Compile Include="Constructions\Definition_Classes\LClass.cs" />
+    <Compile Include="Constructions\Procedures\Function.cs" />
+    <Compile Include="Constructions\Procedures\Class_Procedure\Method.cs" />
+    <Compile Include="Constructions\Procedures\FunctionSpecial.cs" />
+    <Compile Include="Interfaces\IRedefinable.cs" />
+    <Compile Include="Interfaces\ISignable.cs" />
+    <Compile Include="Interfaces\IConstruction.cs" />
+    <Compile Include="Exceptions\SemanticErrorException.cs" />
     <Compile Include="Interfaces\ICompilable.cs" />
-    <Compile Include="Interfaces\Identifiable.cs" />
-    <Compile Include="Interfaces\IScopable.cs" />
     <Compile Include="Utils\MachineInstructions.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\SimpleCharStream.cs" />
@@ -112,9 +111,7 @@
     <Content Include="Parser\csjavacc.jar" />
     <Content Include="TODO.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Constructions\Statements\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

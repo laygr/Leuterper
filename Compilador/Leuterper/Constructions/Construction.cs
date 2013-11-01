@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    abstract class Construction : ICompilable
+    abstract class Construction : IConstruction, ICompilable
     {
         private IScope scope { get; set; }
         private int line;
@@ -19,14 +19,10 @@ namespace Leuterper.Constructions
 
         public int getLine()
         {
-            return this.getLine();
+            return this.line;
         }
 
-        abstract public void secondPass(LeuterperCompiler compiler);
-        abstract public void thirdPass();
-        abstract public void generateCode(LeuterperCompiler compiler);
-
-        public void setScope(IScope scope)
+        virtual public void setScope(IScope scope)
         {
             this.scope = scope;
         }
@@ -35,5 +31,9 @@ namespace Leuterper.Constructions
         {
             return this.scope;
         }
+
+        public abstract void secondPass(LeuterperCompiler compiler);
+        public abstract void thirdPass();
+        public abstract void generateCode(LeuterperCompiler compiler);
     }
 }

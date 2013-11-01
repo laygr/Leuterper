@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Leuterper
 {
-    interface IAction : IConstruction
+    interface IConstruction : ICompilable
     {
+        IScope getScope();
+        void setScope(IScope scope);
+        int getLine();
     }
 }

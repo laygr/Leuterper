@@ -7,27 +7,23 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    class Call_Method : Call_Class_Procedure
+    class Call_Method : Call_Procedure
     {
         public Expression theObject { get; set; }
-
         public Call_Method(int line, Expression theObject, String methodId, List<Expression> arguments)
             : base(line, methodId, arguments)
         {
             this.theObject = theObject;
         }
-
         public override void secondPass(LeuterperCompiler compiler)
         {
             this.arguments.Insert(0, theObject);
             base.secondPass(compiler);
         }
-
         public override void thirdPass()
         {
             theObject.thirdPass();
         }
-
         public override Procedure getProcedureDefinition()
         {
             return this.getMethodWithNameAndTypes();
@@ -35,7 +31,7 @@ namespace Leuterper.Constructions
         private Method getMethodWithNameAndTypes()
         {
             LType calleeType = theObject.getType();
-            return this.getMethodFromClass(calleeType.definingClass);
+            return this.getMethodFromClass(calleeType.getDefiningClass());
         }
 
         public override LType getType()

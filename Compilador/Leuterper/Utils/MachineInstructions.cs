@@ -157,29 +157,29 @@ namespace Leuterper.MachineInstructions
 
     class Get : MachineInstruction
     {
-        public int attributeIndex;
-        public Get(int attributeIndex)
+        public int LAttributeIndex;
+        public Get(int LAttributeIndex)
         {
-            this.attributeIndex = attributeIndex;
+            this.LAttributeIndex = LAttributeIndex;
         }
 
         public override string ToString()
         {
-            return String.Format("get {0}", this.attributeIndex);
+            return String.Format("get {0}", this.LAttributeIndex);
         }
     }
 
     class Set : MachineInstruction
     {
-        public int attributeIndex;
-        public Set(int attributeIndex)
+        public int LAttributeIndex;
+        public Set(int LAttributeIndex)
         {
-            this.attributeIndex = attributeIndex;
+            this.LAttributeIndex = LAttributeIndex;
         }
 
         public override string ToString()
         {
-            return String.Format("set {0}", this.attributeIndex);
+            return String.Format("set {0}", this.LAttributeIndex);
         }
     }
 }

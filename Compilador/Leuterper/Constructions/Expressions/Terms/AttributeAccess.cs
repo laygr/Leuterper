@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    class AttributeAccess : Term
+    class LAttributeAccess : Term
     {
         public Expression theObject { get; set; }
-        public String attributeName { get; set; }
+        public String LAttributeName { get; set; }
         public bool willBeUsedForSet { get; set; }
-        public AttributeAccess(int line, Expression theObject, String name) : base(line)
+        public LAttributeAccess(int line, Expression theObject, String name) : base(line)
         {
             this.theObject = theObject;
             this.theObject.shouldBePushedToStack = true;
-            this.attributeName = name;
+            this.LAttributeName = name;
             this.willBeUsedForSet = false;
         }
 
-        public int getAttributeIndex()
+        public int getLAttributeIndex()
         {
-            LClass c = this.theObject.getType().definingClass;
-            return c.getIndexOfAttribute(attributeName);
+            LClass c = this.theObject.getType().getDefiningClass();
+            return c.getIndexOfLAttribute(LAttributeName);
         }
 
         override public LType getType()
         {
-            LClass c = this.theObject.getType().definingClass;
-            return c.getTypeOfAttribute(this.getAttributeIndex());
+            LClass c = this.theObject.getType().getDefiningClass();
+            return c.getTypeOfLAttribute(this.getLAttributeIndex());
         }
 
         public override void secondPass(LeuterperCompiler compiler)
@@ -37,6 +37,7 @@ namespace Leuterper.Constructions
             theObject.setScope(this.getScope());
             theObject.secondPass(compiler);
         }
+        public override void thirdPass() { }
 
         public override void generateCode(LeuterperCompiler compiler)
         {
@@ -44,13 +45,13 @@ namespace Leuterper.Constructions
             theObject.generateCode(compiler);
             if (!this.willBeUsedForSet)
             {
-                LClass c = this.theObject.getType().definingClass;
-                int attributeIndex = c.getIndexOfAttribute(this.attributeName);
-                if(attributeIndex < 0)
+                LClass c = this.theObject.getType().getDefiningClass();
+                int LAttributeIndex = c.getIndexOfLAttribute(this.LAttributeName);
+                if(LAttributeIndex < 0)
                 {
-                    throw new SemanticErrorException("Accessed an undeclared attribute: " + this.attributeName, this.getLine());
+                    throw new SemanticErrorException("Accessed an undeclared LAttribute: " + this.LAttributeName, this.getLine());
                 }
-                compiler.addAction(new MachineInstructions.Get(attributeIndex));
+                compiler.addAction(new MachineInstructions.Get(LAttributeIndex));
             }
         }
     }

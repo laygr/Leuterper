@@ -38,7 +38,7 @@ namespace Leuterper.Constructions
             this.rhs.thirdPass();
         }
 
-        override public void generateCode(LeuterperCompiler compiler)
+        public override void generateCode(LeuterperCompiler compiler)
         {
             rhs.generateCode(compiler);
             compiler.addAction(new MachineInstructions.Assignment(lhs.getIndex()));

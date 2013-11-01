@@ -7,36 +7,32 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    abstract class Procedure : Construction, IDefinition, IScope, IIdentifiable<Function>
+    abstract class Procedure : Declaration, IDefinition, IScope
     {
-        private LType type;
-        private ScopeManager scopeManager;
         public int identifier = -1;
-        public String name { get; set; }
         public List<Parameter> parameters { get; set; }
-        public List<Declaration_Var> vars { get; set; }
+        public List<Var> vars { get; set; }
         public List<IAction> actions { get; set; }
 
-        public Procedure(int line, LType type, String id, List<Parameter> parameters, List<IAction> actions)
-            : base(line)
+        public Procedure(int line, LType type, String name, List<Parameter> parameters, List<IAction> actions)
+            : base(line, type, name)
         {
+            this.parameters = parameters;
+
             if (actions == null)
             {
                 actions = new List<IAction>();
             }
-            this.name = id;
-            this.parameters = parameters;
-            this.scopeManager = new ScopeManager(this);
 
             //Split actions in vars an actions.
             this.actions = new List<IAction>();
-            this.vars = new List<Declaration_Var>();
+            this.vars = new List<Var>();
 
             foreach(IAction a in actions)
             {
-                if (a is Declaration_Var)
+                if (a is Var)
                 {
-                    this.vars.Add(a as Declaration_Var);
+                    this.vars.Add(a as Var);
                 }
                 else
                 {
@@ -49,11 +45,11 @@ namespace Leuterper.Constructions
             bool notDeclarationAppeared = false;
             foreach(IAction a in this.actions)
             {
-                if(a is Declaration_Var && notDeclarationAppeared)
+                if(a is Var && notDeclarationAppeared)
                 {
                     throw new SemanticErrorException("Declaration not placed at the beginning of a procedure.", a.getLine());
                 }
-                else if(!(a is Declaration_Var))
+                else if(!(a is Var))
                 {
                     notDeclarationAppeared = true;
                 }
@@ -64,7 +60,7 @@ namespace Leuterper.Constructions
             if (this.getLine() != 0)
             {
                 SortedList<string, string> names = new SortedList<string, string>();
-                foreach (Declaration_Var v in this.vars)
+                foreach (Var v in this.vars)
                 {
                     if (names.ContainsValue(v.getName()))
                     {
@@ -75,26 +71,25 @@ namespace Leuterper.Constructions
             }
         }
 
-        public bool HasSameSignatureAs(Function otherElement)
+        public override bool HasSameSignatureAs(IDeclaration otherElement)
         {
-            if (!this.getName().Equals(name)) return false;
+            if (!this.getName().Equals(otherElement.getName())) return false;
             return LType.listOfTypesMatch(
-                Parameter.listOfParametersAsListOfTypes(this.parameters),
-                Parameter.listOfParametersAsListOfTypes(otherElement.parameters)
+                UtilFunctions.listOfParametersAsListOfTypes(this.parameters),
+                UtilFunctions.listOfParametersAsListOfTypes((otherElement as Procedure).parameters)
                 );
         }
 
         virtual public bool isCompatibleWithNameAndTypes(string name, List<LType> types)
         {
             if (!this.getName().Equals(name)) return false;
-            return LType.listOfTypesUnify(Parameter.listOfParametersAsListOfTypes(this.parameters), types);
+            return LType.listOfTypesUnify(UtilFunctions.listOfParametersAsListOfTypes(this.parameters), types);
         }
 
         public override void secondPass(LeuterperCompiler compiler)
         {
-
+            base.secondPass(compiler);
             compiler.assignIdentifierToProcedure(this);
-
             //Parameters
             for (int i = 0; i < this.parameters.Count(); i++)
             {
@@ -113,7 +108,7 @@ namespace Leuterper.Constructions
              */
             
             //Var declarations
-            foreach(Declaration_Var v in this.vars)
+            foreach(Var v in this.vars)
             {
                 v.setScope(this);
                 v.secondPass(compiler);
@@ -121,7 +116,7 @@ namespace Leuterper.Constructions
 
             //Crear acciones de asignacion de las declaraciones de variables con valor inicial.
             int assignations = 0;
-            foreach (Declaration_Var v in this.vars)
+            foreach (Var v in this.vars)
             {
                 if (v.initialValue != null)
                 {
@@ -141,7 +136,7 @@ namespace Leuterper.Constructions
 
         public override void thirdPass()
         {
-            foreach(Declaration_Var v in this.vars)
+            foreach(Var v in this.vars)
             {
                 v.thirdPass();
             }
@@ -162,22 +157,7 @@ namespace Leuterper.Constructions
         }
         public override string ToString()
         {
-            return String.Format("{0} {1} {2} {3}", this.identifier, this.getType().SignatureAsString(), this.getName(), Parameter.listOfParametersAsString(this.parameters));
-        }
-
-        public LType getType()
-        {
-            return this.type;
-        }
-
-        public void setType(LType type)
-        {
-            this.type = type; 
-        }
-
-        public string getName()
-        {
-            return this.name;
+            return String.Format("{0} {1} {2} {3}", this.identifier, this.getType().SignatureAsString(), this.getName(), UtilFunctions.listOfParametersAsString(this.parameters));
         }
 
         public List<IDeclaration> getDeclarations()
@@ -188,9 +168,30 @@ namespace Leuterper.Constructions
             return result;
         }
 
-        public ScopeManager getScopeManager()
+        public static List<IAction> reinstantiateActions(List<IAction> actions, List<LType> instantiatedTypes)
         {
-            return this.scopeManager;
+         List<IAction> newActions = new List<IAction>();
+            foreach(IAction a in actions)
+            {
+                if(a is Var)
+                {
+                    newActions.Add((a as Var).redefineWithSubstitutionTypes(instantiatedTypes));
+                }
+                else
+                {
+                    newActions.Add(a);
+                }
+            }
+            return newActions;
+        }
+        public static List<Parameter> reinstantiateParameters(List<Parameter> parameters, List<LType> instantiatedTypes)
+        {
+            List<Parameter> newParameters = new List<Parameter>();
+            foreach(Parameter p in parameters)
+            {
+                newParameters.Add(p.redefineWithSubstitutionTypes(instantiatedTypes));
+            }
+            return newParameters;
         }
     }
 }

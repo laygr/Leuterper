@@ -9,13 +9,18 @@ namespace Leuterper.Constructions
     class Method : Class_Procedure
     {
         public Method(int line, LType type, String name, List<Parameter> parameters, List<IAction> actions)
-            : base(line, type, name, parameters, actions)
-        {
-        }
+            : base(line, type, name, parameters, actions) { }
 
-        public Method reinstantiateWithSubstitution(List<LType> instantiatedTypes)
+        public Method redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
-            return new Method(this.getLine(), this.getType().reinstantiateWithSubstitution(instantiatedTypes), name, parameters, actions);
+            Method result = new Method(
+                this.getLine(),
+                this.getType().substituteTypeAndVariableTypesWith(instantiatedTypes),
+                this.getName(),
+                Procedure.reinstantiateParameters(this.parameters, instantiatedTypes),
+                Procedure.reinstantiateActions(this.actions, instantiatedTypes));
+            result.identifier = this.identifier;
+            return result;
         }
     }
 }

@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
-    class LType : Construction, IIdentifiable<LType>
+    class LType : Construction, ISignable<LType>, IRedefinable<LType>
     {
-        public LType rootType { get; set; }
         private String name { get; set; }
         public List<LType> typeVariables { get; set; }
         public LType parentType { get; set; }
         public Boolean rootIsDefined { get; set; }
         public Boolean isCompletelyDefined { get; set; }
-        public LClass definingClass { get; set; }
+        private LClass definingClass { get; set; }
         public int typeVariableIndex;
-        public Boolean shouldRedefinesItsClass;
+        private Boolean shouldRedefineItsClass;
 
 
         public LType(int line, String name, List<LType> typeVariables, LType parentType) : base(line)
@@ -32,7 +31,7 @@ namespace Leuterper.Constructions
                 this.parentType = LObject.type;
             }
             this.typeVariableIndex = -1;
-            this.shouldRedefinesItsClass = false;
+            this.shouldRedefineItsClass = false;
         }
         public LType(int line, String name, List<LType> typeVariables)
             : this(line, name, typeVariables, null)
@@ -54,7 +53,14 @@ namespace Leuterper.Constructions
         {
             return types.ConvertAll(new Converter<LType, Parameter>(typeToParameter));
         }
-
+        public override void setScope(IScope scope)
+        {
+            base.setScope(scope);
+            if (this.parentType != null)
+            {
+                this.parentType.setScope(scope);
+            }
+        }
         public static String listOfTypesAsString(List<LType> types)
         {
             string result = "";
@@ -119,7 +125,6 @@ namespace Leuterper.Constructions
             return this.getName().Equals(name);
         }
 
-        //Type matching
         public bool HasSameSignatureAs(LType otherElement)
         {
             if (this.typeVariables.Count() != otherElement.typeVariables.Count()) return false;
@@ -134,19 +139,7 @@ namespace Leuterper.Constructions
 
         public override void secondPass(LeuterperCompiler compiler)
         {
-            if (this.getName().Equals("Matrix"))
-            {
-                Console.WriteLine();
-            }
-            this.definingClass = this.getScope().getScopeManager().getClassForType(this);
-            if (this.definingClass == null)
-            {
-                this.rootIsDefined = false;
-            }
-            else
-            {
-                this.rootIsDefined = true;
-            }
+            this.definingClass = this.getDefiningClass();
 
             foreach (LType vt in this.typeVariables)
             {
@@ -178,21 +171,20 @@ namespace Leuterper.Constructions
         }
         public override void thirdPass()
         {
-            if (this.shouldRedefinesItsClass)
+            if (this.shouldRedefineItsClass)
             {
-                this.reinstantiateWithSubstitution(this.typeVariables);
+                this.redefineWithSubstitutionTypes(this.typeVariables);
             }
         }
         public void findVariableTypeIndex()
         {
             if (this.rootIsDefined) return;
-            LClass classScope = this.getScope().getScopeManager().getClassScope();
+            LClass classScope = ScopeManager.getClassScope(this.getScope());
             if(classScope == null)
             {
                 throw new SemanticErrorException("Used undeclared type: " + this, this.getLine());
             }
             List<LType> classTypeVariables = classScope.getType().typeVariables;
-
 
             for(int i = 0; i < classTypeVariables.Count(); i++)
             {
@@ -209,43 +201,80 @@ namespace Leuterper.Constructions
         {
             return this.name;
         }
+        public override void generateCode(LeuterperCompiler compiler) { }
 
-        public override void generateCode(LeuterperCompiler compiler)
+        public void setShouldStartRedefinition(Boolean shouldBeRedefined)
         {
-            throw new NotImplementedException();
+            this.shouldRedefineItsClass = shouldBeRedefined;
         }
+        public Boolean getShouldBeRedefined()
+        {
+            return this.shouldRedefineItsClass;
+        }
+        public LType clone()
+        {
+            LType clone = new LType(this.getLine(), this.name);
+            if (this.parentType != null)
+            {
+                clone.parentType = this.parentType.clone();
+            }
+            else
+            {
+                clone.parentType = null;
+            }
+            clone.rootIsDefined = this.rootIsDefined;
+            clone.isCompletelyDefined = this.isCompletelyDefined;
+            clone.typeVariableIndex = this.typeVariableIndex;
+            clone.shouldRedefineItsClass = this.shouldRedefineItsClass;
+            clone.definingClass = this.definingClass;
+            
+            for(int i = 0; i < this.typeVariables.Count(); i++)
+            {
+                clone.typeVariables.Add(this.typeVariables[i].clone());
+            }
 
-        public LType reinstantiateWithSubstitution(List<LType> instantiatedTypes)
+            return clone;
+
+        }
+        public LType substituteTypeAndVariableTypesWith(List<LType> instantiatedTypes)
+        {
+            if(this.isCompletelyDefined) return this;
+            LType result = this.clone();
+            if (!result.rootIsDefined) return instantiatedTypes[this.typeVariableIndex];
+            for(int i = 0; i < this.typeVariables.Count(); i++)
+            {
+                result.typeVariables[i] = this.typeVariables[i].substituteTypeAndVariableTypesWith(instantiatedTypes);
+            }
+            return result;
+
+        }
+        public LType redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
             if (this.isCompletelyDefined) return this;
             LType newType = this;
             if (!this.rootIsDefined)
             {
-                if(this.typeVariableIndex == -1)
-                {
-                    Console.WriteLine("What");
-                }
-                if(this.typeVariableIndex >= instantiatedTypes.Count())
-                {
-                    Console.WriteLine("What");
-                }
                 newType = instantiatedTypes[this.typeVariableIndex];
-            }
-            if(newType.typeVariables.Count() != this.typeVariables.Count())
-            {
-                throw new SemanticErrorException(String.Format("Types can't unify:\n\tType 1: {0}\n\tType 2: {1}", this, newType), this.getLine());
             }
             if(newType.definingClass != null)
             {
-                newType.definingClass.reinstantiateWithSubstitution(this, instantiatedTypes);
+                newType.definingClass = newType.definingClass.reinstantiateWithSubstitution(this, instantiatedTypes);
             }
             if (newType.parentType != null)
             {
-                newType.parentType.reinstantiateWithSubstitution(instantiatedTypes);
+                newType.parentType.redefineWithSubstitutionTypes(instantiatedTypes);
             }
             return newType;
         }
-
+        public LClass getDefiningClass()
+        {
+            if(this.definingClass == null)
+            {
+                this.definingClass = ScopeManager.getClassForType(this.getScope(), this);
+            }
+            this.rootIsDefined = this.definingClass != null;
+            return definingClass;
+        }
         public override String ToString()
         {
             string result = this.getName() + "[";
