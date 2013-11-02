@@ -14,14 +14,14 @@ namespace Leuterper.Constructions
         public List<LClass> classes { get; set; }
         public List<Function> functions { get; set; }
         public List<IAction> actions { get; set; }
-        public List<Var> vars { get; set; }
+        public List<IDeclaration> vars { get; set; }
         public Program(List<LClass> classes, List<Function>functions, List<IAction>actions) : base(0)
         {
             this.classes = classes;
             this.functions = functions;
             this.actions = actions;
 
-            this.vars = new List<Var>();
+            this.vars = new List<IDeclaration>();
 
             foreach(LClass c in StandardLibrary.specialClasses)
             {
@@ -109,10 +109,7 @@ namespace Leuterper.Constructions
         }
         public List<IDeclaration> getDeclarations()
         {
-            List<IDeclaration> result = new List<IDeclaration>();
-            this.vars.ForEach(v => result.Add(v));
-            return result;
+            return this.vars;
         }
-        
     }
 }

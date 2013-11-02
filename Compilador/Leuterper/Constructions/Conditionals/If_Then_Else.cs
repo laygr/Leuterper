@@ -32,23 +32,16 @@ namespace Leuterper.Constructions
 
         public override void generateCode(LeuterperCompiler compiler)
         {
-            this.booleanExpression.generateCode(compiler);
             MachineInstructions.JMPF jumpToElse = new MachineInstructions.JMPF();
+            MachineInstructions.JMPF endOfThen = new MachineInstructions.JMPF();
+
+            this.booleanExpression.generateCode(compiler);
             compiler.addAction(jumpToElse);
-            foreach(IAction action in this.thenActions)
-            {
-                action.generateCode(compiler);
-            }
-            jumpToElse.whereToJump = compiler.getIndexOfNextActionInCurrentFunction() + 1;
-
-            MachineInstructions.JMPF endOfThenJMP = new MachineInstructions.JMPF();
-            compiler.addAction(endOfThenJMP);
-
-            foreach (IAction action in this.elseActions)
-            {
-                action.generateCode(compiler);
-            }
-            endOfThenJMP.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
+            this.thenActions.ForEach(a => a.generateCode(compiler));
+            compiler.addAction(endOfThen);
+            jumpToElse.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
+            this.elseActions.ForEach(a => a.generateCode(compiler));
+            endOfThen.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
         }
     }
 }

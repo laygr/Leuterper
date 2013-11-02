@@ -126,7 +126,6 @@ namespace Leuterper
             }
             writer.Close();
         }
-
         public void addClassDefinition(int numberOfLAttributes)
         {
             this.classDefinitions.Add(numberOfLAttributes);
@@ -144,18 +143,15 @@ namespace Leuterper
                 this.functionActions[indexOfCurrentFunction].Add(action);
             }
         }
-
         public int getIndexOfNextActionInCurrentFunction()
         {
             int indexOfCurrentFunction = this.functionActions.Count() - 1;
             return this.functionActions[indexOfCurrentFunction].Count();
         }
-
         public void addLiteral(Literal literal)
         {
             this.literals.Add(literal);
         }
-
         public void assignIdentifierToClass(LClass c)
         {
             if (c is LClassSpecial) return;
@@ -170,7 +166,6 @@ namespace Leuterper
             p.identifier = this.proceduresCounter;
             this.proceduresCounter++;
         }
-
         public void printSymbols()
         {
             Console.WriteLine("Classes:");
@@ -195,7 +190,6 @@ namespace Leuterper
                 Console.ReadKey();
             }
         }
-
         public static String callToMain()
         {
             return "main(read());";
