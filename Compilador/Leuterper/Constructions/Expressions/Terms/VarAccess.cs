@@ -1,9 +1,5 @@
 ﻿using Leuterper.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -31,9 +27,12 @@ namespace Leuterper.Constructions
             return ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
         }
 
-        public override void secondPass(LeuterperCompiler compiler) { }
-        public override void thirdPass() { }
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void scopeSetting() { }
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsUnificationPass() { }
+        public override void classesGenerationPass() { }
+        public override void simplificationAndValidationPass() { }
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             int varIndex = ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
             if(varIndex == -1)

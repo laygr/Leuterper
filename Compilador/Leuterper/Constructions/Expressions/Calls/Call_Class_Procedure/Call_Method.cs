@@ -14,15 +14,23 @@ namespace Leuterper.Constructions
             : base(line, methodId, arguments)
         {
             this.theObject = theObject;
-        }
-        public override void secondPass(LeuterperCompiler compiler)
-        {
             this.arguments.Insert(0, theObject);
-            base.secondPass(compiler);
         }
-        public override void thirdPass()
+
+        public override void scopeSetting()
         {
-            theObject.thirdPass();
+            base.scopeSetting();
+            this.theObject.setScope(this.getScope());
+        }
+
+        public override void symbolsUnificationPass()
+        {
+            base.symbolsUnificationPass();
+            this.theObject.symbolsUnificationPass();
+        }
+        public override void classesGenerationPass()
+        {
+            theObject.classesGenerationPass();
         }
         public override Procedure getProcedureDefinition()
         {

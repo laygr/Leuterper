@@ -18,7 +18,7 @@ namespace Leuterper.Constructions
         {
             return "";
         }
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             compiler.addLiteral(new MachineInstructions.Literal("Void", encodeAsString()));
         }

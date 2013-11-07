@@ -9,17 +9,17 @@ public class TheParserConstants {
   public const int RP = 11;
   public const int LB = 12;
   public const int RB = 13;
-  public const int ASS = 14;
-  public const int C = 15;
-  public const int SC = 16;
-  public const int COMMA = 17;
+  public const int CLASS = 14;
+  public const int ASS = 15;
+  public const int C = 16;
+  public const int SC = 17;
   public const int DOT = 18;
-  public const int CLASS = 19;
-  public const int DO = 20;
-  public const int ELSE = 21;
-  public const int INH = 22;
-  public const int IF = 23;
-  public const int NULL = 24;
+  public const int DO = 19;
+  public const int IF = 20;
+  public const int COMMA = 21;
+  public const int ELSE = 22;
+  public const int NULL = 23;
+  public const int INH = 24;
   public const int NEW = 25;
   public const int RTN = 26;
   public const int WHILE = 27;
@@ -53,17 +53,17 @@ public class TheParserConstants {
     "\")\"",
     "\"[\"",
     "\"]\"",
+    "\"class\"",
     "\"=\"",
     "\":\"",
     "\";\"",
-    "\",\"",
     "\".\"",
-    "\"class\"",
     "\"do\"",
-    "\"else\"",
-    "\"inherits\"",
     "\"if\"",
+    "\",\"",
+    "\"else\"",
     "\"null\"",
+    "\"inherits\"",
     "\"new\"",
     "\"return\"",
     "\"while\"",

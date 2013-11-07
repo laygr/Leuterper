@@ -15,18 +15,26 @@ namespace Leuterper.Constructions
             this.booleanExpression = booleanExpression;
             this.thenActions = thenActions;
         }
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
             booleanExpression.shouldBePushedToStack = true;
             booleanExpression.setScope(this.getScope());
-            booleanExpression.secondPass(compiler);
-
-            foreach(IAction a in thenActions)
-            {
-                a.setScope(this.getScope());
-                a.secondPass(compiler);
-            }
+            this.thenActions.ForEach(a => a.setScope(this.getScope()));
         }
-        public override void thirdPass() { }
+        public override void symbolsRegistration(LeuterperCompiler compiler)
+        {
+            this.thenActions.ForEach(a => a.symbolsRegistration(compiler));
+        }
+        public override void symbolsUnificationPass()
+        {
+            this.booleanExpression.symbolsUnificationPass();
+            this.thenActions.ForEach(a => a.symbolsUnificationPass());
+        }
+        public override void classesGenerationPass()
+        {
+            this.booleanExpression.classesGenerationPass();
+            this.thenActions.ForEach(a => a.classesGenerationPass());
+        }
+        public override void simplificationAndValidationPass() { }
     }
 }

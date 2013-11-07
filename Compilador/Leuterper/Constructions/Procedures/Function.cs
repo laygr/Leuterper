@@ -1,9 +1,5 @@
-﻿using Leuterper.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -11,6 +7,8 @@ namespace Leuterper.Constructions
     {
          public Function(int line, LType type, String id, List<Parameter> parameters, List<IAction> actions)
              : base(line, type, id, parameters, actions)
-         { }
+         {
+             this.scopeSetting();
+         }
     }
 }

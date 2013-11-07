@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -10,11 +7,8 @@ namespace Leuterper.Constructions
     {
         public FunctionSpecial(int line, LType type, String id, List<Parameter> parameters, List<IAction> actions, int identifier)
              : base(line, type, id, parameters, actions)
-        {
-            this.identifier = identifier;
-        }
+        { this.identifier = identifier; }
 
-        public override void generateCode(LeuterperCompiler compiler)
-        { }
+        public override void codeGenerationPass(LeuterperCompiler compiler) { }
     }
 }

@@ -23,9 +23,11 @@ namespace Leuterper.Constructions
         }
 
         abstract public String encodeAsString();
-        public override void secondPass(LeuterperCompiler compiler) { }
-        public override void thirdPass() { }
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void scopeSetting() { }
+        public override void symbolsUnificationPass() { }
+        public override void classesGenerationPass() { }
+        public override void simplificationAndValidationPass() { }
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.literalIndex = compiler.literals.Count();
             if (this.shouldBePushedToStack)

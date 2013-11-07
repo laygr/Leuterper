@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
+using System;
 namespace Leuterper.Constructions
 {
     //Asignacion al attributo de un objeto.
@@ -17,26 +13,32 @@ namespace Leuterper.Constructions
             this.la = la;
             this.rhs = rhs;
         }
-
-
-        override public void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
-            la.setScope(this.getScope());
             la.willBeUsedForSet = true;
-            rhs.setScope(this.getScope());
+            this.getScope().addChild(la);
+
             rhs.shouldBePushedToStack = true;
-            la.secondPass(compiler);
-            rhs.secondPass(compiler);
+            this.getScope().addChild(rhs);
+        }
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        override public void symbolsUnificationPass()
+        {
+            la.symbolsUnificationPass();
+            rhs.symbolsUnificationPass();
         }
 
-        public override void thirdPass()
-        {
-        }
+        public override void classesGenerationPass() { }
+        public override void simplificationAndValidationPass() { }
 
-        override public void generateCode(LeuterperCompiler compiler)
+        override public void codeGenerationPass(LeuterperCompiler compiler)
         {
-            la.generateCode(compiler);
-            rhs.generateCode(compiler);
+            la.codeGenerationPass(compiler);
+            rhs.codeGenerationPass(compiler);
+            if(la.getLAttributeIndex() < 0)
+            {
+                Console.WriteLine();
+            }
             compiler.addAction(new MachineInstructions.Set(la.getLAttributeIndex()));
         }
 

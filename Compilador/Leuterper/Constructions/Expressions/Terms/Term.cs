@@ -10,5 +10,6 @@ namespace Leuterper.Constructions
     {
         public Term(int line) : base(line)
         { }
+       
     }
 }

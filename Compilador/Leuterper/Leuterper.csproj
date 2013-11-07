@@ -47,7 +47,8 @@
     <Compile Include="Constructions\Expressions\Calls\Call_Procedure.cs" />
     <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Constructor.cs" />
     <Compile Include="Constructions\Expressions\Terms\Objects\LVoid.cs" />
-    <Compile Include="Interfaces\IAction.cs" />
+    <Compile Include="Constructions\Procedures\Class_Procedure\ConstructorSpecial.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="Constructions\Assignment.cs" />
     <Compile Include="Constructions\Conditionals\Conditional.cs" />
     <Compile Include="Constructions\Conditionals\If_Then_Else.cs" />
@@ -77,18 +78,12 @@
     <Compile Include="Constructions\Declaration\Parameter.cs" />
     <Compile Include="Constructions\Program.cs" />
     <Compile Include="Constructions\LType.cs" />
-    <Compile Include="Interfaces\IDeclaration.cs" />
-    <Compile Include="Interfaces\IDefinition.cs" />
     <Compile Include="Constructions\Definition_Classes\LClass.cs" />
     <Compile Include="Constructions\Procedures\Function.cs" />
     <Compile Include="Constructions\Procedures\Class_Procedure\Method.cs" />
     <Compile Include="Constructions\Procedures\FunctionSpecial.cs" />
-    <Compile Include="Interfaces\IRedefinable.cs" />
-    <Compile Include="Interfaces\ISignable.cs" />
-    <Compile Include="Interfaces\IConstruction.cs" />
     <Compile Include="Exceptions\SemanticErrorException.cs" />
-    <Compile Include="Interfaces\ICompilable.cs" />
-    <Compile Include="Utils\MachineInstructions.cs" />
+    <Compile Include="MachineInstructions.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\SimpleCharStream.cs" />
     <Compile Include="Parser\TheParser.cs" />
@@ -98,10 +93,12 @@
     <Compile Include="Parser\TokenMgrError.cs" />
     <Compile Include="LeuterperCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Interfaces\IScope.cs" />
-    <Compile Include="Utils\ScopeManager.cs" />
-    <Compile Include="Utils\StandardLibrary.cs" />
-    <Compile Include="Utils\UtilFunctions.cs" />
+    <Compile Include="ScopeManager.cs" />
+    <Compile Include="StandardLibrary.cs" />
+    <Compile Include="UtilFunctions.cs" />
+    <Compile Include="VariableIndexFindStrategies\VariableIndexFindStrategy.cs" />
+    <Compile Include="VariableIndexFindStrategies\VariableInsideClass.cs" />
+    <Compile Include="VariableIndexFindStrategies\VariableNotInsideAClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,9 +1,4 @@
 ﻿using Leuterper.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -19,28 +14,38 @@ namespace Leuterper.Constructions
             this.rhs = rhs;
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
-            lhs.setScope(this.getScope());
-            rhs.setScope(this.getScope());
             rhs.shouldBePushedToStack = true;
-            lhs.secondPass(compiler);
-            rhs.secondPass(compiler);
+            this.getScope().addChild(lhs);
+            this.getScope().addChild(rhs);
+        }
+
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+
+        public override void symbolsUnificationPass()
+        {
+            this.scopeSetting();
+            lhs.symbolsUnificationPass();
+            rhs.symbolsUnificationPass();
+        }
+
+        public override void classesGenerationPass()
+        {
+            this.lhs.classesGenerationPass();
+            this.rhs.classesGenerationPass();
+        }
+        public override void simplificationAndValidationPass()
+        {
             if (!rhs.getType().typeOrSuperTypeUnifiesWith(lhs.getType()))
             {
                 throw new SemanticErrorException("Type mismatch", this.getLine());
             }
         }
 
-        public override void thirdPass()
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            this.lhs.thirdPass();
-            this.rhs.thirdPass();
-        }
-
-        public override void generateCode(LeuterperCompiler compiler)
-        {
-            rhs.generateCode(compiler);
+            rhs.codeGenerationPass(compiler);
             compiler.addAction(new MachineInstructions.Assignment(lhs.getIndex()));
         }
     }

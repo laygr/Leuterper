@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Leuterper.Constructions;
 
 namespace Leuterper
 {
-    interface IAction : IConstruction
+    abstract class VariableIndexFindStrategy
     {
+        public abstract int getVariableIndex(LType type);
     }
 }

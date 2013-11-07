@@ -14,7 +14,7 @@ namespace Leuterper.Constructions
 
         public LList(int line, LType type, List<Expression> elements) : base(line)
         {
-            this.instanceType= type;
+            this.instanceType = new LType(line, "List", new List<LType>(new LType[]{type}));
             this.elements = elements;
 
             foreach(Expression e in elements)
@@ -26,6 +26,11 @@ namespace Leuterper.Constructions
                     Environment.Exit(0);
                 }
             }
+        }
+
+        public override void scopeSetting()
+        {
+            this.elements.ForEach(e => e.setScope(this.getScope()));
         }
 
         override public LType getType()
@@ -44,17 +49,13 @@ namespace Leuterper.Constructions
 
         public override string encodeAsString()
         {
-            
-            throw new NotImplementedException();
+            return String.Format("{0}", this.elements.Count());
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
-        { }
-
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            base.generateCode(compiler);
-            compiler.addLiteral(new MachineInstructions.Literal("list", this.encodeAsString()));
+            base.codeGenerationPass(compiler);
+            compiler.addLiteral(new MachineInstructions.Literal("List", this.encodeAsString()));
         }
     }
 }

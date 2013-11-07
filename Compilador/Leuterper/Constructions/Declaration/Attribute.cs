@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
     class LAttribute : Declaration, IRedefinable<LAttribute>
     {
-        public LAttribute(int line, LType type, String name) : base(line, type, name) { }
-
-        public override void secondPass(LeuterperCompiler compiler)
+        public LAttribute(int line, LType type, String name) : base(line, type, name)
         {
-            base.secondPass(compiler);
+        }
+
+        public override void scopeSetting()
+        {
+            base.scopeSetting();
             this.getType().setShouldStartRedefinition(true);
+        }
+
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+
+        public override void symbolsUnificationPass()
+        {
+            base.symbolsUnificationPass();
         }
 
         public LAttribute redefineWithSubstitutionTypes(List<LType> instantiatedTypes)

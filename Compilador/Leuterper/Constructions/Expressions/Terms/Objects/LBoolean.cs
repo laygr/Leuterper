@@ -27,14 +27,10 @@ namespace Leuterper.Constructions
             return this.value ? "1" : "0";
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
-        {
-            
-        }
 
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            base.generateCode(compiler);
+            base.codeGenerationPass(compiler);
             compiler.addLiteral(new MachineInstructions.Literal("Boolean", this.encodeAsString()));
         }
     }

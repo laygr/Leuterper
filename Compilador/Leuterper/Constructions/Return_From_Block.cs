@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leuterper.Constructions
+﻿namespace Leuterper.Constructions
 {
     class Return_From_Block : Construction, IAction
     {
@@ -13,16 +7,24 @@ namespace Leuterper.Constructions
         {
             this.returningExpression = returningExpression;
         }
-        public override void secondPass(LeuterperCompiler compiler)
+
+        public override void scopeSetting()
         {
             this.returningExpression.shouldBePushedToStack = true;
-            this.returningExpression.setScope(this.getScope());
-            this.returningExpression.secondPass(compiler);
+            this.getScope().addChild(this.returningExpression);
         }
-        public override void thirdPass(){ }
-        public override void generateCode(LeuterperCompiler compiler)
+
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+
+        public override void symbolsUnificationPass()
         {
-            returningExpression.generateCode(compiler);
+            this.returningExpression.symbolsUnificationPass();
+        }
+        public override void classesGenerationPass(){ }
+        public override void simplificationAndValidationPass() { }
+        public override void codeGenerationPass(LeuterperCompiler compiler)
+        {
+            returningExpression.codeGenerationPass(compiler);
             compiler.addAction(new MachineInstructions.Rtn());
         }
     }

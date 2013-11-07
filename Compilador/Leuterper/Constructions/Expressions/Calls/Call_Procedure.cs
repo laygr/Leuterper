@@ -1,9 +1,6 @@
 ﻿using Leuterper.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -27,26 +24,37 @@ namespace Leuterper.Constructions
 
         public int getProcedureIdentifier()
         {
-            return this.getProcedureDefinition().identifier;
+            Procedure p = this.getProcedureDefinition();
+            if (p == null)
+            { 
+                throw new SemanticErrorException(
+                    String.Format("Called inexistent procedure: {0}\n With types: {1}",
+                        this.procedureName,
+                        LType.listOfTypesAsString(Expression.expressionsToTypes(this.arguments))),
+                    this.getLine());
+            }
+            return p.identifier;
         }
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
-            foreach(Expression e in arguments)
+            foreach (Expression e in arguments)
             {
                 e.setScope(this.getScope());
                 e.shouldBePushedToStack = true;
-                e.secondPass(compiler);
+                e.scopeSetting();
             }
         }
-        public override void thirdPass()
+        public override void symbolsUnificationPass()
         {
+            this.arguments.ForEach(a => a.symbolsUnificationPass());
         }
-
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void classesGenerationPass() { }
+        public override void simplificationAndValidationPass() { }
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             foreach(Expression argument in arguments)
             {
-                argument.generateCode(compiler);
+                argument.codeGenerationPass(compiler);
             }
             if (this.shouldBePushedToStack)
             {

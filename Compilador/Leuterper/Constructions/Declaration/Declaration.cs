@@ -17,18 +17,9 @@ namespace Leuterper.Constructions
             this.type = type;
             this.name = name;
         }
-        public string getName()
-        {
-            return this.name;
-        }
-        public LType getType()
-        {
-            return this.type;
-        }
-        public void setType(LType type)
-        {
-            this.type = type;
-        }
+        public string getName()  {  return this.name; }
+        public LType getType() {  return this.type; }
+        public void setType(LType type) { this.type = type; }
         virtual public bool HasSameSignatureAs(IDeclaration otherElement)
         {
             return
@@ -36,16 +27,20 @@ namespace Leuterper.Constructions
                 &&
                 this.getName().Equals(otherElement.getName());
         }
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
             this.getType().setScope(this.getScope());
-            this.getType().secondPass(compiler);
         }
-        public override void thirdPass()
+        public override void symbolsUnificationPass()
+        {
+            this.getType().symbolsUnificationPass();
+        }
+        public override void classesGenerationPass()
         {   
-            this.type.thirdPass();
+            this.type.classesGenerationPass();
         }
-        public override void generateCode(LeuterperCompiler compiler) { }
+        public override void simplificationAndValidationPass() { }
+        public override void codeGenerationPass(LeuterperCompiler compiler) { }
         public override String ToString()
         {
             return String.Format("{0} {1}", this.getType().SignatureAsString(), this.getName());

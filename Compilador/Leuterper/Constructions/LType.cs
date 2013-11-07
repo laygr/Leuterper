@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Leuterper;
 
 namespace Leuterper.Constructions
 {
@@ -12,11 +11,13 @@ namespace Leuterper.Constructions
         private String name { get; set; }
         public List<LType> typeVariables { get; set; }
         public LType parentType { get; set; }
+        public LType ownerType;
         public Boolean rootIsDefined { get; set; }
         public Boolean isCompletelyDefined { get; set; }
         private LClass definingClass { get; set; }
         public int typeVariableIndex;
         private Boolean shouldRedefineItsClass;
+        public VariableIndexFindStrategy strategy;
 
 
         public LType(int line, String name, List<LType> typeVariables, LType parentType) : base(line)
@@ -25,6 +26,7 @@ namespace Leuterper.Constructions
             this.isCompletelyDefined = false;
             this.typeVariables = typeVariables;
             typeVariables.ForEach(tv => tv.isCompletelyDefined = false);
+            typeVariables.ForEach(tv => tv.ownerType = this);
             this.parentType = parentType;
             if (this.parentType == null && (!this.getName().Equals("Object") || this.getName().Equals("Void")))
             {
@@ -52,14 +54,6 @@ namespace Leuterper.Constructions
         public static List<Parameter> typesToParameters(List<LType> types)
         {
             return types.ConvertAll(new Converter<LType, Parameter>(typeToParameter));
-        }
-        public override void setScope(IScope scope)
-        {
-            base.setScope(scope);
-            if (this.parentType != null)
-            {
-                this.parentType.setScope(scope);
-            }
         }
         public static String listOfTypesAsString(List<LType> types)
         {
@@ -137,15 +131,31 @@ namespace Leuterper.Constructions
             return true;
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
+        {
+            this.typeVariables.ForEach(tv => this.getScope().addChild(tv));
+            if(this.getScope() == null)
+            {
+                Console.WriteLine("WTF");
+            }
+            if (this.parentType != null)
+            {
+                this.getScope().addChild(this.parentType);
+            }
+        }
+
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+
+        public override void symbolsUnificationPass()
         {
             this.definingClass = this.getDefiningClass();
-
-            foreach (LType vt in this.typeVariables)
+            if (this.definingClass != null)
             {
-                vt.setScope(this.getScope());
-                vt.secondPass(compiler);
+                this.parentType = this.definingClass.getType().parentType;
             }
+
+            this.scopeSetting();
+            this.typeVariables.ForEach(tv => tv.symbolsUnificationPass());
 
             if (this.rootIsDefined)
             {
@@ -161,47 +171,27 @@ namespace Leuterper.Constructions
             }
             else
             {
-                findVariableTypeIndex();
+                this.typeVariableIndex = this.strategy.getVariableIndex(this);
             }
+
             if (this.parentType != null)
             {
-                this.parentType.setScope(this.getScope());
-                this.parentType.secondPass(compiler);
+                this.parentType.symbolsUnificationPass();
             }
         }
-        public override void thirdPass()
+        public override void classesGenerationPass()
         {
             if (this.shouldRedefineItsClass)
             {
                 this.redefineWithSubstitutionTypes(this.typeVariables);
             }
         }
-        public void findVariableTypeIndex()
-        {
-            if (this.rootIsDefined) return;
-            LClass classScope = ScopeManager.getClassScope(this.getScope());
-            if(classScope == null)
-            {
-                throw new SemanticErrorException("Used undeclared type: " + this, this.getLine());
-            }
-            List<LType> classTypeVariables = classScope.getType().typeVariables;
-
-            for(int i = 0; i < classTypeVariables.Count(); i++)
-            {
-                if(classTypeVariables[i].getName().Equals(this.getName()))
-                {
-                    this.typeVariableIndex = i;
-                    return;
-                }
-            }
-            throw new SemanticErrorException("Type variable undeclared: " + this.getName(), this.getLine());
-        }
-
+        public override void simplificationAndValidationPass() { }
         public string getName()
         {
             return this.name;
         }
-        public override void generateCode(LeuterperCompiler compiler) { }
+        public override void codeGenerationPass(LeuterperCompiler compiler) { }
 
         public void setShouldStartRedefinition(Boolean shouldBeRedefined)
         {
@@ -240,6 +230,10 @@ namespace Leuterper.Constructions
         {
             if(this.isCompletelyDefined) return this;
             LType result = this.clone();
+            if(this.typeVariableIndex == -1 && !this.rootIsDefined)
+            {
+                Console.WriteLine();
+            }
             if (!result.rootIsDefined) return instantiatedTypes[this.typeVariableIndex];
             for(int i = 0; i < this.typeVariables.Count(); i++)
             {
@@ -250,7 +244,7 @@ namespace Leuterper.Constructions
         }
         public LType redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
-            if (this.isCompletelyDefined) return this;
+            if (this.definingClass.getType().isCompletelyDefined) return this;
             LType newType = this;
             if (!this.rootIsDefined)
             {
@@ -274,6 +268,23 @@ namespace Leuterper.Constructions
             }
             this.rootIsDefined = this.definingClass != null;
             return definingClass;
+        }
+
+        public override void setScope(IScope scope)
+        {
+            base.setScope(scope);
+            if (this.parentType != null)
+            {
+                this.parentType.setScope(scope);
+            }
+            if(ScopeManager.getClassScope(scope) == null)
+            {
+                this.strategy = new VariableNotInsideAClass();
+            }
+            else
+            {
+                this.strategy = new VariableInsideClass();
+            }
         }
         public override String ToString()
         {

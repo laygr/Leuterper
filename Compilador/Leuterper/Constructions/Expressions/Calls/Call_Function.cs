@@ -1,9 +1,5 @@
-﻿using Leuterper.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -11,7 +7,9 @@ namespace Leuterper.Constructions
     {
         public Call_Function(int line, String procedureName, List<Expression> arguments)
             : base(line, procedureName, arguments)
-        { }
+        {
+            this.scopeSetting();
+        }
 
         public override Procedure getProcedureDefinition()
         {

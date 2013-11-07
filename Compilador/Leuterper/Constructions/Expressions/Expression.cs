@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -20,6 +17,7 @@ namespace Leuterper.Constructions
         {
             return expression.ConvertAll(new Converter<Expression, LType>(expresionToType));
         }
+        public override void symbolsRegistration(LeuterperCompiler compiler) { }
         
     }
 }

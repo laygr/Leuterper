@@ -32,17 +32,21 @@ namespace Leuterper.Constructions
             return c.getTypeOfLAttribute(this.getLAttributeIndex());
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
-            theObject.setScope(this.getScope());
-            theObject.secondPass(compiler);
+            this.theObject.setScope(this.getScope());
         }
-        public override void thirdPass() { }
+        public override void symbolsUnificationPass()
+        {
+            theObject.symbolsUnificationPass();
+        }
+        public override void classesGenerationPass() { }
+        public override void simplificationAndValidationPass() { }
 
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             if (!this.shouldBePushedToStack) return;
-            theObject.generateCode(compiler);
+            theObject.codeGenerationPass(compiler);
             if (!this.willBeUsedForSet)
             {
                 LClass c = this.theObject.getType().getDefiningClass();

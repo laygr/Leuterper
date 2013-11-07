@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -17,13 +14,13 @@ namespace Leuterper.Constructions
             return this.getScope() as LClass;
         }
 
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void symbolsUnificationPass()
         {
             LClass aClass = this.getClass();
-            this.parameters.Insert(0, new Parameter(this.getLine(), aClass.getType(), "this"));
-            base.secondPass(compiler);
+            Parameter _this = new Parameter(this.getLine(), aClass.getType(), "this");
+            _this.setScope(this);
+            this.parameters.Insert(0, _this);
+            base.symbolsUnificationPass();
         }
-
-        
     }
 }

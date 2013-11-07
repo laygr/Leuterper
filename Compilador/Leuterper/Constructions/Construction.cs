@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
+using System;
 namespace Leuterper.Constructions
 {
     abstract class Construction : IConstruction, ICompilable
@@ -25,15 +21,20 @@ namespace Leuterper.Constructions
         virtual public void setScope(IScope scope)
         {
             this.scope = scope;
+            this.scopeSetting();
         }
 
         public IScope getScope()
         {
             return this.scope;
         }
+        public abstract void scopeSetting();
+        public abstract void symbolsRegistration(LeuterperCompiler compiler);
+        public abstract void symbolsUnificationPass();
+        public abstract void classesGenerationPass();
+        public abstract void simplificationAndValidationPass();
+        public abstract void codeGenerationPass(LeuterperCompiler compiler);
 
-        public abstract void secondPass(LeuterperCompiler compiler);
-        public abstract void thirdPass();
-        public abstract void generateCode(LeuterperCompiler compiler);
+
     }
 }

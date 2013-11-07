@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Leuterper.Constructions
 {
@@ -20,7 +16,6 @@ namespace Leuterper.Constructions
             this.identifier = classIdentifier;
         }
 
-        public override void generateCode(LeuterperCompiler compiler)
-        { }
+        public override void codeGenerationPass(LeuterperCompiler compiler) { }
     }
 }

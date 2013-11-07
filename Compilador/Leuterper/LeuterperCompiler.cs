@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Leuterper.Constructions;
+using Leuterper.MachineInstructions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Leuterper.Constructions;
-using Leuterper.MachineInstructions;
 
 namespace Leuterper
 {
@@ -20,8 +18,8 @@ namespace Leuterper
 
         public bool compilingTopLeveIActions;
 
-        public int classesCounter = StandardLibrary.specialClasses.Count();
-        private int proceduresCounter = StandardLibrary.specialMethods.Count() + StandardLibrary.standardFunctions.Count();
+        public int classesCounter;
+        private int proceduresCounter;
 
         public List<int> classDefinitions;
         public List<int> functionsParameters;
@@ -29,9 +27,15 @@ namespace Leuterper
         public List<MachineInstructions.Literal> literals;
         public List<MachineInstructions.MachineInstruction> topLeveIActions;
 
-
+        StandardLibrary standradLibrary;
         public LeuterperCompiler(String filePath)
         {
+            StandardLibrary.singleton = new StandardLibrary();
+            this.standradLibrary = StandardLibrary.singleton;
+            this.classesCounter = this.standradLibrary.standardClasses.Count();
+            this.proceduresCounter = this.standradLibrary.standardProcedures.Count() + this.standradLibrary.standardFunctions.Count();
+                
+
             this.globalVariablesCounter = 0;
             this.mostVaribalesInAFunction = 3;
             this.compilingTopLeveIActions = false;
@@ -49,10 +53,11 @@ namespace Leuterper
         public void compile()
         {
             parse();
-            program.secondPass(this);
-            program.thirdPass();
-            //program.getScopeManager().validate();
-            program.generateCode(this);
+            program.symbolsRegistration(this);
+            program.symbolsUnificationPass();
+            program.classesGenerationPass();
+            program.simplificationAndValidationPass();
+            program.codeGenerationPass(this);
             printGeneratedCode();
             printSymbols();
 
@@ -76,7 +81,7 @@ namespace Leuterper
             }
             catch (FileNotFoundException e)
             {
-                throw new Exception("File not found");
+                throw e;
             }
             finally
             {
@@ -92,6 +97,14 @@ namespace Leuterper
         public void printGeneratedCode()
         {
             StreamWriter writer = new StreamWriter("out.txt");
+            
+            writer.WriteLine(this.literals.Count());
+            writer.WriteLine(this.globalVariablesCounter);
+            writer.WriteLine(this.mostVaribalesInAFunction);
+            foreach (MachineInstructions.Literal literal in this.literals)
+            {
+                writer.WriteLine(literal);
+            }
 
             writer.WriteLine(this.classDefinitions.Count());
             for (int i = 0; i < this.classDefinitions.Count(); i++)
@@ -111,19 +124,12 @@ namespace Leuterper
                 }
             }
 
-            writer.WriteLine(this.literals.Count());
-            writer.WriteLine(this.globalVariablesCounter);
-            writer.WriteLine(this.mostVaribalesInAFunction);
-            foreach (MachineInstructions.Literal literal in this.literals)
-            {
-                writer.WriteLine(literal);
-            }
-
             writer.WriteLine(this.topLeveIActions.Count());
             foreach (MachineInstruction m in this.topLeveIActions)
             {
                 writer.WriteLine(m);
             }
+
             writer.Close();
         }
         public void addClassDefinition(int numberOfLAttributes)
@@ -161,7 +167,7 @@ namespace Leuterper
         }
         public void assignIdentifierToProcedure(Procedure p)
         {
-            if (p is FunctionSpecial || p is MethodSpecial) return;
+            if (p is FunctionSpecial || p is MethodSpecial || p is ConstructorSpecial) return;
 
             p.identifier = this.proceduresCounter;
             this.proceduresCounter++;
@@ -176,7 +182,6 @@ namespace Leuterper
 
         public static void Main(String[] args)
         {
-            //StandardLibrary.initializeStandardLibrary();
             try
             {
                 Console.WriteLine("Introduzca el nombre del archivo a compilar.");

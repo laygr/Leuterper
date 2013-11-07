@@ -1,13 +1,43 @@
-class Matrix[X]
+class Matrix[X] inherits List[List[X]]
 {
-	List[List[X]] rows;
+	Matrix() {
+		return this;
+	}
 
-	X getElement(Number row, Number column)
+	X get(Number row, Number column)
 	{
-		return this.rows.get(row).get(column);
+		return this.get(row).get(column);
+	}
+
+	Void set(Number row, Number column, X element)
+	{
+		this.get(row).set(column, element);
+	}
+}
+
+Number fib(Number n)
+{
+	if n == 0 { return 0; }
+	if n < 3
+	{
+		return 1;
+	}
+	else
+	{
+		return fib(n - 1) + fib( n - 2);
 	}
 }
 
 Void main(String args)
 {
+	Matrix[Number] m = new Matrix[Number]();
+	List[Number] row1 = {1, 2, 3} : Number;
+	List[Number] row2 = {4, 5, 6} : Number;
+	List[Number] row3 = {7, 8, 9} : Number;
+
+	m.add(row1);
+	m.add(row2);
+	m.add(row3);
+
+	write(fib(100).toString());
 }

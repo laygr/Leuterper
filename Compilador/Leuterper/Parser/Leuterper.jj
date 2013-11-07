@@ -9,10 +9,7 @@ PARSER_BEGIN(TheParser)
   using Leuterper.Constructions;
   using Leuterper.Exceptions;
 
-  // A few nested classes to make things simpler
-  class TheParser{
-    
-  }
+  class TheParser { }
 
 PARSER_END(TheParser)
 
@@ -23,29 +20,8 @@ public Program parse_Program() :
 	List<IAction> actions = new List<IAction>();
 }
 {
-	parse_Classes(classes)
-	parse_Functions(functions)
-	parse_IActions(actions)
-
+	parse_Classes(classes) parse_Functions(functions) parse_IActions(actions)
 	{ return new Program(classes, functions, actions); }
-}
-
-public void parse_Classes(List<LClass> classes) :
-{
-	LClass aClass;
-}
-{
-	(
-		aClass = parse_Class() { classes.Add(aClass); }
-	)*
-}
-
-public void parse_Functions(List<Function> functions) :
-{
-	Function f;
-}
-{
-	f = parse_Function() { functions.Add(f); }
 }
 
 public Function parse_Function() :
@@ -56,14 +32,8 @@ public Function parse_Function() :
 	List<IAction> actions = new List<IAction>();
 }
 {
-	type = parse_LType()
-	id = parse_SID()
-	<LP>
-	parse_Parameters(parameters)
-	<RP>
-	<LC>
-	parse_IActions(actions)
-	<RC>
+	type = parse_LType() id = parse_SID() <LP> parse_Parameters(parameters) <RP>
+	<LC> parse_IActions(actions) <RC>
 	{ return new Function(id.beginLine, type, id.image, parameters, actions); }
 }
 
@@ -86,19 +56,6 @@ public LClass parse_Class() :
 	{ return new LClass(c.beginLine, type, declarationInheritance, LAttributesDeclarations, classProcedures); }
 }
 
-public void parse_Class_Procedures(List<Class_Procedure> classProcedures) :
-{
-	Class_Procedure classProcedure;
-}
-{
-	(
-		LOOKAHEAD(parse_Method())
-		classProcedure = parse_Method() { classProcedures.Add(classProcedure); }
-		|
-		classProcedure = parse_Constructor() { classProcedures.Add(classProcedure); }
-	)*
-}
-
 public Constructor parse_Constructor() :
 {
 	Token id;
@@ -111,9 +68,7 @@ public Constructor parse_Constructor() :
 	<LP>
 	parse_Parameters(parameters)
 	<RP>
-	[
-		<C> <LP> parse_Arguments(baseCallArguments) <RP>
-	]
+	[ <C> <LP> parse_Arguments(baseCallArguments) <RP> ]
 	<LC>
 	parse_IActions(actions)
 	<RC>
@@ -128,43 +83,20 @@ public Method parse_Method() :
 	List<IAction> actions = new List<IAction>();
 }
 {
-
 	type = parse_LType()
-	(
-		id = parse_SID()
-	|
-		id = <SYMBOLS>
+	(	id = parse_SID()
+	|	id = <SYMBOLS>
 	)
-	
-	<LP>
-	parse_Parameters(parameters)
-	<RP>
-	<LC>
-	parse_IActions(actions)
-	<RC>
+	<LP> parse_Parameters(parameters) <RP>
+	<LC> parse_IActions(actions) <RC>
 	{ return new Method(id.beginLine, type, id.image, parameters, actions); }
 }
 
 public LType parse_Inheritance() :
+	{ LType type; }
 {
-	LType type;
-	Token inh;
-}
-{
-	inh = <INH>
-	type = parse_LType()
+	<INH> type = parse_LType()
 	{ return type; }
-}
-
-public void parse_LAttributes(List<LAttribute> LAttributesDeclarations) :
-{
-	LAttribute LAttributeDeclaration;
-}
-{
-	(
-		LOOKAHEAD(parse_LAttribute())
-		LAttributeDeclaration = parse_LAttribute() { LAttributesDeclarations.Add(LAttributeDeclaration); }
-	)*
 }
 
 public LAttribute parse_LAttribute() :
@@ -190,37 +122,23 @@ public Var parse_Var() :
 	type = parse_LType()
 	id = parse_SID()
 	(
-		<ASS>
-		expression = parse_Expression()
-		<SC>
-		{ return new Var(id.beginLine, type, id.image, expression); }
+		(
+			<ASS>
+			expression = parse_Expression()
+			{ return new Var(id.beginLine, type, id.image, expression); }
+		)
 		|
-		<SC>
 		{ return new Var(id.beginLine, type, id.image); }
 	)
 }
 
 public Token parse_BID() :
-{
-	Token id;
-}
-{
-	id = <BID>
-	{
-		return id;
-	}
-}
+	{ Token id; }
+	{ id = <BID> { return id; } }
 
 public Token parse_SID() :
-{
-	Token id;
-}
-{
-	id = <SID>
-	{
-		return id;
-	}
-}
+	{ Token id; }
+	{ id = <SID> { return id; }}
 
 public Assignment parse_Assignment() :
 {
@@ -241,31 +159,15 @@ public IAction parse_IAction() :
 }
 {
 	(
-		action = parse_Var() <SC>
-		|
-		LOOKAHEAD(parse_LSet())
-		(
-			action = parse_LSet() <SC>
-		)
-		|
-		LOOKAHEAD(parse_Assignment())
-		(
-			action = parse_Assignment() <SC>
-		)
-		|
-		(
-			action = parse_Expression() <SC>
-		)
-		|
-		(
-			action = parse_Conditional()
-		)
-		|
-		(
-			action = parse_Return_From_Block() <SC>
-		)
+			action = parse_Var() <SC>
+		|	LOOKAHEAD(parse_LSet())
+			(	action = parse_LSet() <SC> )
+		|	LOOKAHEAD(parse_Assignment())
+			(	action = parse_Assignment() <SC> )
+		|	(	action = parse_Expression() <SC> )
+		|	(	action = parse_Conditional() )
+		|	(	action = parse_Return_From_Block() <SC> )
 	)
-
 	{ return action; }
 }
 
@@ -280,24 +182,8 @@ public Return_From_Block parse_Return_From_Block() :
 	{ return new Return_From_Block(rin.beginLine, returningExpression); }
 }
 
-public void parse_Arguments(List<Expression> arguments) :
-{
-	Expression expression;	
-}
-{
-	[
-		expression = parse_Expression() { arguments.Add(expression); }
-		(
-			<COMMA>
-			expression = parse_Expression() { arguments.Add(expression); }
-		)*
-	]
-}
-
 public Expression parse_Expression() :
-{
-	Expression result;
-}
+	{ Expression result; }
 {
 	(
 		LOOKAHEAD(parse_CExpression())
@@ -309,40 +195,21 @@ public Expression parse_Expression() :
 }
 
 public Expression parse_GExpression() :
+	{ Expression expression; }
 {
-	Expression expression;
-}
-{
-	(
-		LOOKAHEAD(parse_Call_Function())
-		(
-			expression = parse_Call_Function()
-		)
-		|
-			expression = parse_Call_Constructor()
-		|
-		LOOKAHEAD(parse_Term())
-		(
-			expression = parse_Term()
-		)
-		|
-		(
-			<LP>
-			expression = parse_Expression()
-			<RP>
-		)
-		|
-		(
-			expression = parse_Null()
-		)
+	(	LOOKAHEAD(parse_Call_Function())
+		expression = parse_Call_Function()
+	|	expression = parse_Call_Constructor()
+	|	LOOKAHEAD(parse_Term())
+		expression = parse_Term()
+	|	( <LP> expression = parse_Expression() <RP>	)
+	|	expression = parse_Null()
 	)
 	{ return expression; }
 }
 
 public Expression parse_CExpression() :
-{
-	Expression ground;
-}
+	{ Expression ground; }
 {
 	ground = parse_GExpression()
 	(
@@ -357,9 +224,7 @@ public Expression parse_CExpression() :
 }
 
 public LAttributeAccess parse_AAExpression() :
-{
-	Expression ground;
-}
+	{ Expression ground; }
 {
 	ground = parse_GExpression()
 	(
@@ -389,10 +254,7 @@ public LSet parse_LSet() :
 }
 
 public LAttributeAccess parse_LAttributeAccess(Expression theObject) :
-{
-	
-	Token LAttributeName;
-}
+	{ Token LAttributeName; }
 {
 	<DOT>
 	LAttributeName = parse_SID() {  return new LAttributeAccess(LAttributeName.beginLine, theObject, LAttributeName.image); }
@@ -438,27 +300,18 @@ public Call_Method parse_Call_Method(Expression theObject) :
 }
 
 public Term parse_Term() :
+{ Term term; }
 {
-	Term term;
-}
-{
-	(
-		LOOKAHEAD(parse_VarAccess())
+	(	LOOKAHEAD(parse_VarAccess())
 		term = parse_VarAccess()
-		|
-		term = parse_LObject()
+	|	term = parse_LObject()
 	)
-
 	{ return term; }
 }
 
 public VarAccess parse_VarAccess() :
-{
-	Token id;
-}
-{
-	id = parse_SID() { return new VarAccess(id.beginLine, id.image); }
-}
+	{ Token id; }
+	{ id = parse_SID() { return new VarAccess(id.beginLine, id.image); } }
 
 public Call_Constructor parse_Call_Constructor() :
 {
@@ -475,22 +328,14 @@ public Call_Constructor parse_Call_Constructor() :
 }
 
 public LObject parse_LObject() :
+	{ LObject theObject; }
 {
-	LObject theObject;
-}
-{
-	(
-	theObject = parse_LNumber()
-	|
-	theObject = parse_LString()
-	|
-	theObject = parse_LChar()
-	|
-	theObject = parse_LList()
-	|
-	theObject = parse_LBoolean()
+	(	theObject = parse_LNumber()
+	|	theObject = parse_LString()
+	|	theObject = parse_LChar()
+	|	theObject = parse_LList()
+	|	theObject = parse_LBoolean()
 	)
-
 	{ return theObject; }
 }
 
@@ -500,7 +345,6 @@ public LNumber parse_LNumber() :
 	Token sign = null;
 }
 {
-
 	(
 		LOOKAHEAD(<S> <NUMBER>)
 		sign = <S>
@@ -509,25 +353,19 @@ public LNumber parse_LNumber() :
 }
 
 public LChar parse_LChar() :
-{
-	Token aChar;
-}
+	{ Token aChar; }
 {
 	aChar = <CHAR> { return new LChar(aChar.beginLine, aChar.image); }
 }
 
 public LString parse_LString() :
-{
-	Token aString;
-}
+	{ Token aString; }
 {
 	aString = <STRING> { return new LString(aString.beginLine, aString.image); }
 }
 
 public LBoolean parse_LBoolean() :
-{
-	Token boolean;
-}
+	{ Token boolean; }
 {
 	boolean = <BOOL> { return new LBoolean(boolean.beginLine, boolean.image); }
 }
@@ -536,16 +374,11 @@ public LList parse_LList() :
 {
 	LType type;
 	List<Expression> elements = new List<Expression>() ;
-	Token lb;
+	Token lc;
 }
 {
-	
-	lb = <LB>
-	parse_Arguments(elements)
-	<RB>
-	<C>
-	type = parse_LType()
-	{ return new LList(lb.beginLine, type, elements); }
+	lc = <LC> parse_Arguments(elements) <RC> <C> type = parse_LType()
+	{ return new LList(lc.beginLine, type, elements); }
 }
 
 public Loop_Do_While parse_Loop_Do_While() :
@@ -556,23 +389,9 @@ public Loop_Do_While parse_Loop_Do_While() :
 }
 {
 	ldo = <DO>
-	<LC>
-	parse_IActions(actions)
-	<RC>
-	<WHILE>
-	expression = parse_Expression()
-	<SC>
+	<LC> parse_IActions(actions) <RC>
+	<WHILE> expression = parse_Expression() <SC>
 	{ return new Loop_Do_While(ldo.beginLine, expression, actions); }
-}
-
-public void parse_IActions(List<IAction> actions) :
-{
-	IAction action;
-}
-{
-	(
-		action = parse_IAction() { actions.Add(action); }
-	)*
 }
 
 public Loop_While parse_Loop_While() :
@@ -591,16 +410,11 @@ public Loop_While parse_Loop_While() :
 }
 
 public Conditional parse_Conditional() :
+	{ Conditional conditional; }
 {
-	Conditional conditional;
-}
-{
-	(
-		conditional = parse_If_Then_Else()
-		|
-		conditional = parse_Loop_While()
-		|
-		conditional = parse_Loop_Do_While()
+	( conditional = parse_If_Then_Else()
+	| conditional = parse_Loop_While()
+	| conditional = parse_Loop_Do_While()
 	)
 	{ return conditional; }
 }
@@ -615,41 +429,14 @@ public If_Then_Else parse_If_Then_Else() :
 {
 	lif = <IF>
 	expression = parse_Expression()
-	<LC>
-	parse_IActions(thenIActions)
-	<RC>
-	[
-		<ELSE>
-		<LC>
-		parse_IActions(elseIActions)
-		<RC>
-	]
-
+	<LC> parse_IActions(thenIActions) <RC>
+	[ <ELSE> <LC> parse_IActions(elseIActions) <RC> ]
 	{ return new If_Then_Else(lif.beginLine, expression, thenIActions, elseIActions); }
 }
 
-public void parse_Parameters(List<Parameter> parameters) :
-{
-	Parameter parameter;
-}
-{
-	[
-		parameter = parse_Parameter() { parameters.Add(parameter); }
-		(
-			<COMMA>
-			parameter = parse_Parameter() { parameters.Add(parameter); }
-		)*
-	]
-}
-
 public LVoid parse_Null() :
-{
-	Token lnull;
-}
-{
-	lnull = <NULL> { return new LVoid(lnull.beginLine); }
-}
-
+	{ Token lnull; }
+	{ lnull = <NULL> { return new LVoid(lnull.beginLine); } }
 
 public Parameter parse_Parameter() :
 {
@@ -669,26 +456,74 @@ public LType parse_LType() :
 }
 {
 	id = parse_BID()
-	[
-		<LB>
-		parse_LTypes(typeVariables)
-		<RB>
-	]
+	[ <LB> parse_LTypes(typeVariables) <RB> ]
 	{ return new LType(id.beginLine, id.image, typeVariables); }
 }
 
 public void parse_LTypes(List<LType> types) :
-{
-	LType type;
-}
+	{ LType type; }
 {
 	[
 		type = parse_LType() { types.Add(type); }
-		(
-			<COMMA>
-			type = parse_LType() { types.Add(type); }
-		)*
+		( <COMMA> type = parse_LType() { types.Add(type); } )*
 	]
+}
+
+public void parse_Class_Procedures(List<Class_Procedure> classProcedures) :
+{
+	Class_Procedure classProcedure;
+}
+{
+	(
+		LOOKAHEAD(parse_Method())
+		classProcedure = parse_Method() { classProcedures.Add(classProcedure); }
+		|
+		classProcedure = parse_Constructor() { classProcedures.Add(classProcedure); }
+	)*
+}
+
+public void parse_Arguments(List<Expression> arguments) :
+	{ Expression expression; }
+{
+	[
+		expression = parse_Expression() { arguments.Add(expression); }
+		( <COMMA> expression = parse_Expression() { arguments.Add(expression); } )*
+	]
+}
+
+public void parse_Parameters(List<Parameter> parameters) :
+	{ Parameter parameter; }
+{
+	[	parameter = parse_Parameter() { parameters.Add(parameter); }
+		( <COMMA> parameter = parse_Parameter() { parameters.Add(parameter); } )*
+	]
+}
+
+public void parse_Classes(List<LClass> classes) :
+	{ LClass aClass; }
+	{ ( aClass = parse_Class() { classes.Add(aClass); } )* }
+
+public void parse_Functions(List<Function> functions) :
+{ Function f; }
+{
+	(
+		LOOKAHEAD(parse_Function())
+		f = parse_Function() { functions.Add(f); }
+	)*
+}
+
+public void parse_IActions(List<IAction> actions) :
+	{ IAction action; }
+	{ ( action = parse_IAction() { actions.Add(action); } )* }
+
+public void parse_LAttributes(List<LAttribute> attributes) :
+	{ LAttribute lAttribute; }
+{ 
+	
+	( 
+		LOOKAHEAD(parse_LAttribute())
+		lAttribute = parse_LAttribute() { attributes.Add(lAttribute); }
+	)*
 }
 
 // Lexer Definitions
@@ -698,49 +533,10 @@ SKIP : { <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">}
 
 TOKEN :
 {
-	<LC: "{">
-	|
-	<RC: "}">
-	|
-	<LP: "(">
-	|
-	<RP: ")">
-	|
-	<LB: "[">
-	|
-	<RB: "]">
-	|
-	<ASS: "=">
-	|
-	<C: ":">
-	|
-	<SC: ";">
-	|
-	<COMMA: ",">
-	|
-	<DOT: ".">
-	|
-	<CLASS: "class">
-	|
-	<DO: "do">
-	|
-	<ELSE: "else">
-	|
-	<INH: "inherits">
-	|
-	<IF: "if">
-	|
-	<NULL: "null">
-	|
-	<NEW: "new">
-	|
-	<RTN: "return">
-	|
-	<WHILE: "while">
-	|
-	<BOOL: ("true" | "false")>
-	|
-	<NUMBER: (<D>)+ ("\\."<D>)? >
+	<LC:"{">	| <RC: "}">	| <LP: "(">	| <RP: ")">	| <LB: "[">	| <RB: "]">  | <CLASS: "class"> |
+	<ASS: "=">	| <C: ":">	| <SC: ";"> | <DOT: ".">|<DO: "do"> | <IF: "if"> | <COMMA: ",">		|
+	<ELSE: "else">	| <NULL: "null"> | <INH: "inherits"> | <NEW: "new"> | <RTN: "return">		|
+	<WHILE: "while">| <BOOL: ("true" | "false")> | <NUMBER: (<D>)+ ("\\."<D>)? >
 }
 
 TOKEN :

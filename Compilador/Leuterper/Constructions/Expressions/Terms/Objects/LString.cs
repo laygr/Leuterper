@@ -14,7 +14,7 @@ namespace Leuterper.Constructions
             LType type = LString.type;
             List<Expression> chars = new List<Expression>();
 
-            value = value.Substring(1, value.Length - 1);
+            value = value.Substring(1, value.Length - 2);
 
             String nextString;
             LChar nextChar;
@@ -22,10 +22,10 @@ namespace Leuterper.Constructions
             {
                 if(value[0] == '\\')
                 {
-                    nextString = value.Substring(0, 1);
+                    nextString = value.Substring(0, 2);
                     value = value.Substring(2);
                 }else{
-                    nextString = value.Substring(0, 0);
+                    nextString = value.Substring(0, 1);
                     value = value.Substring(1);
                 }
                 nextChar = new LChar(line, "\'" + nextString + "\'");
@@ -58,7 +58,7 @@ namespace Leuterper.Constructions
             return result;
         }
 
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.literalIndex = compiler.literals.Count();
             if (this.shouldBePushedToStack)

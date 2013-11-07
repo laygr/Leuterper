@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leuterper.Constructions
 {
@@ -13,11 +11,13 @@ namespace Leuterper.Constructions
         public List<Parameter> parameters { get; set; }
         public List<Var> vars { get; set; }
         public List<IAction> actions { get; set; }
+        public List<Construction> children;
 
         public Procedure(int line, LType type, String name, List<Parameter> parameters, List<IAction> actions)
             : base(line, type, name)
         {
             this.parameters = parameters;
+            this.children = new List<Construction>();
 
             if (actions == null)
             {
@@ -39,6 +39,7 @@ namespace Leuterper.Constructions
                     this.actions.Add(a);
                 }
             }
+            this.scopeSetting();
         }
         public void checkDeclarationsBeforeActions()
         {
@@ -85,34 +86,25 @@ namespace Leuterper.Constructions
             if (!this.getName().Equals(name)) return false;
             return LType.listOfTypesUnify(UtilFunctions.listOfParametersAsListOfTypes(this.parameters), types);
         }
-
-        public override void secondPass(LeuterperCompiler compiler)
+        public override void scopeSetting()
         {
-            base.secondPass(compiler);
-            compiler.assignIdentifierToProcedure(this);
-            //Parameters
-            for (int i = 0; i < this.parameters.Count(); i++)
-            {
-                Parameter p = this.parameters[i];
-                p.setScope(this);
-                p.secondPass(compiler);
-            }
+            this.addChild(this.getType());
+            this.parameters.ForEach(p => this.addChild(p));
+            this.vars.ForEach(v => this.addChild(v));
+            this.actions.ForEach(a => this.addChild(a as Construction));
+        }
 
-            /*
-            //Insert Parameters as vars.
-            for (int i = 0; i < this.parameters.Count(); i++)
-            {
-                Parameter p = this.parameters[i];
-                this.vars.Insert(i, new Declaration_Var(this.getLine(), p.getType(), p.getName()));
-            }
-             */
-            
-            //Var declarations
-            foreach(Var v in this.vars)
-            {
-                v.setScope(this);
-                v.secondPass(compiler);
-            }
+        public override void symbolsRegistration(LeuterperCompiler compiler)
+        {
+            compiler.assignIdentifierToProcedure(this);
+        }
+
+        public override void symbolsUnificationPass()
+        {
+            base.symbolsUnificationPass();
+
+            this.parameters.ForEach(p => p.symbolsUnificationPass());
+            this.vars.ForEach(v => v.symbolsUnificationPass());
 
             //Crear acciones de asignacion de las declaraciones de variables con valor inicial.
             int assignations = 0;
@@ -125,24 +117,15 @@ namespace Leuterper.Constructions
                     assignations++;
                 }
             }
-
-            //actions
-            foreach(IAction a in this.actions)
-            {
-                a.setScope(this);
-                a.secondPass(compiler);
-            }
+            this.scopeSetting();
         }
 
-        public override void thirdPass()
+        public override void classesGenerationPass()
         {
-            foreach(Var v in this.vars)
-            {
-                v.thirdPass();
-            }
+            this.vars.ForEach(v => v.classesGenerationPass());
         }
 
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             if(compiler.mostVaribalesInAFunction < this.parameters.Count() + this.vars.Count())
             {
@@ -150,19 +133,16 @@ namespace Leuterper.Constructions
             }
             compiler.functionsParameters.Add(this.parameters.Count());
             compiler.functionActions.Add(new List<MachineInstructions.MachineInstruction>());
-            foreach(IAction action in this.actions)
-            {
-                action.generateCode(compiler);
-            }
+            this.actions.ForEach(a => a.codeGenerationPass(compiler));
         }
         public override string ToString()
         {
             return String.Format("{0} {1} {2} {3}", this.identifier, this.getType().SignatureAsString(), this.getName(), UtilFunctions.listOfParametersAsString(this.parameters));
         }
 
-        public List<IDeclaration> getDeclarations()
+        public List<Declaration> getDeclarations()
         {
-            List<IDeclaration> result = new List<IDeclaration>();
+            List<Declaration> result = new List<Declaration>();
             this.parameters.ForEach(p => result.Add(p));
             this.vars.ForEach(v => result.Add(v));
             return result;
@@ -192,6 +172,16 @@ namespace Leuterper.Constructions
                 newParameters.Add(p.redefineWithSubstitutionTypes(instantiatedTypes));
             }
             return newParameters;
+        }
+        public List<Construction> getChildren()
+        {
+            return this.children;
+        }
+
+        public void addChild(Construction c)
+        {
+            this.children.Add(c);
+            c.setScope(this);
         }
     }
 }

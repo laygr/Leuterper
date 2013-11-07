@@ -13,6 +13,7 @@ namespace Leuterper.Constructions
         public Call_Constructor(int line, LType type, List<Expression> arguments)
             : base(line, type.getName(), arguments) {
                 this.type = type;
+                this.scopeSetting();
         }
 
         public override Procedure getProcedureDefinition()
@@ -39,15 +40,15 @@ namespace Leuterper.Constructions
                 procedureName,
                 LType.listOfTypesAsString(argumentsTypes)), this.getLine());
         }
-        public override void thirdPass()
+        public override void classesGenerationPass()
         {
-            this.getType().thirdPass();
+            this.getType().classesGenerationPass();
         }
-        public override void generateCode(LeuterperCompiler compiler)
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             foreach (Expression argument in arguments)
             {
-                argument.generateCode(compiler);
+                argument.codeGenerationPass(compiler);
             }
             if (this.shouldBePushedToStack)
             {

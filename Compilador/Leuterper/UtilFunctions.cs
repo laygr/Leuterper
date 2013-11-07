@@ -9,6 +9,7 @@ namespace Leuterper
 {
     class UtilFunctions
     {
+
         public static LType parameterToType(Parameter p)
         {
             return p.getType();
