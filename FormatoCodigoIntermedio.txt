@@ -1,7 +1,15 @@
 ﻿# de Clases
 Atributos clase 1
-Atributos clase 2
+Tipo Atributo 1
+Tipo Atributo 2
 .
+.
+Tipo Atributo N
+Atributos clase 2
+Tipo Atributo 1
+.
+.
+Tipo Atributo N
 .
 .
 # de Funciones

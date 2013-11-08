@@ -1,25 +1,50 @@
-0 - Boolean ==(Object, Object)
-1 - String toString(Object)
+0 - Object Object(this)    //es un constructor de valor default que crea un lobject
+1 - Boolean ==(Object, Object)
+2 - String toString(Object)
 
-2 - Boolean ==(Number, Number)
-3 - String toString(Number)
-4 - Number +(Number, Number)
-5 - Number -(Number, Number)
-6 - Number *(Number, Number)
-7 - Number /(Number, Number)
+3 - Number Number(this)    //es un constructor de valor default que crea un número 0
+4 - Boolean ==(Number, Number)
+5 - String toString(Number)
+6 - Number +(Number, Number)
+7 - Number -(Number, Number)
+8 - Number *(Number, Number)
+9 - Number /(Number, Number)
+10 - Number ^(Number, Number)
+11 - Boolean !=(Number, Number)
+12 - Number +=(Number, Number)
+13 - Number -=(Number, Number)
+14 - Number *=(Number, Number)
+15 - Number /=(Number, Number)
+16 - Boolean <(Number, Number)
+17 - Boolean <=(Number,Number)
+18 - Boolean >=(Number, Number)
+19 - Boolean >(Number, Number)
 
-8 - Boolean ==(LList<A>, LList<A>)
-9 - String toString(LList<A>)
-10 - Void add(LList<A>, A other)
-11 - Number count(LList<A>)
-12 - A get(LList<A>, Number)
-13 - Void set(LList<A>, A, Number)
+20 - Boolean Boolean(this)    //es un constructor de valor default en falso
+21 - Boolean ==(Boolean, Boolean)
+22 - Boolean ||(Boolean, Boolean)
+23 - Boolean &&(Boolean, Boolean)
+24 - Boolean not(Boolean)
+25 - String toString(Boolean)
 
-14 - Boolean ==(Char, Char)
-15 - String toString(Char)
+26 - Char Char(this)    //es un constructor de valor default que pone un '\0'
+27 - Boolean ==(Char, Char)
+28 - String toString(Char)
 
-16 - Boolean ==(String, String)
+29 - List List(this)    //es un constructor de valor default que crea una lista vacía
+30 - List List(this, Number) //es un constructor que inicializa la lista con una capacidad inicial
+31 - Boolean ==(LList<A>, LList<A>)
+32 - String toString(LList<A>)
+33 - Void add(LList<A>, A other)
+34 - Void insertAt(Number, A other)
+35 - Void removeAt(Number, A other)
+36 - Number count(LList<A>)
+37 - A get(LList<A>, Number)
+38 - Void set(LList<A>, A, Number)
 
-17 - String read()
-18 - Void write(String)
-19 - Number stringToNumber(String)
+39 - String String(this)    //es un constructor de valor default que agrega un ""
+40 - Boolean ==(String, String)
+41 - Number toNumber(String)
+
+42 - String read()
+43 - Void write(String)
