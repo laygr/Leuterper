@@ -134,10 +134,6 @@ namespace Leuterper.Constructions
         public override void scopeSetting()
         {
             this.typeVariables.ForEach(tv => this.getScope().addChild(tv));
-            if(this.getScope() == null)
-            {
-                Console.WriteLine("WTF");
-            }
             if (this.parentType != null)
             {
                 this.getScope().addChild(this.parentType);
@@ -177,6 +173,10 @@ namespace Leuterper.Constructions
             if (this.parentType != null)
             {
                 this.parentType.symbolsUnificationPass();
+            }
+            if(this.isCompletelyDefined && this.typeVariables.Count() > 0)
+            {
+                this.shouldRedefineItsClass = true;
             }
         }
         public override void classesGenerationPass()
@@ -230,10 +230,6 @@ namespace Leuterper.Constructions
         {
             if(this.isCompletelyDefined) return this;
             LType result = this.clone();
-            if(this.typeVariableIndex == -1 && !this.rootIsDefined)
-            {
-                Console.WriteLine();
-            }
             if (!result.rootIsDefined) return instantiatedTypes[this.typeVariableIndex];
             for(int i = 0; i < this.typeVariables.Count(); i++)
             {
@@ -244,7 +240,6 @@ namespace Leuterper.Constructions
         }
         public LType redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
-            if (this.definingClass.getType().isCompletelyDefined) return this;
             LType newType = this;
             if (!this.rootIsDefined)
             {

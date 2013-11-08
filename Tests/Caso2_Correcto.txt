@@ -1,3 +1,6 @@
-a = 2;
+Void main(String arg)
+{
+	List[Object] x = {1, "hola", 1} : Object;
+}
 
-b = 2 + a;
+Number y = 1 + 1;

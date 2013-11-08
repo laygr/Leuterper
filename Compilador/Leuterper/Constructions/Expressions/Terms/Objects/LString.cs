@@ -29,7 +29,7 @@ namespace Leuterper.Constructions
                     value = value.Substring(1);
                 }
                 nextChar = new LChar(line, "\'" + nextString + "\'");
-                chars.Add(nextChar);
+                elements.Add(nextChar);
             }
         }
 
@@ -54,7 +54,9 @@ namespace Leuterper.Constructions
             {
                 result += ((LChar)this.elements[i]).encodeAsString() + " ";
             }
-            result += ((LChar)this.elements[this.elements.Count() - 1]).encodeAsString();
+            if(elements.Count() > 0){
+                result += ((LChar)this.elements[this.elements.Count() - 1]).encodeAsString();
+            }
             return result;
         }
 

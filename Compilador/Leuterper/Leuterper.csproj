@@ -48,6 +48,7 @@
     <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Constructor.cs" />
     <Compile Include="Constructions\Expressions\Terms\Objects\LVoid.cs" />
     <Compile Include="Constructions\Procedures\Class_Procedure\ConstructorSpecial.cs" />
+    <Compile Include="Exceptions\SyntacticErrorException.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Constructions\Assignment.cs" />
     <Compile Include="Constructions\Conditionals\Conditional.cs" />

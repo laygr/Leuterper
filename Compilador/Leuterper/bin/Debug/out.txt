@@ -1,90 +1,31 @@
-10
+0
+1
+1
+14
+push 0
+ass 8
+push 1
+ass 9
+push 2
+ass 10
+push 3
+ass 11
+push 4
+push 5
+callp 6
+callp 5
+call 43
+rtn
+7
 0
 5
-Number 0
-Number 0
-Number 3
-Number 1
 Number 1
 Number 2
-List 3
-List 3
-List 3
-Number 100
-1
-1
-5
-1
-4
-newp 24
-set 0
-push 19
-rtn
-3
-6
-push 19
-push 20
-callp 31
-push 21
-callp 31
-rtn
-4
-6
-push 19
-push 20
-callp 31
-push 21
-push 22
-call 32
-1
-24
-push 19
-push 0
-callp 4
-jmpf 7
-push 1
-rtn
-jmpf 7
-push 19
-push 2
-callp 14
-jmpf 14
-push 3
-rtn
-jmpf 24
-push 19
-push 4
-callp 7
-callp 41
-push 19
-push 5
-callp 7
-callp 41
-callp 6
-rtn
-1
-21
-newp 38
-ass 20
-push 6
-ass 21
-push 7
-ass 22
-push 8
-ass 23
-push 20
-push 21
-call 27
-push 20
-push 22
-call 27
-push 20
-push 23
-call 27
-push 9
-callp 41
-callp 5
-call 36
+Number 3
+Number 3
+Number 1
+Number 2
+Void 
 2
-callp 35
-call 42
+callp 42
+call 44

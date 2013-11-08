@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,7 @@ namespace Leuterper.Constructions
                     this.value *= -1;
                 }else if(!sign.image.Equals("+"))
                 {
-                    Console.WriteLine("Expected a sign at line " + line);
-                    Console.ReadKey();
-                    Environment.Exit(0);
+                    throw new SyntacticErrorException("Expected a sign.", line);
                 }
             }
         }

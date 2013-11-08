@@ -8,10 +8,16 @@ namespace Leuterper.Constructions
 {
     class LChar : LObject
     {
-        char value;
+        int value;
+        Boolean countAsLiteral;
         new public static LType type = new LType(0, "Char");
+        public LChar(int line, String aChar, bool countAsLiteral) : this(line, aChar)
+        {
+            this.countAsLiteral = countAsLiteral;
+        }
         public LChar(int line, String aChar) : base(line)
         {
+            this.countAsLiteral = true;
             aChar = aChar.Substring(1, aChar.Length - 2);
             if(aChar.Length == 1)
             {
@@ -47,8 +53,11 @@ namespace Leuterper.Constructions
 
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            base.codeGenerationPass(compiler);
-            compiler.addLiteral(new MachineInstructions.Literal("Char", this.encodeAsString()));
+            if (this.countAsLiteral)
+            {
+                base.codeGenerationPass(compiler);
+                compiler.addLiteral(new MachineInstructions.Literal("Char", this.encodeAsString()));
+            }
         }
     }
 }

@@ -22,6 +22,26 @@ namespace Leuterper.MachineInstructions
             return String.Format("ass {0}", destinationAddress);
         }
     }
+    class Add : MachineInstruction
+    {
+        public int howMany { get; set; }
+        public Add(int howMany)
+        {
+            this.howMany = howMany;
+        }
+        public override string ToString()
+        {
+            return String.Format("add {0}", this.howMany);
+        }
+    }
+    class AddP : Add
+    {
+        public AddP(int howMany) : base(howMany) { }
+        public override string ToString()
+        {
+            return String.Format("addp {0}", this.howMany);
+        }
+    }
     class Call : MachineInstruction
     {
         public int functionId { get; set; }

@@ -18,12 +18,12 @@ namespace Leuterper.Constructions
         public override void scopeSetting()
         {
             this.getType().setShouldStartRedefinition(true);
-            this.getType().setScope(this.getScope());
+            this.getScope().addChild(this.getType());
             
             if (this.initialValue != null)
             {
                 this.initialValue.shouldBePushedToStack = true;
-                this.initialValue.setScope(this.getScope());
+                this.getScope().addChild(this.initialValue);
             }
         }
 

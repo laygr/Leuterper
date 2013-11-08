@@ -327,6 +327,17 @@ public Call_Constructor parse_Call_Constructor() :
 	{ return new Call_Constructor(type.getLine(), type, arguments); }
 }
 
+public void parse_LObjects(List<LObject> objects) :
+{
+	LObject theObject;
+}
+{
+	[
+		theObject = parse_LObject() { objects.Add(theObject); }
+		( <COMMA> theObject = parse_LObject() { objects.Add(theObject); } )*
+	]
+}
+
 public LObject parse_LObject() :
 	{ LObject theObject; }
 {
@@ -558,7 +569,7 @@ TOKEN :
 	|
 	<SL: ["a"-"z"]>
 	|
-	<S: ("==" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
+	<S: ("==" | "=" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
 	|
 	<CHAR: "'" ( ("\\" ~[]) | ( ~["'"] )) "'">
 	|

@@ -121,6 +121,7 @@ namespace Leuterper.Constructions
             }
 
             this.attributes.ForEach(a => a.classesGenerationPass());
+            this.constructorDefinitions.ForEach(c => c.classesGenerationPass());
             this.methodsDefinitions.ForEach(m => m.classesGenerationPass());
         }
         public override void simplificationAndValidationPass()
@@ -134,7 +135,7 @@ namespace Leuterper.Constructions
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            compiler.addClassDefinition(this.attributes.Count());
+            compiler.addClassDefinition(this);
             this.constructorDefinitions.ForEach(c => c.codeGenerationPass(compiler));
             this.methodsDefinitions.ForEach(m => m.codeGenerationPass(compiler));
         }
@@ -192,10 +193,6 @@ namespace Leuterper.Constructions
         public LClass reinstantiateWithSubstitution(LType newType, List<LType> instantiatedTypes)
         {
             this.type = newType;
-            if(this.type.getName().Equals("Matrix"))
-            {
-                Console.WriteLine("WTF");
-            }
 
             List<LAttribute> reinstantiatedLAttributes = new List<LAttribute>();
             this.attributes.ForEach(a => reinstantiatedLAttributes.Add(a.redefineWithSubstitutionTypes(instantiatedTypes)));
