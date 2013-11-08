@@ -1,15 +1,8 @@
 ﻿# de Clases
 Atributos clase 1
-Tipo Atributo 1
-Tipo Atributo 2
-.
-.
 Tipo Atributo N
 Atributos clase 2
-Tipo Atributo 1
 .
-.
-Tipo Atributo N
 .
 .
 # de Funciones
@@ -24,9 +17,9 @@ Acción 2
 .
 .
 .
-# de variables totales (literales + globales + max de funcion)
 # de Literales
 # de Globales
+Maximo de Variables No Globales
 Literal 1
 Literal 2
 .
