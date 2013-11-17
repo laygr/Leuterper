@@ -36,11 +36,11 @@
 31 - Boolean ==(LList<A>, LList<A>)
 32 - String toString(LList<A>)
 33 - Void add(LList<A>, A other)
-34 - Void insertAt(Number, A other)
-35 - Void removeAt(Number, A other)
+34 - Void insertAt(LList<A>, Number, A other)
+35 - Void removeAt(LList<A>, Number)
 36 - Number count(LList<A>)
 37 - A get(LList<A>, Number)
-38 - Void set(LList<A>, A, Number)
+38 - Void set(LList<A>, Number, A other)
 
 39 - String String(this)    //es un constructor de valor default que agrega un ""
 40 - Boolean ==(String, String)
