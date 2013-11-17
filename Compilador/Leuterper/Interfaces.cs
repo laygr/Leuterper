@@ -7,13 +7,12 @@ using Leuterper.Constructions;
 
 namespace Leuterper
 {
-
     interface ISignable<X>
     { bool HasSameSignatureAs(X otherElement); }
 
     interface IScope
     {
-        List<Declaration> getDeclarations();
+        UniquesList<Declaration> getDeclarations();
         List<Construction> getChildren();
         void addChild(Construction c);
         IScope getScope();
@@ -28,18 +27,15 @@ namespace Leuterper
         void setType(LType type);
     }
 
-    interface IDeclaration : IDefinition, ISignable<IDeclaration>
+    interface IDeclaration : IDefinition
     {  String getName();  }
-
     interface IConstruction : ICompilable
     {
         IScope getScope();
         void setScope(IScope scope);
         int getLine();
     }
-
     interface IAction : IConstruction { }
-
     interface ICompilable
     {
         /*

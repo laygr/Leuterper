@@ -1,6 +1,17 @@
-Void main(String arg)
+Number fib(Number n)
 {
-	List[Object] x = {1, "hola", 1} : Object;
+	if n == 0 { return 0; }
+	if n < 3
+	{
+		return 1;
+	}
+	else
+	{
+		return fib(n - 1) + fib(n - 2);
+	}
 }
 
-Number y = 1 + 1;
+Void main(String arg)
+{
+	write(fib(10).toString());
+}

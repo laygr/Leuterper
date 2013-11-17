@@ -9,8 +9,8 @@
   class TheParser : TheParserConstants {
 
   public Program parse_Program() {
-        List<LClass> classes = new List<LClass>();
-        List<Function> functions = new List<Function>();
+        UniquesList<LClass> classes = new UniquesList<LClass>();
+        UniquesList<Function> functions = new UniquesList<Function>();
         List<IAction> actions = new List<IAction>();
     parse_Classes(classes);
     parse_Functions(functions);
@@ -39,8 +39,8 @@
   public LClass parse_Class() {
         LType type;
         LType declarationInheritance = null;
-        List<LAttribute> LAttributesDeclarations = new List<LAttribute>();
-        List<Class_Procedure> classProcedures = new List<Class_Procedure>();
+        UniquesList<LAttribute> LAttributesDeclarations = new UniquesList<LAttribute>();
+        UniquesList<Class_Procedure> classProcedures = new UniquesList<Class_Procedure>();
         Token c;
     c = jj_consume_token(CLASS);
     type = parse_LType();
@@ -235,10 +235,10 @@
 
   public Return_From_Block parse_Return_From_Block() {
         Expression returningExpression;
-        Token rin;
-    rin = jj_consume_token(RTN);
+        Token rtn;
+    rtn = jj_consume_token(RTN);
     returningExpression = parse_Expression();
-          {if (true) return new Return_From_Block(rin.beginLine, returningExpression);}
+          {if (true) return new Return_From_Block(rtn.beginLine, returningExpression);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -730,7 +730,7 @@
     }
   }
 
-  public void parse_Class_Procedures(List<Class_Procedure> classProcedures) {
+  public void parse_Class_Procedures(UniquesList<Class_Procedure> classProcedures) {
         Class_Procedure classProcedure;
     while (true) {
       switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
@@ -744,12 +744,12 @@
       }
       if (jj_2_10(2147483647)) {
         classProcedure = parse_Method();
-                                                  classProcedures.Add(classProcedure);
+                                                  classProcedures.AddUnique(classProcedure);
       } else {
         switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
         case BID:
           classProcedure = parse_Constructor();
-                                                       classProcedures.Add(classProcedure);
+                                                       classProcedures.AddUnique(classProcedure);
           break;
         default:
           jj_la1[24] = jj_gen;
@@ -832,7 +832,7 @@
     }
   }
 
-  public void parse_Classes(List<LClass> classes) {
+  public void parse_Classes(UniquesList<LClass> classes) {
           LClass aClass;
     while (true) {
       switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
@@ -845,13 +845,13 @@
         
       }
       aClass = parse_Class();
-                                     classes.Add(aClass);
+                                     classes.AddUnique(aClass);
     }
     label_8: ;
     
   }
 
-  public void parse_Functions(List<Function> functions) {
+  public void parse_Functions(UniquesList<Function> functions) {
   Function f;
     while (true) {
       if (jj_2_11(2147483647)) {
@@ -860,7 +860,7 @@
         goto label_9;
       }
       f = parse_Function();
-                                       functions.Add(f);
+                                       functions.AddUnique(f);
     }
     label_9: ;
     
@@ -899,7 +899,7 @@
     
   }
 
-  public void parse_LAttributes(List<LAttribute> attributes) {
+  public void parse_LAttributes(UniquesList<LAttribute> attributes) {
           LAttribute lAttribute;
     while (true) {
       if (jj_2_12(2147483647)) {
@@ -908,7 +908,7 @@
         goto label_11;
       }
       lAttribute = parse_LAttribute();
-                                                  attributes.Add(lAttribute);
+                                                  attributes.AddUnique(lAttribute);
     }
     label_11: ;
     

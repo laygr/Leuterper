@@ -26,10 +26,6 @@ namespace Leuterper
         public static int getIndexOfVarNamed(IScope scope, string name)
         {
             if (name.Equals("super")) return ScopeManager.GetIndexOfFirstVarInScope(scope);
-            if(scope == null)
-            {
-                Console.WriteLine();
-            }
             List<Declaration> vars = scope.getDeclarations();
             for(int i = 0; i < vars.Count(); i++)
             {
@@ -56,6 +52,10 @@ namespace Leuterper
         }
         public static Declaration getDeclarationNamed(IScope scope, string name)
         {
+            if(scope == null)
+            {
+                Console.WriteLine();
+            }
             foreach (Declaration d in scope.getDeclarations())
             {
                 if (d.getName().Equals(name))
@@ -73,10 +73,9 @@ namespace Leuterper
         {
             return ScopeManager.getProgram(scope).getFunctionForGivenNameAndTypes(name, types);
         }
-
         public static Function getFunctionForGivenNameAndArguments(IScope scope, string name, List<Expression> arguments)
         {
-            return ScopeManager.getFunctionForGivenNameAndTypes(scope, name, Expression.expressionsToTypes(arguments));
+            return ScopeManager.getFunctionForGivenNameAndTypes(scope, name, Utils.expressionsToTypes(arguments));
         }
         public static LClass getClassForType(IScope scope, LType type)
         {
@@ -93,10 +92,6 @@ namespace Leuterper
         }
         public static Program getProgram(IScope scope)
         {
-            if(scope == null)
-            {
-                Console.WriteLine();
-            }
             if(scope is Program)
             {
                 return scope as Program;
@@ -122,7 +117,7 @@ namespace Leuterper
             List<LClass> classes = ScopeManager.getProgram(scope).getClasses();
             foreach (LClass aClassD in classes)
             {
-                if (aClassD.getType().isNamed(name))
+                if (aClassD.getType().getName().Equals(name))
                 {
                     return aClassD;
                 }

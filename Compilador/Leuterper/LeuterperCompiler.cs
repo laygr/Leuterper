@@ -92,7 +92,6 @@ namespace Leuterper
 
             }
         }
-
         public void printGeneratedCode()
         {
             StreamWriter writer = new StreamWriter("out.txt");

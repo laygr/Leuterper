@@ -16,7 +16,7 @@ namespace Leuterper
 
             if(definingClass == null)
             {
-                throw new SemanticErrorException("Wrong strategy. Type variable not inside a class." + this, type.getLine());
+                throw new SyntacticErrorException("Wrong strategy. Type variable not inside a class." + this, type.getLine());
             }
             List<LType> classTypeVariables = definingClass.getType().typeVariables;
 
@@ -27,7 +27,7 @@ namespace Leuterper
                     return i;
                 }
             }
-            throw new SemanticErrorException("Type variable undeclared: " + type.getName(), type.getLine());
+            throw new SyntacticErrorException("Type variable undeclared: " + type.getName(), type.getLine());
         }
     }
 }
