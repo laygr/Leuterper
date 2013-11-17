@@ -21,7 +21,7 @@ namespace Leuterper
         public int classesCounter;
         private int proceduresCounter;
 
-        public List<int> classDefinitions;
+        public List<LClass> classDefinitions;
         public List<int> functionsParameters;
         public List<List<MachineInstruction>> functionActions;
         public List<MachineInstructions.Literal> literals;
@@ -34,14 +34,13 @@ namespace Leuterper
             this.standradLibrary = StandardLibrary.singleton;
             this.classesCounter = this.standradLibrary.standardClasses.Count();
             this.proceduresCounter = this.standradLibrary.standardProcedures.Count() + this.standradLibrary.standardFunctions.Count();
-                
 
             this.globalVariablesCounter = 0;
             this.mostVaribalesInAFunction = 3;
             this.compilingTopLeveIActions = false;
 
 
-            this.classDefinitions = new List<int>();
+            this.classDefinitions = new List<LClass>();
             this.functionsParameters = new List<int>();
             this.functionActions = new List<List<MachineInstruction>>();
             this.literals = new List<MachineInstructions.Literal>();
@@ -97,16 +96,13 @@ namespace Leuterper
         public void printGeneratedCode()
         {
             StreamWriter writer = new StreamWriter("out.txt");
-            
-            writer.WriteLine(this.literals.Count());
-            writer.WriteLine(this.globalVariablesCounter);
-            writer.WriteLine(this.mostVaribalesInAFunction);
-            foreach (MachineInstructions.Literal literal in this.literals)
-            {
-                writer.WriteLine(literal);
-            }
 
             writer.WriteLine(this.classDefinitions.Count());
+            foreach(LClass c in this.classDefinitions)
+            {
+                writer.WriteLine(c.attributes.Count());
+                //c.attributes.ForEach(a => writer.WriteLine(a.getType().getName()));
+            }
             for (int i = 0; i < this.classDefinitions.Count(); i++)
             {
                 writer.WriteLine(this.classDefinitions[i]);
@@ -124,6 +120,14 @@ namespace Leuterper
                 }
             }
 
+            writer.WriteLine(this.literals.Count());
+            writer.WriteLine(this.globalVariablesCounter);
+            writer.WriteLine(this.mostVaribalesInAFunction);
+            foreach (MachineInstructions.Literal literal in this.literals)
+            {
+                writer.WriteLine(literal);
+            }
+
             writer.WriteLine(this.topLeveIActions.Count());
             foreach (MachineInstruction m in this.topLeveIActions)
             {
@@ -132,9 +136,9 @@ namespace Leuterper
 
             writer.Close();
         }
-        public void addClassDefinition(int numberOfLAttributes)
+        public void addClassDefinition(LClass aClass)
         {
-            this.classDefinitions.Add(numberOfLAttributes);
+            this.classDefinitions.Add(aClass);
         }
 
         public void addAction(MachineInstruction action)

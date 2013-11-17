@@ -1,4 +1,5 @@
 ﻿using Leuterper.Exceptions;
+using System;
 
 namespace Leuterper.Constructions
 {
@@ -25,9 +26,11 @@ namespace Leuterper.Constructions
 
         public override void symbolsUnificationPass()
         {
-            this.scopeSetting();
             lhs.symbolsUnificationPass();
-            rhs.symbolsUnificationPass();
+            if (rhs != null)
+            {
+                rhs.symbolsUnificationPass();
+            }
         }
 
         public override void classesGenerationPass()

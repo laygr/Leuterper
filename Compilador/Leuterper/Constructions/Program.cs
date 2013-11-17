@@ -37,6 +37,17 @@ namespace Leuterper.Constructions
                 }
             }
             this.children = new List<Construction>();
+
+            int assignations = 0;
+            foreach (Var v in this.vars)
+            {
+                if (v.initialValue != null)
+                {
+                    VarAccess var = new VarAccess(v.getLine(), v.getName());
+                    this.actions.Insert(assignations, new Assignment(v.getLine(), var, v.initialValue));
+                    assignations++;
+                }
+            }
             this.scopeSetting();
         }
         public Function getFunctionForGivenNameAndTypes(string name, List<LType> parametersTypes)
@@ -72,16 +83,6 @@ namespace Leuterper.Constructions
         public override void symbolsUnificationPass()
         {
             //Crear acciones de asignacion de las declaraciones de variables con valor inicial.
-            int assignations = 0;
-            foreach (Var v in this.vars)
-            {
-                if (v.initialValue != null)
-                {
-                    VarAccess var = new VarAccess(v.getLine(), v.getName());
-                    this.actions.Insert(assignations, new Assignment(v.getLine(), var, v.initialValue));
-                    assignations++;
-                }
-            }
 
             this.classes.ForEach(c => c.symbolsUnificationPass());
             this.vars.ForEach(v => v.symbolsUnificationPass());

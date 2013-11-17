@@ -1,7 +1,12 @@
-number a = 10;
-number b = 0;
+Void main(String arg)
+{
 
-while a > 0 {
-	b = b + a;
-	a = a - 1;
+	Number x = 1;
+	Number y = 2;
+	Number z = 3;
+	Number a = 3;
+
+	write( (1 + 2).toString() );
+
+	return null;
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,7 @@ namespace Leuterper.Constructions
             {
                 if(!e.getType().typeOrSuperTypeUnifiesWith(type))
                 {
-                    Console.WriteLine("Type mismatch in element of list.");
-                    Console.ReadKey();
-                    Environment.Exit(0);
+                    throw new SemanticErrorException("Type mismatch in element of list.", this.getLine());
                 }
             }
         }
@@ -54,8 +53,28 @@ namespace Leuterper.Constructions
 
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            base.codeGenerationPass(compiler);
-            compiler.addLiteral(new MachineInstructions.Literal("List", this.encodeAsString()));
+            foreach(Expression e in this.elements)
+            {
+                e.shouldBePushedToStack = true;
+                e.codeGenerationPass(compiler);
+            }
+            if(this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.NewP(30));
+            }
+            else
+            {
+                compiler.addAction(new MachineInstructions.New(30));
+            }
+
+            if (this.shouldBePushedToStack)
+            {
+                compiler.addAction(new MachineInstructions.AddP(this.elements.Count()));
+            }
+            else
+            {
+                compiler.addAction(new MachineInstructions.Add(this.elements.Count()));
+            }
         }
     }
 }

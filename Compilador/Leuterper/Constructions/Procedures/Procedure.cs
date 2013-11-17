@@ -122,6 +122,7 @@ namespace Leuterper.Constructions
 
         public override void classesGenerationPass()
         {
+            this.parameters.ForEach(p => p.classesGenerationPass());
             this.vars.ForEach(v => v.classesGenerationPass());
         }
 

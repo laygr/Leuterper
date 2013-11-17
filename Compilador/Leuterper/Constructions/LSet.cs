@@ -1,5 +1,6 @@
-﻿
-using System;
+﻿using System;
+using Leuterper.Exceptions;
+
 namespace Leuterper.Constructions
 {
     //Asignacion al attributo de un objeto.
@@ -30,17 +31,16 @@ namespace Leuterper.Constructions
 
         public override void classesGenerationPass() { }
         public override void simplificationAndValidationPass() { }
-
         override public void codeGenerationPass(LeuterperCompiler compiler)
         {
+            int attributeIndex = la.getLAttributeIndex();
+            if(attributeIndex < 0)
+            {
+                throw new SemanticErrorException(String.Format("Attribute not defined. Name {0}"), this.getLine());
+            }
             la.codeGenerationPass(compiler);
             rhs.codeGenerationPass(compiler);
-            if(la.getLAttributeIndex() < 0)
-            {
-                Console.WriteLine();
-            }
-            compiler.addAction(new MachineInstructions.Set(la.getLAttributeIndex()));
+            compiler.addAction(new MachineInstructions.Set(attributeIndex));
         }
-
     }
 }

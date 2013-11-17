@@ -11,7 +11,6 @@ namespace Leuterper
     {
         public enum StandardClasses:int { LVoid=0, LObject, LNumber, LBoolean, LChar, LList, LString };
 
-
         static List<LType> e = new List<LType>();
         static List<LType> o = new List<LType>(new LType[] { LObject.type });
         static List<LType> oo = new List<LType>(new LType[] { LObject.type, LObject.type });
@@ -61,36 +60,43 @@ namespace Leuterper
                 new MethodSpecial(0, LBoolean.type, "!=", LType.typesToParameters(n), null, 11),
                 new MethodSpecial(0, LNumber.type, "+=", LType.typesToParameters(n), null, 12),
                 new MethodSpecial(0, LNumber.type, "-=", LType.typesToParameters(n), null, 13),
-                new MethodSpecial(0, LBoolean.type, "<", LType.typesToParameters(n), null, 14),
-                new MethodSpecial(0, LBoolean.type, "<=", LType.typesToParameters(n), null, 15),
-                new MethodSpecial(0, LBoolean.type, ">=", LType.typesToParameters(n), null, 16),
-                new MethodSpecial(0, LBoolean.type, ">", LType.typesToParameters(n), null, 17),
-           
+                new MethodSpecial(0, LNumber.type, "*=", LType.typesToParameters(n), null, 14),
+                new MethodSpecial(0, LNumber.type, "/=", LType.typesToParameters(n), null, 15),
+                new MethodSpecial(0, LBoolean.type, "<", LType.typesToParameters(n), null, 16),
+                new MethodSpecial(0, LBoolean.type, "<=", LType.typesToParameters(n), null, 17),
+                new MethodSpecial(0, LBoolean.type, ">=", LType.typesToParameters(n), null, 18),
+                new MethodSpecial(0, LBoolean.type, ">", LType.typesToParameters(n), null, 19),
+
                 //boolean
-                new ConstructorSpecial(0, "Boolean", new List<Parameter>(), new List<Expression>(), null, 18),
-                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(b), null, 19),
-                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 20),
+                new ConstructorSpecial(0, "Boolean", new List<Parameter>(), new List<Expression>(), null, 20),
+                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(b), null, 21),
+                new MethodSpecial(0, LBoolean.type, "||", LType.typesToParameters(b), null, 22),
+                new MethodSpecial(0, LBoolean.type, "&&", LType.typesToParameters(b), null, 23),
+                new MethodSpecial(0, LBoolean.type, "not", LType.typesToParameters(e), null, 24),
+                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 25),
 
                 //char
-                new ConstructorSpecial(0, "Char", new List<Parameter>(), new List<Expression>(), null, 21),
-                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(c), null, 22),
-                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 23),
+                new ConstructorSpecial(0, "Char", new List<Parameter>(), new List<Expression>(), null, 26),
+                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(c), null, 27),
+                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 28),
 
                 //list
-                new ConstructorSpecial(0, "List", new List<Parameter>(), new List<Expression>(), null, 24),
-                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(l), null, 25),
-                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 26),
-                new MethodSpecial(0, LVoid.type, "add", LType.typesToParameters(a), null, 27),
-                new MethodSpecial(0, LVoid.type, "insertAt", LType.typesToParameters(na), null, 28),
-                new MethodSpecial(0, LVoid.type, "removeAt", LType.typesToParameters(n), null, 29),
-                new MethodSpecial(0, LNumber.type, "count", LType.typesToParameters(e), null, 30),
-                new MethodSpecial(0, new LType(0, "A"), "get", LType.typesToParameters(n), null, 31),
-                new MethodSpecial(0, LVoid.type, "set", LType.typesToParameters(an), null, 32),
+                new ConstructorSpecial(0, "List", new List<Parameter>(), new List<Expression>(), null, 29),
+                new ConstructorSpecial(0, "List", LType.typesToParameters(n), new List<Expression>(), null, 30),
+                new MethodSpecial(0, LBoolean.type, "==", LType.typesToParameters(l), null, 31),
+                new MethodSpecial(0, LString.type, "toString", LType.typesToParameters(e), null, 32),
+                new MethodSpecial(0, LVoid.type, "add", LType.typesToParameters(a), null, 33),
+                new MethodSpecial(0, LVoid.type, "insertAt", LType.typesToParameters(na), null, 34),
+                new MethodSpecial(0, LVoid.type, "removeAt", LType.typesToParameters(n), null, 35),
+                new MethodSpecial(0, LNumber.type, "count", LType.typesToParameters(e), null, 36),
+                new MethodSpecial(0, new LType(0, "A"), "get", LType.typesToParameters(n), null, 37),
+                new MethodSpecial(0, LVoid.type, "set", LType.typesToParameters(an), null, 38),
             
             
                 //string
-                new ConstructorSpecial(0, "String", new List<Parameter>(), new List<Expression>(), null, 33),
-                new MethodSpecial(0, LString.type, "==", LType.typesToParameters(s), null, 34)
+                new ConstructorSpecial(0, "String", new List<Parameter>(), new List<Expression>(), null, 39),
+                new MethodSpecial(0, LString.type, "==", LType.typesToParameters(s), null, 40),
+                new MethodSpecial(0, LNumber.type, "toNumber", LType.typesToParameters(e), null, 41)
             });
 
             this.standardClasses = new List<LClass>(new LClass[]{
@@ -119,47 +125,58 @@ namespace Leuterper
                     standardProcedures[14],
                     standardProcedures[15],
                     standardProcedures[16],
-                    standardProcedures[17]}
+                    standardProcedures[17],
+                    standardProcedures[18],
+                    standardProcedures[19],
+                }
                     ), (int)StandardClasses.LNumber),
 
                 //boolean
                 new LClassSpecial(0, LBoolean.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
                     standardProcedures[18],
                     standardProcedures[19],
-                    standardProcedures[20]
+                    standardProcedures[20],
+                    standardProcedures[21],
+                    standardProcedures[22],
+                    standardProcedures[23],
+                    standardProcedures[24],
+                    standardProcedures[25],
                 }), (int)StandardClasses.LChar),
 
                 //char
                 new LClassSpecial(0, LChar.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[21],
-                    standardProcedures[22],
-                    standardProcedures[23]
+                    standardProcedures[26],
+                    standardProcedures[27],
+                    standardProcedures[28],
                 }), (int)StandardClasses.LChar),
 
                 //list
                 new LClassSpecial(0, LList.type, LObject.type, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[24],
-                    standardProcedures[25],
-                    standardProcedures[26],
-                    standardProcedures[27],
-                    standardProcedures[28],
-                    standardProcedures[29],
-                    standardProcedures[30],
+                    standardProcedures[29], // constructor
+                    standardProcedures[30], // constructor
                     standardProcedures[31],
                     standardProcedures[32],
+                    standardProcedures[33],
+                    standardProcedures[34],
+                    standardProcedures[35],
+                    standardProcedures[36],
+                    standardProcedures[37],
+                    standardProcedures[38],
                 }), (int)StandardClasses.LList),
 
                 //string
                 new LClassSpecial(0, LString.type, LString.type.parentType, new List<LAttribute>(), new List<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[33],
-                    standardProcedures[34]
+                    standardProcedures[39],
+                    standardProcedures[40],
+                    standardProcedures[41],
                 }), (int)StandardClasses.LString)
             });
 
-            this.standardFunctions = new List<Function>(new Function[]{
-                new FunctionSpecial(0, LString.type, "read", LType.typesToParameters(e), null, 35),
-                new FunctionSpecial(0, LVoid.type, "write", LType.typesToParameters(s), null, 36),
-                new FunctionSpecial(0, LNumber.type, "stringToNumber", LType.typesToParameters(s), null, 37)});
+            this.standardFunctions = new List<Function>(new Function[]
+            {
+                new FunctionSpecial(0, LString.type, "read", LType.typesToParameters(e), null, 42),
+                new FunctionSpecial(0, LVoid.type, "write", LType.typesToParameters(s), null, 43),
+            });
         }
     }
 }
