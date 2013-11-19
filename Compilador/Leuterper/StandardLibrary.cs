@@ -115,7 +115,7 @@ namespace Leuterper
                 new LClassSpecial(0, LList.type, LObject.type, new UniquesList<LAttribute>(),
                     new UniquesList<Class_Procedure>(standardProcedures.GetRange(29, 10)), (int)StandardClasses.LList),
                 //string
-                new LClassSpecial(0, LString.type, LString.type.parentType, new UniquesList<LAttribute>(),
+                new LClassSpecial(0, LString.type, LString.parentType, new UniquesList<LAttribute>(),
                     new UniquesList<Class_Procedure>(standardProcedures.GetRange(39, 5)), (int)StandardClasses.LString)
             });
 

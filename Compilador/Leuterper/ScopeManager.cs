@@ -86,6 +86,10 @@ namespace Leuterper
             {
                 return scope as Program;
             }
+            if(scope.getScope() == null)
+            {
+                Console.WriteLine();
+            }
             return ScopeManager.getProgram(scope.getScope());
         }
 

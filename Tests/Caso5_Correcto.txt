@@ -2,7 +2,7 @@ class Foo[X, Y]
 {
 	X x;
 	Y y;
-	Foo(X x, Y y)
+	Foo(X x, Y y) : ()
 	{
 		this.x = x;
 		this.y = y;
@@ -52,7 +52,8 @@ class FooSS inherits FooS[String, String]
 
 Void main(String args)
 {
-	FooNN fnn = new FooNN(1, 2);
+	FooNN fnn = 
+		new FooNN(1, 2);
 	write(fnn.getX());
 	write(fnn.getY());
 

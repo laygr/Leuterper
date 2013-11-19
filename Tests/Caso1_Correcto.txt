@@ -40,7 +40,7 @@ String numeroAUnario(Number n)
 	String result = "";
 	if n == 0
 	{
-		return "0";
+		return result;
 	}
 	else
 	{

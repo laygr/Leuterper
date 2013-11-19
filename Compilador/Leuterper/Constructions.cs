@@ -184,7 +184,6 @@ namespace Leuterper.Constructions
     {
         private String name;
         public List<LType> typeVariables;
-        public LType parentType;
         public LType ownerType;
         public Boolean rootIsDefined;
         public Boolean isCompletelyDefined;
@@ -193,23 +192,17 @@ namespace Leuterper.Constructions
         private Boolean shouldRedefineItsClass;
         public VariableIndexFindStrategy strategy;
 
-        public LType(int line, String name, List<LType> typeVariables, LType parentType) : base(line)
+        public LType(int line, String name, List<LType> typeVariables) : base(line)
         {
             this.name = name;
             this.isCompletelyDefined = false;
             this.typeVariables = typeVariables;
             typeVariables.ForEach(tv => tv.isCompletelyDefined = false);
             typeVariables.ForEach(tv => tv.ownerType = this);
-            this.parentType = parentType;
-            if (this.parentType == null && (!this.getName().Equals("Object") || this.getName().Equals("Void")))
-            {
-                this.parentType = LObject.type;
-            }
             this.typeVariableIndex = -1;
             this.shouldRedefineItsClass = false;
             this.strategy = VariableInsideClass.getSingleton();
         }
-        public LType(int line, String name, List<LType> typeVariables) : this(line, name, typeVariables, null) { }
         public LType(int line, String name) : this(line, name, new List<LType>()) { }
         public string SignatureAsString()
         {
@@ -221,11 +214,23 @@ namespace Leuterper.Constructions
             {
                 return true;
             }
-            else if (this.parentType != null)
+            else if (this.getParentType() != null)
             {
-                return this.parentType.typeOrSuperTypeUnifiesWith(otherType);
+                return this.getParentType().typeOrSuperTypeUnifiesWith(otherType);
             }
             return false;
+        }
+        public LType getParentType()
+        {
+            if(ScopeManager.getClassForType(this.getScope(), this) == null)
+            {
+                return null;
+            }
+            if(ScopeManager.getClassForType(this.getScope(), this).getParentClass() == null)
+            {
+                return null;
+            }
+            return ScopeManager.getClassForType(this.getScope(), this).getParentClass().getType();
         }
         public bool UnifiesWith(LType otherType)
         {
@@ -244,20 +249,12 @@ namespace Leuterper.Constructions
         {
             if (this.getScope() == null) return;
             this.typeVariables.ForEach(tv => this.getScope().addChild(tv));
-            if (this.parentType != null)
-            {
-                this.getScope().addChild(this.parentType);
-            }
         }
         public override void symbolsRegistrationPass() { }
         public override void symbolsUnificationPass()
         {
             this.definingClass = ScopeManager.getClassForType(this.getScope(), this);
             this.rootIsDefined = this.definingClass != null;
-            if (this.definingClass != null)
-            {
-                this.parentType = this.definingClass.getType().parentType;
-            }
             this.typeVariables.ForEach(tv => tv.symbolsUnificationPass());
             if (this.rootIsDefined)
             {
@@ -275,9 +272,9 @@ namespace Leuterper.Constructions
             {
                 this.typeVariableIndex = this.strategy.getVariableIndex(this);
             }
-            if (this.parentType != null)
+            if (this.getParentType() != null)
             {
-                this.parentType.symbolsUnificationPass();
+                this.getParentType().symbolsUnificationPass();
             }
             if (this.isCompletelyDefined && this.typeVariables.Count() > 0)
             {
@@ -301,16 +298,13 @@ namespace Leuterper.Constructions
         public LType clone()
         {
             LType clone = new LType(this.getLine(), this.name);
-            if (this.parentType != null)
-            {
-                clone.parentType = this.parentType.clone();
-            }
             clone.rootIsDefined = this.rootIsDefined;
             clone.isCompletelyDefined = this.isCompletelyDefined;
             clone.typeVariableIndex = this.typeVariableIndex;
             clone.shouldRedefineItsClass = this.shouldRedefineItsClass;
             clone.definingClass = this.definingClass;
             clone.strategy = this.strategy;
+            clone.setScope(this.getScope());
             this.typeVariables.ForEach(tv => clone.typeVariables.Add(tv.clone()));
             return clone;
         }
@@ -330,30 +324,23 @@ namespace Leuterper.Constructions
             LType newType = this;
             if (!this.rootIsDefined)
             {
-                newType = instantiatedTypes[this.typeVariableIndex];
+                newType = ScopeManager.getClassScope(this.getScope()).getType().typeVariables[this.typeVariableIndex];
             }
             if (newType.definingClass != null)
             {
                 newType.definingClass = newType.definingClass.reinstantiateWithSubstitution(this, instantiatedTypes);
             }
-            if (newType.parentType != null)
-            {
-                newType.parentType.redefineWithSubstitutionTypes(newType.parentType.typeVariables);
-            }
             return newType;
         }
         public LClass getDefiningClass()
         {
+            if (definingClass == null) this.definingClass = ScopeManager.getClassForType(this.getScope(), this);
             return definingClass;
         }
 
         public override void setScope(IScope scope)
         {
             base.setScope(scope);
-            if (this.parentType != null)
-            {
-                this.parentType.setScope(scope);
-            }
         }
         public override String ToString()
         {
@@ -367,13 +354,14 @@ namespace Leuterper.Constructions
     class LClass : Construction, IConstruction, IDefinition, IScope, ISignable<LClass>
     {
         private LType type;
+        private LType parentType;
         private LClass parentClass;
         public int identifier;
         public UniquesList<LAttribute> attributes;
-        public UniquesList<Constructor> constructorDefinitions;
-        public UniquesList<Method> methodsDefinitions;
+        public UniquesList<Constructor> constructorDefinitions = new UniquesList<Constructor>();
+        public UniquesList<Method> methodsDefinitions = new UniquesList<Method>();
         public int numberOfLAttributes = -1;
-        public List<Construction> children;
+        public List<Construction> children = new List<Construction>();
         public LClass
             (
                 int line,
@@ -384,20 +372,17 @@ namespace Leuterper.Constructions
             ) : base(line)
         {
             this.type = type;
-            this.children = new List<Construction>();
+            this.parentType = parentType;
             this.attributes = LAttributesDeclarations;
             if (parentType != null)
             {
-                this.getType().parentType = parentType;
                 parentType.typeVariables.ForEach(tv => tv.strategy = VariableInParentClass.getSingleton());
+            }else if(!type.HasSameSignatureAs(LVoid.type) && !type.HasSameSignatureAs(LObject.type))
+            {
+                this.parentType = LObject.type;
             }
-
             LAttributesDeclarations.ForEach(a => a.setScope(this));
-
             classProcedures.ForEach(cp => cp.setScope(this));
-
-            this.methodsDefinitions = new UniquesList<Method>();
-            this.constructorDefinitions = new UniquesList<Constructor>();
             foreach (Class_Procedure cp in classProcedures)
             {
                 if (cp is Constructor)
@@ -409,7 +394,23 @@ namespace Leuterper.Constructions
                     this.methodsDefinitions.AddUnique(cp as Method);
                 }
             }
+            if (this.parentType != null)
+            {
+                LAttribute baseClass = new LAttribute(this.getLine(), this.parentType, "super");
+                this.attributes.InsertUnique(0, baseClass);
+            }
             this.scopeSettingPass();
+        }
+        public LClass(LClass original, LType newType, UniquesList<LAttribute> attributes, UniquesList<Constructor>constructors, UniquesList<Method>methods) : base(original.getLine())
+        {
+            this.type = newType;
+            this.parentType = original.parentType;
+            this.attributes = attributes;
+            this.constructorDefinitions = constructors;
+            this.methodsDefinitions = methods;
+            this.identifier = original.identifier;
+            this.parentClass = original.parentClass;
+            original.getScope().addChild(this);
         }
 
         public bool HasSameSignatureAs(LClass otherElement)
@@ -437,10 +438,6 @@ namespace Leuterper.Constructions
         }
         public override void scopeSettingPass()
         {
-            if (this.getType().parentType != null)
-            {
-                this.getType().parentType.setShouldStartRedefinition(true);
-            }
             this.addChild(this.getType());
 
             this.attributes.ForEach(a => this.addChild(a));
@@ -458,21 +455,21 @@ namespace Leuterper.Constructions
         public override void symbolsUnificationPass()
         {
             this.getType().symbolsUnificationPass();
-
+            if (this.parentType != null)
+            {
+                this.parentClass = ScopeManager.getClassForType(this, this.parentType);
+            }
             this.attributes.ForEach(a => a.symbolsUnificationPass());
             this.constructorDefinitions.ForEach(c => c.symbolsUnificationPass());
             this.methodsDefinitions.ForEach(m => m.symbolsUnificationPass());
 
-            if (this.type.parentType != null)
-            {
-                this.parentClass = ScopeManager.getClassForType(this, this.type.parentType);
-            }
+            
         }
         public override void classesGenerationPass()
         {
             if (getParentClass() != null)
             {
-                this.parentClass = this.parentClass.reinstantiateWithSubstitution(this.type.parentType, this.type.parentType.typeVariables);
+                this.parentClass = this.parentClass.reinstantiateWithSubstitution(this.parentType, this.parentType.typeVariables);
             }
             this.attributes.ForEach(a => a.classesGenerationPass());
             this.constructorDefinitions.ForEach(c => c.classesGenerationPass());
@@ -480,11 +477,6 @@ namespace Leuterper.Constructions
         }
         public override void simplificationPass()
         {
-            if (this.type.parentType != null)
-            {
-                LAttribute baseClass = new LAttribute(this.getLine(), this.type.parentType, "super");
-                this.attributes.InsertUnique(0, baseClass);
-            }
             this.constructorDefinitions.ForEach(c => c.simplificationPass());
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
@@ -493,7 +485,14 @@ namespace Leuterper.Constructions
             this.constructorDefinitions.ForEach(c => c.codeGenerationPass(compiler));
             this.methodsDefinitions.ForEach(m => m.codeGenerationPass(compiler));
         }
-        public LClass getParentClass() { return this.parentClass; }
+        public LClass getParentClass()
+        {
+            if(this.parentClass == null && this.parentType != null)
+            {
+                this.parentClass = ScopeManager.getClassForType(this, this.parentType);
+            }
+            return this.parentClass; 
+        }
         internal int getIndexOfLAttribute(string LAttributeName)
         {
             for (int i = 0; i < this.attributes.Count(); i++)
@@ -538,19 +537,16 @@ namespace Leuterper.Constructions
         }
         public LClass reinstantiateWithSubstitution(LType newType, List<LType> instantiatedTypes)
         {
-            this.type = newType;
 
             UniquesList<LAttribute> reinstantiatedLAttributes = new UniquesList<LAttribute>();
             this.attributes.ForEach(a => reinstantiatedLAttributes.Add(a.redefineWithSubstitutionTypes(instantiatedTypes)));
 
-            UniquesList<Class_Procedure> reinstantiatedProcedures = new UniquesList<Class_Procedure>();
-            this.methodsDefinitions.ForEach(m => reinstantiatedProcedures.Add(m.redefineWithSubstitutionTypes(instantiatedTypes)));
-            this.constructorDefinitions.ForEach(c => reinstantiatedProcedures.Add(c.redefineWithSubstitutionTypes(instantiatedTypes)));
+            UniquesList<Method> reinstantiatedMethods = new UniquesList<Method>();
+            UniquesList<Constructor> reinstantiatedConstructors = new UniquesList<Constructor>();
+            this.methodsDefinitions.ForEach(m => reinstantiatedMethods.Add(m.redefineWithSubstitutionTypes(instantiatedTypes)));
+            this.constructorDefinitions.ForEach(c => reinstantiatedConstructors.Add(c.redefineWithSubstitutionTypes(instantiatedTypes)));
 
-            LClass reinstanation = new LClass(this.getLine(), this.getType(), this.getType().parentType, reinstantiatedLAttributes, reinstantiatedProcedures);
-            reinstanation.identifier = this.identifier;
-            reinstanation.parentClass = this.parentClass;
-            this.getScope().addChild(reinstanation);
+            LClass reinstanation = new LClass(this, newType, reinstantiatedLAttributes, reinstantiatedConstructors, reinstantiatedMethods);
             return reinstanation;
         }
         public LType getType() { return this.type; }
@@ -939,10 +935,6 @@ namespace Leuterper.Constructions
         {
             int LAttributeIndex = -1;
             int parentClassesWalked = 0;
-            if (this.theObject.getType().getDefiningClass() == null)
-            {
-                Console.WriteLine();
-            }
             LClass c = this.theObject.getType().getDefiningClass();
             
             LAttributeIndex = c.getIndexOfLAttribute(this.LAttributeName);
@@ -1024,7 +1016,8 @@ namespace Leuterper.Constructions
     }
     class LString : LList
     {
-        new public static LType type = LString.LStringType();
+        new public static LType type = new LType(0, "String");
+        public static LType parentType = LString.LStringParentType();
         public LString(int line, String value) : base(line, LChar.type, new List<Expression>())
         {
             List<Expression> chars = new List<Expression>();
@@ -1047,13 +1040,11 @@ namespace Leuterper.Constructions
                 elements.Add(nextChar);
             }
         }
-        public static LType LStringType()
+        public static LType LStringParentType()
         {
             LType listType = LList.CreateLListType();
             listType.typeVariables[0] = LChar.type;
-            LType stringType = new LType(0, "String");
-            stringType.parentType = listType;
-            return stringType;
+            return listType;
         }
         public override LType getType() { return LString.type; }
         public override string encodeAsString()
@@ -1572,7 +1563,7 @@ namespace Leuterper.Constructions
     }
     class Call_Constructor : Call_Procedure
     {
-        public LType type { get; set; }
+        public LType type;
         public Call_Constructor(int line, LType type, List<Expression> arguments) : base(line, type.getName(), arguments)
         {
             this.type = type;
@@ -1590,6 +1581,11 @@ namespace Leuterper.Constructions
             }
             return constructor;
         }
+        public override void scopeSettingPass()
+        {
+            this.getScope().addChild(this.type);
+            base.scopeSettingPass();
+        } 
         public override void classesGenerationPass()
         {
             this.getType().classesGenerationPass();
