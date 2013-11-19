@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Leuterper.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Leuterper.Exceptions;
 
 namespace Leuterper.Constructions
 {
@@ -16,17 +14,17 @@ namespace Leuterper.Constructions
         virtual public void setScope(IScope scope)
         {
             this.scope = scope;
-            this.scopeSetting();
+            this.scopeSettingPass();
         }
         public IScope getScope() { return this.scope; }
-        public abstract void scopeSetting();
-        public abstract void symbolsRegistration(LeuterperCompiler compiler);
+        public abstract void scopeSettingPass();
+        public abstract void symbolsRegistrationPass();
         public abstract void symbolsUnificationPass();
         public abstract void classesGenerationPass();
-        public abstract void simplificationAndValidationPass();
+        public abstract void simplificationPass();
         public abstract void codeGenerationPass(LeuterperCompiler compiler);
     }
-    abstract class Procedure : Declaration, IDefinition, IScope, ISignable<Procedure>
+    abstract class Procedure : Declaration, IDefinition, IScope, ISignable<Procedure>, IBlock
     {
         public int identifier = -1;
         public List<Parameter> parameters;
@@ -41,27 +39,9 @@ namespace Leuterper.Constructions
             this.actions = new List<IAction>();
             this.declarations = new UniquesList<Declaration>();
 
-            int assignations = 0;
-            this.parameters.ForEach(p => this.declarations.Add(p));
-            foreach (IAction a in actions)
-            {
-                if (a is Var)
-                {
-                    this.declarations.Add(a as Var);
-                    Var v = a as Var;
-                    if (v.initialValue != null)
-                    {
-                        VarAccess var = new VarAccess(v.getLine(), v.getName());
-                        this.actions.Insert(assignations, new Assignment(v.getLine(), var, v.initialValue));
-                        assignations++;
-                    }
-                }
-                else
-                {
-                    this.actions.Add(a);
-                }
-            }
-            this.scopeSetting();
+            this.parameters.ForEach(p => this.declarations.AddUnique(p));
+            this.expandActions(actions);
+            this.scopeSettingPass();
         }
         public void checkThatVariablesHaveUniqueNames()
         {
@@ -96,16 +76,17 @@ namespace Leuterper.Constructions
             if (!this.getName().Equals(name)) return false;
             return Utils.listOfTypesUnify(Utils.listOfParametersAsListOfTypes(this.parameters), types);
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.addChild(this.getType());
             this.parameters.ForEach(p => this.addChild(p));
             this.declarations.ForEach(v => this.addChild(v));
             this.actions.ForEach(a => this.addChild(a as Construction));
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler)
+        public override void symbolsRegistrationPass()
         {
-            compiler.assignIdentifierToProcedure(this);
+            ScopeManager.getProgram(this).assignIdentifierToProcedure(this);
+            this.actions.ForEach(a => a.symbolsRegistrationPass());
         }
         public override void symbolsUnificationPass()
         {
@@ -122,9 +103,9 @@ namespace Leuterper.Constructions
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            if (compiler.mostVaribalesInAFunction < this.parameters.Count() + this.declarations.Count())
+            if (compiler.mostVaribalesInAFunction < this.declarations.Count())
             {
-                compiler.mostVaribalesInAFunction = this.parameters.Count() + this.declarations.Count();
+                compiler.mostVaribalesInAFunction = this.declarations.Count();
             }
             compiler.functionsParameters.Add(this.parameters.Count());
             compiler.functionActions.Add(new List<MachineInstructions.MachineInstruction>());
@@ -147,6 +128,11 @@ namespace Leuterper.Constructions
             this.children.Add(c);
             c.setScope(this);
         }
+
+        public void expandActions(List<IAction> actions)
+        {
+            Utils.expandActions(declarations, this.actions, actions);
+        }
     }
     class Assignment : Construction, IAction
     {
@@ -157,13 +143,17 @@ namespace Leuterper.Constructions
             this.lhs = lhs;
             this.rhs = rhs;
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             rhs.shouldBePushedToStack = true;
             this.getScope().addChild(lhs);
             this.getScope().addChild(rhs);
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass()
+        {
+            this.lhs.symbolsRegistrationPass();
+            this.rhs.symbolsRegistrationPass();
+        }
         public override void symbolsUnificationPass()
         {
             lhs.symbolsUnificationPass();
@@ -177,7 +167,7 @@ namespace Leuterper.Constructions
             this.lhs.classesGenerationPass();
             this.rhs.classesGenerationPass();
         }
-        public override void simplificationAndValidationPass()
+        public override void simplificationPass()
         {
             if (!rhs.getType().typeOrSuperTypeUnifiesWith(lhs.getType()))
             {
@@ -217,6 +207,7 @@ namespace Leuterper.Constructions
             }
             this.typeVariableIndex = -1;
             this.shouldRedefineItsClass = false;
+            this.strategy = VariableInsideClass.getSingleton();
         }
         public LType(int line, String name, List<LType> typeVariables) : this(line, name, typeVariables, null) { }
         public LType(int line, String name) : this(line, name, new List<LType>()) { }
@@ -247,16 +238,9 @@ namespace Leuterper.Constructions
         }
         public bool HasSameSignatureAs(LType otherElement)
         {
-            if (this.typeVariables.Count() != otherElement.typeVariables.Count()) return false;
-            if (!this.isCompletelyDefined && !otherElement.isCompletelyDefined) return true;
-            if (!this.getName().Equals(otherElement.getName())) return false;
-            for (int i = 0; i < this.typeVariables.Count(); i++)
-            {
-                if (!this.typeVariables[i].HasSameSignatureAs(otherElement.typeVariables[i])) return false;
-            }
-            return true;
+            return this.getName().Equals(otherElement.getName());
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             if (this.getScope() == null) return;
             this.typeVariables.ForEach(tv => this.getScope().addChild(tv));
@@ -265,10 +249,11 @@ namespace Leuterper.Constructions
                 this.getScope().addChild(this.parentType);
             }
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { }
         public override void symbolsUnificationPass()
         {
-            this.definingClass = this.getDefiningClass();
+            this.definingClass = ScopeManager.getClassForType(this.getScope(), this);
+            this.rootIsDefined = this.definingClass != null;
             if (this.definingClass != null)
             {
                 this.parentType = this.definingClass.getType().parentType;
@@ -306,7 +291,7 @@ namespace Leuterper.Constructions
                 this.redefineWithSubstitutionTypes(this.typeVariables);
             }
         }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public string getName() { return this.name; }
         public override void codeGenerationPass(LeuterperCompiler compiler) { }
         public void setShouldStartRedefinition(Boolean shouldBeRedefined)
@@ -320,20 +305,13 @@ namespace Leuterper.Constructions
             {
                 clone.parentType = this.parentType.clone();
             }
-            else
-            {
-                clone.parentType = null;
-            }
             clone.rootIsDefined = this.rootIsDefined;
             clone.isCompletelyDefined = this.isCompletelyDefined;
             clone.typeVariableIndex = this.typeVariableIndex;
             clone.shouldRedefineItsClass = this.shouldRedefineItsClass;
             clone.definingClass = this.definingClass;
-
-            for (int i = 0; i < this.typeVariables.Count(); i++)
-            {
-                clone.typeVariables.Add(this.typeVariables[i].clone());
-            }
+            clone.strategy = this.strategy;
+            this.typeVariables.ForEach(tv => clone.typeVariables.Add(tv.clone()));
             return clone;
         }
         public LType substituteTypeAndVariableTypesWith(List<LType> instantiatedTypes)
@@ -360,17 +338,12 @@ namespace Leuterper.Constructions
             }
             if (newType.parentType != null)
             {
-                newType.parentType.redefineWithSubstitutionTypes(instantiatedTypes);
+                newType.parentType.redefineWithSubstitutionTypes(newType.parentType.typeVariables);
             }
             return newType;
         }
         public LClass getDefiningClass()
         {
-            if (this.definingClass == null)
-            {
-                this.definingClass = ScopeManager.getClassForType(this.getScope(), this);
-            }
-            this.rootIsDefined = this.definingClass != null;
             return definingClass;
         }
 
@@ -380,14 +353,6 @@ namespace Leuterper.Constructions
             if (this.parentType != null)
             {
                 this.parentType.setScope(scope);
-            }
-            if (ScopeManager.getClassScope(scope) == null)
-            {
-                this.strategy = new VariableNotInsideAClass();
-            }
-            else
-            {
-                this.strategy = new VariableInsideClass();
             }
         }
         public override String ToString()
@@ -420,13 +385,14 @@ namespace Leuterper.Constructions
         {
             this.type = type;
             this.children = new List<Construction>();
+            this.attributes = LAttributesDeclarations;
             if (parentType != null)
             {
                 this.getType().parentType = parentType;
+                parentType.typeVariables.ForEach(tv => tv.strategy = VariableInParentClass.getSingleton());
             }
 
             LAttributesDeclarations.ForEach(a => a.setScope(this));
-            this.attributes = LAttributesDeclarations;
 
             classProcedures.ForEach(cp => cp.setScope(this));
 
@@ -436,14 +402,14 @@ namespace Leuterper.Constructions
             {
                 if (cp is Constructor)
                 {
-                    this.constructorDefinitions.Add(cp as Constructor);
+                    this.constructorDefinitions.AddUnique(cp as Constructor);
                 }
                 else
                 {
-                    this.methodsDefinitions.Add(cp as Method);
+                    this.methodsDefinitions.AddUnique(cp as Method);
                 }
             }
-            this.scopeSetting();
+            this.scopeSettingPass();
         }
 
         public bool HasSameSignatureAs(LClass otherElement)
@@ -469,7 +435,7 @@ namespace Leuterper.Constructions
             }
             return parentClass.getType().getName();
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             if (this.getType().parentType != null)
             {
@@ -482,11 +448,11 @@ namespace Leuterper.Constructions
             this.methodsDefinitions.ForEach(m => this.addChild(m));
         }
 
-        public override void symbolsRegistration(LeuterperCompiler compiler)
+        public override void symbolsRegistrationPass()
         {
-            compiler.assignIdentifierToClass(this);
-            this.constructorDefinitions.ForEach(c => c.symbolsRegistration(compiler));
-            this.methodsDefinitions.ForEach(m => m.symbolsRegistration(compiler));
+            ScopeManager.getProgram(this).assignIdentifierToClass(this);
+            this.constructorDefinitions.ForEach(c => c.symbolsRegistrationPass());
+            this.methodsDefinitions.ForEach(m => m.symbolsRegistrationPass());
         }
 
         public override void symbolsUnificationPass()
@@ -512,14 +478,14 @@ namespace Leuterper.Constructions
             this.constructorDefinitions.ForEach(c => c.classesGenerationPass());
             this.methodsDefinitions.ForEach(m => m.classesGenerationPass());
         }
-        public override void simplificationAndValidationPass()
+        public override void simplificationPass()
         {
-            LClass parentClass = this.getParentClass();
-            if (parentClass == null) return;
-            LType parentClassType = parentClass.getType();
-            LAttribute baseClass = new LAttribute(this.getLine(), parentClassType, "super");
-            this.attributes.Insert(0, baseClass);
-            this.constructorDefinitions.ForEach(c => c.simplificationAndValidationPass());
+            if (this.type.parentType != null)
+            {
+                LAttribute baseClass = new LAttribute(this.getLine(), this.type.parentType, "super");
+                this.attributes.InsertUnique(0, baseClass);
+            }
+            this.constructorDefinitions.ForEach(c => c.simplificationPass());
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
@@ -534,7 +500,7 @@ namespace Leuterper.Constructions
             {
                 if (this.attributes[i].getName().Equals(LAttributeName))
                 {
-                    return i + this.getIndexOfFirstLAttribute();
+                    return i;
                 }
             }
             return -1;
@@ -560,14 +526,15 @@ namespace Leuterper.Constructions
             return c;
         }
 
-        internal LType getTypeOfLAttribute(int p)
+        internal LType getTypeOfLAttribute(int parentClassesWalked, int p)
         {
-            LClass pC = this.getParentClass();
-            if (this.getIndexOfFirstLAttribute() > p)
+            LClass pC = this;
+            while(parentClassesWalked > 0)
             {
-                return pC.getTypeOfLAttribute(p);
+                pC.getParentClass();
+                parentClassesWalked--;
             }
-            return this.attributes[p - pC.attributes.Count()].getType();
+            return pC.attributes[p].getType();
         }
         public LClass reinstantiateWithSubstitution(LType newType, List<LType> instantiatedTypes)
         {
@@ -600,56 +567,24 @@ namespace Leuterper.Constructions
             this.children.Add(c);
             c.setScope(this);
         }
-        private int getIndexOfFirstLAttribute()
-        {
-            LClass p = this.getParentClass();
-            if (p == null) return 0;
-            return p.attributes.Count();
-        }
     }
-    class Program : Construction, IScope, ICompilable
+    class Program : Procedure
     {
-        public UniquesList<LClass> classes;
-        public UniquesList<Function> functions;
-        public List<IAction> actions;
-        public UniquesList<Declaration> vars;
-        public List<Construction> children;
-        public Program(UniquesList<LClass> classes, UniquesList<Function> functions, List<IAction> actions) : base(0)
+        public UniquesList<LClass> classes = new UniquesList<LClass>();
+        public UniquesList<Function> functions = new UniquesList<Function>();
+        public int classesCounter;
+        private int proceduresCounter;
+        public int literalsCounter;
+        public Program(UniquesList<LClass> classes, UniquesList<Function> functions, List<IAction> actions) : base(0, LVoid.type, "program", new List<Parameter>(), actions)
         {
-            this.classes = classes;
-            this.functions = functions;
-            this.actions = actions;
-
-            this.vars = new UniquesList<Declaration>();
-            foreach (LClass c in StandardLibrary.singleton.standardClasses)
-            {
-                this.classes.Insert(0, c);
-            }
-            foreach (Function f in StandardLibrary.singleton.standardFunctions)
-            {
-                this.functions.Insert(0, f);
-            }
-            foreach (IAction a in actions)
-            {
-                if (a is Var)
-                {
-                    this.vars.Add(a as Var);
-
-                }
-            }
-            this.children = new List<Construction>();
-
-            int assignations = 0;
-            foreach (Var v in this.vars)
-            {
-                if (v.initialValue != null)
-                {
-                    VarAccess var = new VarAccess(v.getLine(), v.getName());
-                    this.actions.Insert(assignations, new Assignment(v.getLine(), var, v.initialValue));
-                    assignations++;
-                }
-            }
-            this.scopeSetting();
+            this.classesCounter = StandardLibrary.singleton.standardClasses.Count();
+            this.proceduresCounter = StandardLibrary.singleton.standardProcedures.Count() + StandardLibrary.singleton.standardFunctions.Count();
+            this.literalsCounter = 0;
+            StandardLibrary.singleton.standardClasses.ForEach(c => this.classes.Add(c));
+            classes.ForEach(c => this.classes.Add(c));
+            StandardLibrary.singleton.standardFunctions.ForEach(f => this.functions.Add(f));
+            functions.ForEach(f => this.functions.Add(f));
+            this.scopeSettingPass();
         }
         public Function getFunctionForGivenNameAndTypes(string name, List<LType> parametersTypes)
         {
@@ -665,23 +600,22 @@ namespace Leuterper.Constructions
             if (fun != null) return fun.identifier;
             return -1;
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
+            base.scopeSettingPass();
             this.classes.ForEach(c => this.addChild(c));
-            this.vars.ForEach(v => this.addChild(v));
             this.functions.ForEach(f => this.addChild(f));
-            this.actions.ForEach(a => this.addChild(a as Construction));
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler)
+        public override void symbolsRegistrationPass()
         {
-            this.classes.ForEach(c => c.symbolsRegistration(compiler));
-            this.vars.ForEach(v => v.symbolsRegistration(compiler));
-            this.functions.ForEach(f => f.symbolsRegistration(compiler));
+            base.symbolsRegistrationPass();
+            this.classes.ForEach(c => c.symbolsRegistrationPass());
+            this.functions.ForEach(f => f.symbolsRegistrationPass());
         }
         public override void symbolsUnificationPass()
         {
+            base.symbolsUnificationPass();
             this.classes.ForEach(c => c.symbolsUnificationPass());
-            this.vars.ForEach(v => v.symbolsUnificationPass());
             this.functions.ForEach(f => f.symbolsUnificationPass());
             this.actions.ForEach(a => a.symbolsUnificationPass());
         }
@@ -690,25 +624,37 @@ namespace Leuterper.Constructions
             this.classes.ForEach(c => c.classesGenerationPass());
             this.functions.ForEach(f => f.classesGenerationPass());
         }
-        public override void simplificationAndValidationPass()
+        public override void simplificationPass()
         {
-            this.classes.ForEach(c => c.simplificationAndValidationPass());
+            this.classes.ForEach(c => c.simplificationPass());
         }
-        public override void codeGenerationPass(LeuterperCompiler compiler)
+        public new void codeGenerationPass(LeuterperCompiler compiler)
         {
-            compiler.globalVariablesCounter = this.vars.Count();
+            compiler.globalVariablesCounter = this.declarations.Count();
             this.classes.ForEach(c => c.codeGenerationPass(compiler));
             this.functions.ForEach(f => f.codeGenerationPass(compiler));
             compiler.compilingTopLeveIActions = true;
             this.actions.ForEach(a => a.codeGenerationPass(compiler));
         }
         public UniquesList<LClass> getClasses() { return this.classes; }
-        public UniquesList<Declaration> getDeclarations() { return this.vars; }
-        public List<Construction> getChildren() { return this.children; }
-        public void addChild(Construction c)
+        public void assignIdentifierToClass(LClass c)
         {
-            this.children.Add(c);
-            c.setScope(this);
+            if (c is LClassSpecial) return;
+
+            c.identifier = this.classesCounter;
+            this.classesCounter++;
+        }
+        public void assignIdentifierToProcedure(Procedure p)
+        {
+            if (p is FunctionSpecial || p is MethodSpecial || p is ConstructorSpecial) return;
+
+            p.identifier = this.proceduresCounter;
+            this.proceduresCounter++;
+        }
+        public void assignIndexToLiteral(LObject o)
+        {
+            o.literalIndex = this.literalsCounter;
+            this.literalsCounter++;
         }
     }
     class Return_From_Block : Construction, IAction
@@ -719,15 +665,15 @@ namespace Leuterper.Constructions
             this.returningExpression = returningExpression;
         }
 
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.returningExpression.shouldBePushedToStack = true;
             this.getScope().addChild(this.returningExpression);
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { returningExpression.symbolsRegistrationPass(); }
         public override void symbolsUnificationPass() { this.returningExpression.symbolsUnificationPass(); }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             returningExpression.codeGenerationPass(compiler);
@@ -745,21 +691,22 @@ namespace Leuterper.Constructions
             this.la = la;
             this.rhs = rhs;
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
+            la.shouldBePushedToStack = true;
             la.willBeUsedForSet = true;
             this.getScope().addChild(la);
             rhs.shouldBePushedToStack = true;
             this.getScope().addChild(rhs);
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { la.symbolsRegistrationPass(); rhs.symbolsRegistrationPass(); }
         override public void symbolsUnificationPass()
         {
             la.symbolsUnificationPass();
             rhs.symbolsUnificationPass();
         }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         override public void codeGenerationPass(LeuterperCompiler compiler)
         {
             int attributeIndex = la.getLAttributeIndex();
@@ -776,7 +723,7 @@ namespace Leuterper.Constructions
     class Function : Procedure, ISignable<Function>
     {
         public Function(int line, LType type, String id, List<Parameter> parameters, List<IAction> actions)
-            : base(line, type, id, parameters, actions) { this.scopeSetting(); }
+            : base(line, type, id, parameters, actions) { this.scopeSettingPass(); }
 
         public bool HasSameSignatureAs(Function otherElement)
         {
@@ -808,7 +755,9 @@ namespace Leuterper.Constructions
         }
         public bool HasSameSignatureAs(Class_Procedure otherElement)
         {
-            return base.HasSameSignatureAs(otherElement);
+            LClass thisClass = this.getScope() as LClass;
+            LClass otherClass = otherElement.getScope() as LClass;
+            return (thisClass == null || thisClass.HasSameSignatureAs(otherClass)) && base.HasSameSignatureAs(otherElement);
         }
     }
     class Constructor : Class_Procedure, ISignable<Constructor>
@@ -820,13 +769,17 @@ namespace Leuterper.Constructions
             this.baseCallArguments = baseCallArguments;
             this.scopeSetting();
         }
-
         public override bool isCompatibleWithNameAndTypes(string name, List<LType> types)
         {
             if (!this.getType().getName().Equals(name)) return false;
             List<LType> parametersTypes = Utils.listOfParametersAsListOfTypes(this.parameters);
             parametersTypes.RemoveAt(0);
             return Utils.listOfTypesUnify(parametersTypes, types);
+        }
+        public override void symbolsRegistrationPass()
+        {
+            base.symbolsRegistrationPass();
+            this.baseCallArguments.ForEach(a => a.symbolsRegistrationPass());
         }
         public override void symbolsUnificationPass()
         {
@@ -838,8 +791,7 @@ namespace Leuterper.Constructions
             }
             base.symbolsUnificationPass();
         }
-        public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass()
+        public override void simplificationPass()
         {
             LClass classOwner = this.getScope() as LClass;
             LClass parentClass = classOwner.getParentClass();
@@ -856,7 +808,6 @@ namespace Leuterper.Constructions
             baseAssignation.setScope(this);
             this.actions.Insert(0, baseAssignation);
         }
-
         public Constructor redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
             Constructor result = new Constructor(
@@ -869,10 +820,17 @@ namespace Leuterper.Constructions
             result.setScope(this.getScope());
             return result;
         }
-
         public bool HasSameSignatureAs(Constructor otherElement)
         {
             return base.HasSameSignatureAs(otherElement);
+        }
+        public new void scopeSetting()
+        {
+            base.scopeSettingPass();
+            if (this.baseCallArguments != null)
+            {
+                this.baseCallArguments.ForEach(a => this.addChild(a));
+            }
         }
     }
 
@@ -909,7 +867,6 @@ namespace Leuterper.Constructions
 
         public override void codeGenerationPass(LeuterperCompiler compiler) { }
     }
-
     class MethodSpecial : Method
     {
         public MethodSpecial(int line, LType type, String name, List<Parameter> parameters, List<IAction> actions, int identifier)
@@ -919,13 +876,11 @@ namespace Leuterper.Constructions
         }
         public override void codeGenerationPass(LeuterperCompiler compiler) { }
     }
-
     abstract class Expression : Construction, IAction
     {
         public Expression(int line) : base(line) { }
         public bool shouldBePushedToStack { get; set; }
         abstract public LType getType();
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
     }
 
     class LAttributeAccess : Term
@@ -940,19 +895,19 @@ namespace Leuterper.Constructions
             this.LAttributeName = name;
             this.willBeUsedForSet = false;
         }
-
         public int getLAttributeIndex()
         {
-            LClass c = this.theObject.getType().getDefiningClass();
-            return c.getIndexOfLAttribute(LAttributeName);
+            return this.getParentClassesWalkedAndIndex()[1];
         }
-
         override public LType getType()
         {
+            int[] query = this.getParentClassesWalkedAndIndex();
+            int LAttributeIndex = query[1];
+            int parentClassesWalked = query[0];
             LClass c = this.theObject.getType().getDefiningClass();
-            return c.getTypeOfLAttribute(this.getLAttributeIndex());
+            return c.getTypeOfLAttribute(parentClassesWalked, LAttributeIndex);
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.theObject.setScope(this.getScope());
         }
@@ -960,22 +915,50 @@ namespace Leuterper.Constructions
         {
             theObject.symbolsUnificationPass();
         }
+        public override void symbolsRegistrationPass() { }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            if (!this.shouldBePushedToStack) return;
             theObject.codeGenerationPass(compiler);
             if (!this.willBeUsedForSet)
             {
-                LClass c = this.theObject.getType().getDefiningClass();
-                int LAttributeIndex = c.getIndexOfLAttribute(this.LAttributeName);
-                if (LAttributeIndex < 0)
+                int[] query = this.getParentClassesWalkedAndIndex();
+                int LAttributeIndex = query[1];
+                int parentClassesWalked = query[0];
+
+                while(parentClassesWalked > 0)
                 {
-                    throw new SyntacticErrorException("Accessed an undeclared LAttribute: " + this.LAttributeName, this.getLine());
+                    compiler.addAction(new MachineInstructions.Get(0));
+                    parentClassesWalked--;
                 }
                 compiler.addAction(new MachineInstructions.Get(LAttributeIndex));
             }
+        }
+        private int[] getParentClassesWalkedAndIndex()
+        {
+            int LAttributeIndex = -1;
+            int parentClassesWalked = 0;
+            if (this.theObject.getType().getDefiningClass() == null)
+            {
+                Console.WriteLine();
+            }
+            LClass c = this.theObject.getType().getDefiningClass();
+            
+            LAttributeIndex = c.getIndexOfLAttribute(this.LAttributeName);
+
+            LClass parentAux = c.getParentClass();
+            while (parentAux != null && LAttributeIndex < 0)
+            {
+                LAttributeIndex = parentAux.getIndexOfLAttribute(this.LAttributeName);
+                parentClassesWalked++;
+                parentAux = parentAux.getParentClass();
+            }
+            if (LAttributeIndex < 0)
+            {
+                throw new SyntacticErrorException("Accessed an undeclared LAttribute: " + this.LAttributeName, this.getLine());
+            }
+            return new int[] { parentClassesWalked, LAttributeIndex };
         }
     }
     abstract class Term : Expression
@@ -999,11 +982,11 @@ namespace Leuterper.Constructions
         {
             return ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
         }
-        public override void scopeSetting() { }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void scopeSettingPass() { }
+        public override void symbolsRegistrationPass() { }
         public override void symbolsUnificationPass() { }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             int varIndex = ScopeManager.getIndexOfVarNamed(this.getScope(), this.getName());
@@ -1018,19 +1001,18 @@ namespace Leuterper.Constructions
     abstract class LObject : Term
     {
         public static LType type = new LType(0, "Object");
-        public static int literalsCounter = 0;
         public int literalIndex;
-        public LObject(int line) : base(line)
-        {
-            this.literalIndex = literalsCounter;
-            literalsCounter++;
-        }
+        public LObject(int line) : base(line) { }
         override public LType getType() { return type; }
         abstract public String encodeAsString();
-        public override void scopeSetting() { }
+        public override void scopeSettingPass() { }
+        public override void symbolsRegistrationPass()
+        {
+            ScopeManager.getProgram(this.getScope()).assignIndexToLiteral(this);
+        }
         public override void symbolsUnificationPass() { }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.literalIndex = compiler.literals.Count();
@@ -1045,11 +1027,8 @@ namespace Leuterper.Constructions
         new public static LType type = LString.LStringType();
         public LString(int line, String value) : base(line, LChar.type, new List<Expression>())
         {
-            LType type = LString.type;
             List<Expression> chars = new List<Expression>();
-
             value = value.Substring(1, value.Length - 2);
-
             String nextString;
             LChar nextChar;
             while (value.Length > 0)
@@ -1076,7 +1055,7 @@ namespace Leuterper.Constructions
             stringType.parentType = listType;
             return stringType;
         }
-        public new LType getType() { return LString.type; }
+        public override LType getType() { return LString.type; }
         public override string encodeAsString()
         {
             string result = "";
@@ -1089,6 +1068,10 @@ namespace Leuterper.Constructions
                 result += ((LChar)this.elements[this.elements.Count() - 1]).encodeAsString();
             }
             return result;
+        }
+        public override void symbolsRegistrationPass()
+        {
+            ScopeManager.getProgram(this.getScope()).assignIndexToLiteral(this);
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
@@ -1187,7 +1170,7 @@ namespace Leuterper.Constructions
             this.instanceType = new LType(line, "List", new List<LType>(new LType[] { type }));
             this.elements = elements;
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.elements.ForEach(e => e.setScope(this.getScope()));
         }
@@ -1205,11 +1188,15 @@ namespace Leuterper.Constructions
         {
             return String.Format("{0}", this.elements.Count());
         }
+        public override void symbolsRegistrationPass()
+        {
+            this.elements.ForEach(e => e.symbolsRegistrationPass());
+        }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             foreach (Expression e in elements)
             {
-                if (!e.getType().typeOrSuperTypeUnifiesWith(type))
+                if (!e.getType().typeOrSuperTypeUnifiesWith(this.instanceType.typeVariables[0]))
                 {
                     throw new SyntacticErrorException("Type mismatch in element of list.", this.getLine());
                 }
@@ -1219,15 +1206,6 @@ namespace Leuterper.Constructions
                 e.shouldBePushedToStack = true;
                 e.codeGenerationPass(compiler);
             }
-            if (this.shouldBePushedToStack)
-            {
-                compiler.addAction(new MachineInstructions.NewP(30));
-            }
-            else
-            {
-                compiler.addAction(new MachineInstructions.New(30));
-            }
-
             if (this.shouldBePushedToStack)
             {
                 compiler.addAction(new MachineInstructions.AddP(this.elements.Count()));
@@ -1299,12 +1277,12 @@ namespace Leuterper.Constructions
     class LAttribute : Declaration, IRedefinable<LAttribute>, ISignable<LAttribute>
     {
         public LAttribute(int line, LType type, String name) : base(line, type, name) { }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
-            base.scopeSetting();
+            base.scopeSettingPass();
             this.getType().setShouldStartRedefinition(true);
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { }
         public override void symbolsUnificationPass()
         {
             base.symbolsUnificationPass();
@@ -1338,7 +1316,7 @@ namespace Leuterper.Constructions
                 &&
                 this.getName().Equals(otherElement.getName());
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.getType().setScope(this.getScope());
         }
@@ -1350,7 +1328,7 @@ namespace Leuterper.Constructions
         {
             this.type.classesGenerationPass();
         }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler) { }
         public override String ToString()
         {
@@ -1361,7 +1339,7 @@ namespace Leuterper.Constructions
     class Parameter : Declaration, IRedefinable<Parameter>
     {
         public Parameter(int line, LType type, String name) : base(line, type, name) { }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { }
         public Parameter redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
         {
             return new Parameter
@@ -1381,7 +1359,7 @@ namespace Leuterper.Constructions
             this.initialValue = initialValue;
         }
         public Var(int line, LType type, String id) : this(line, type, id, null) { }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.getType().setShouldStartRedefinition(true);
             this.getScope().addChild(this.getType());
@@ -1391,11 +1369,11 @@ namespace Leuterper.Constructions
                 this.getScope().addChild(this.initialValue);
             }
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler) { }
+        public override void symbolsRegistrationPass() { }
         public override void symbolsUnificationPass()
         {
             base.symbolsUnificationPass();
-            scopeSetting();
+            scopeSettingPass();
             this.getType().symbolsUnificationPass();
         }
         public Var redefineWithSubstitutionTypes(List<LType> instantiatedTypes)
@@ -1407,24 +1385,26 @@ namespace Leuterper.Constructions
             return base.HasSameSignatureAs(otherVar);
         }
     }
-    abstract class Conditional : Construction, IAction
+    abstract class Conditional : Construction, IAction, IBlock
     {
         public Expression booleanExpression;
-        public List<IAction> thenActions;
+        public List<IAction> thenActions = new List<IAction>();
+        public UniquesList<Declaration> declarations = new UniquesList<Declaration>();
         public Conditional(int line, Expression booleanExpression, List<IAction> thenActions) : base(line)
         {
             this.booleanExpression = booleanExpression;
-            this.thenActions = thenActions;
+            this.expandActions(thenActions);
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             booleanExpression.shouldBePushedToStack = true;
             booleanExpression.setScope(this.getScope());
             this.thenActions.ForEach(a => a.setScope(this.getScope()));
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler)
+        public override void symbolsRegistrationPass()
         {
-            this.thenActions.ForEach(a => a.symbolsRegistration(compiler));
+            this.booleanExpression.symbolsRegistrationPass();
+            this.thenActions.ForEach(a => a.symbolsRegistrationPass());
         }
         public override void symbolsUnificationPass()
         {
@@ -1436,7 +1416,17 @@ namespace Leuterper.Constructions
             this.booleanExpression.classesGenerationPass();
             this.thenActions.ForEach(a => a.classesGenerationPass());
         }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
+
+        virtual public void expandActions(List<IAction>actions)
+        {
+            Utils.expandActions(declarations, this.thenActions, actions);
+        }
+
+        public UniquesList<Declaration> getDeclarations()
+        {
+            return this.declarations;
+        }
     }
 
     class Loop_Do_While : Conditional
@@ -1459,19 +1449,20 @@ namespace Leuterper.Constructions
         public If_Then_Else(int line, Expression booleanExpression, List<IAction> thenActions, List<IAction> elseActions)
             : base(line, booleanExpression, thenActions)
         {
-            this.elseActions = elseActions;
+            this.elseActions = new List<IAction>();
+            this.expandActions(elseActions);
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
-            base.scopeSetting();
+            base.scopeSettingPass();
             this.getScope().addChild(this.booleanExpression);
             this.thenActions.ForEach(a => this.getScope().addChild(a as Construction));
             this.elseActions.ForEach(a => this.getScope().addChild(a as Construction));
         }
-        public override void symbolsRegistration(LeuterperCompiler compiler)
+        public override void symbolsRegistrationPass()
         {
-            base.symbolsRegistration(compiler);
-            this.elseActions.ForEach(a => a.symbolsRegistration(compiler));
+            base.symbolsRegistrationPass();
+            this.elseActions.ForEach(a => a.symbolsRegistrationPass());
         }
         public override void symbolsUnificationPass()
         {
@@ -1487,10 +1478,14 @@ namespace Leuterper.Constructions
             this.booleanExpression.codeGenerationPass(compiler);
             compiler.addAction(jumpToElse);
             this.thenActions.ForEach(a => a.codeGenerationPass(compiler));
-            compiler.addAction(endOfThen);
+            if(this.elseActions.Count() > 0) compiler.addAction(endOfThen);
             jumpToElse.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
             this.elseActions.ForEach(a => a.codeGenerationPass(compiler));
             endOfThen.whereToJump = compiler.getIndexOfNextActionInCurrentFunction();
+        }
+        public new void expandActions(List<IAction> elseActions)
+        {
+            Utils.expandActions(this.declarations, this.elseActions, elseActions);
         }
     }
     class Loop_While : Conditional
@@ -1548,7 +1543,7 @@ namespace Leuterper.Constructions
             }
             return p.identifier;
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
             this.arguments.ForEach(e => { e.shouldBePushedToStack = true;
                                           this.getScope().addChild(e); });
@@ -1557,8 +1552,11 @@ namespace Leuterper.Constructions
         {
             this.arguments.ForEach(a => a.symbolsUnificationPass());
         }
+        public override void symbolsRegistrationPass() {
+            this.arguments.ForEach(a => a.symbolsRegistrationPass());
+        }
         public override void classesGenerationPass() { }
-        public override void simplificationAndValidationPass() { }
+        public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.arguments.ForEach(a => a.codeGenerationPass(compiler));
@@ -1618,9 +1616,9 @@ namespace Leuterper.Constructions
             this.theObject = theObject;
             this.arguments.Insert(0, theObject);
         }
-        public override void scopeSetting()
+        public override void scopeSettingPass()
         {
-            base.scopeSetting();
+            base.scopeSettingPass();
             this.getScope().addChild(this.theObject);
         }
         public override void symbolsUnificationPass()

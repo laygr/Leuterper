@@ -58,9 +58,7 @@
     <Compile Include="ScopeManager.cs" />
     <Compile Include="StandardLibrary.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableIndexFindStrategy.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableInsideClass.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableNotInsideAClass.cs" />
+    <Compile Include="VariableIndexFindStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

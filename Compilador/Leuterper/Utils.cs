@@ -8,10 +8,7 @@ namespace Leuterper
 {
     class Utils
     {
-        public static LType parameterToType(Parameter p)
-        {
-            return p.getType();
-        }
+        public static LType parameterToType(Parameter p) { return p.getType(); }
         public static List<LType> listOfParametersAsListOfTypes(List<Parameter> parameters)
         {
             return parameters.ConvertAll(new Converter<Parameter, LType>(parameterToType));
@@ -25,9 +22,15 @@ namespace Leuterper
             }
             return result;
         }
+        static int uniquesGenerator = 0;
+        public static int getNextUnique()
+        {
+            uniquesGenerator++;
+            return uniquesGenerator;
+        }
         public static Parameter typeToParameter(LType t)
         {
-            return new Parameter(t.getLine(), t, "fakeParam");
+            return new Parameter(t.getLine(), t, "fakeParam" + getNextUnique());
         }
         public static List<Parameter> typesToParameters(List<LType> types)
         {
@@ -87,17 +90,50 @@ namespace Leuterper
         {
             return expression.ConvertAll(new Converter<Expression, LType>(expresionToType));
         }
+        public static void expandActions(List<Declaration> declarations, List<IAction>deposit, List<IAction> actions)
+        {
+            for (int i = 0; i < actions.Count(); i++)
+            {
+                IAction a = actions[i];
+                if (a is Var)
+                {
+                    declarations.Add(a as Var);
+                    Var v = a as Var;
+                    if (v.initialValue != null)
+                    {
+                        VarAccess var = new VarAccess(v.getLine(), v.getName());
+                        actions.Insert(i + 1, new Assignment(v.getLine(), var, v.initialValue));
+                        v.initialValue = null;
+                    }
+                }
+                else if (a is IBlock)
+                {
+                    (a as IBlock).getDeclarations().ForEach(d => declarations.Add(d));
+                }
+                deposit.Add(a);
+            }
+        }
     }
 
     class UniquesList<X> : List<X> where X : Construction, ISignable<X>
     {
         public UniquesList(X[] elements) : base(elements) { }
+        public UniquesList(List<X> elements) : base(elements) { }
         public UniquesList() { }
-        public void AddUnique(X newElement)
+        private void validateUniqueness(X newElement)
         {
             Boolean reallyNew = this.TrueForAll(e => !e.HasSameSignatureAs(newElement));
             if (!reallyNew) throw new SemanticErrorException(String.Format("Two definitions defined with same sinature: {0}", newElement), newElement.getLine());
+        }
+        public void AddUnique(X newElement)
+        {
+            this.validateUniqueness(newElement);
             this.Add(newElement);
+        }
+        internal void InsertUnique(int p, X newElement)
+        {
+            this.validateUniqueness(newElement);
+            this.Insert(p, newElement);
         }
     }
 }

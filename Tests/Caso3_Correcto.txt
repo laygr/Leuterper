@@ -1,95 +1,29 @@
-class Range
+class Matrix[X] inherits List[List[X]]
 {
-	Number inferior;
-	Number superior;
-
-	Range(Number inferior, Number superior)
+	Matrix()
 	{
-		this.inferior = inferior;
-		this.superior = superior;
-	}
-}
-
-class Array[X]
-{
-	List[Range] ranges;
-	List[X] elements;
-	List[Number] ms;
-	Number dimensions;
-	Number total;
-
-	Array(List[Range] rangos)
-	{
-		this.dimensions = rangos.count();
-		this.ms = new List[Number](this.dimensions + 1);
-		this.prepare();
-		this.elements = new List[X](total);
+		return this;
 	}
 
-	X get(List[Number] indexes)
+	X get(Number row, Number column)
 	{
-		Number index = this.getIndexForIndexes(indexes);
-		return this.elements.get(index);
-
-	}
-	Void set(List[Number] indexes, X element)
-	{
-		Number index = this.getIndexForIndexes(indexes);
-		this.elements.set(index, element);
+		return this.get(row).get(column);
 	}
 
-	Number getIndexForIndexes(List[Number] indexes)
+	Void set(Number row, Number column, X element)
 	{
-		Number index = 0;
-		Number i = 0;
-		while i < this.dimensions
-		{
-			index += ( indexes.get(i) * this.ms.get(i+1) );
-			i += 1;
-		}
-		return index;
-	}
-
-	Void prepare()
-	{
-		Number i = 0;
-		Number total = 1;
-		Range range;
-		Number rangeSize;
-		while i < this.dimensions
-		{
-			range = this.ranges.get(i);
-			rangeSize = range.superior - range.inferior + 1;
-			total *= rangeSize;
-			i += 1;
-		}
-		this.ms.set(0, total);
-		i = 1;
-		while i < this.dimensions
-		{
-			range = this.ranges.get(i-1);
-			rangeSize = range.superior - range.inferior + 1;
-			this.ms.set(i, this.ms.get(i-1) / rangeSize);
-			i += 1;
-		}
-		
-		Number k = 0;
-		i = 0;
-		while i < this.dimensions
-		{
-			k += ( this.ms.get(i+1) * this.ranges.get(i).inferior);
-			i += 1;
-		}
-		this.ms.set(this.dimensions, k);
+		this.get(row).set(column, element);
 	}
 }
 
 Void main(String arg)
 {
-	Range r1 = new Range(2, 4);
-	Range r2 = new Range(3, 6);
-	Range r3 = new Range(4, 5);
-	Array[String] arr = new Array[String]({r1, r2, r3}:Range);
-	arr.set({2, 4, 5}:Number, "Lay");
-	write(arr.get({2, 4, 5}:Number));
+	Matrix[Number] m = new Matrix[Number]();
+	List[Number] row1 = {1, 2, 3} : Number;
+	List[Number] row2 = {4, 5, 6} : Number;
+	List[Number] row3 = {7, 8, 9} : Number;
+
+	m.add(row1);
+	m.add(row2);
+	m.add(row3);
 }

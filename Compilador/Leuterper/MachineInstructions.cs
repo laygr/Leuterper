@@ -89,12 +89,10 @@ namespace Leuterper.MachineInstructions
         public override string ToString() { return String.Format("push {0}", this.address); }
         public Push(int address) { this.address = address; }
     }
-
     class Rtn : MachineInstruction
     {
         public override string ToString() { return "rtn"; }
     }
-
     class Get : MachineInstruction
     {
         public int LAttributeIndex;

@@ -1,0 +1,95 @@
+class Range
+{
+	Number inferior;
+	Number superior;
+
+	Range(Number inferior, Number superior)
+	{
+		this.inferior = inferior;
+		this.superior = superior;
+	}
+}
+
+class Array[X]
+{
+	List[X] elements;
+	List[Number] ms;
+	Number k;
+
+	Array(List[Range] ranges)
+	{
+		this.ms = new List[Number](ranges.count() + 1);
+
+		//Calculo del total
+		Number i = 0;
+		Number total = 1;
+		while i < ranges.count()
+		{
+			Range range = ranges.get(i);
+			Number rangeSize = range.superior - range.inferior + 1;
+			total *= rangeSize;
+			i += 1;
+		}
+
+		//Calculo de las m's
+		this.ms.set(0, total);
+		i = 1;
+		while i < ranges.count()
+		{
+			range = ranges.get(i-1);
+			rangeSize = range.superior - range.inferior + 1;
+			this.ms.set(i, this.ms.get(i-1) / rangeSize);
+			i += 1;
+		}
+		
+		//Calculo de la k
+		this.k = 0;
+		i = 0;
+		while i < ranges.count()
+		{
+			this.k += ( this.ms.get(i+1) * ranges.get(i).inferior);
+			i += 1;
+		}
+
+		//Creacion de la memoria
+		this.elements = new List[X](total);
+
+		return this;
+	}
+
+	X get(List[Number] indexes)
+	{
+		Number index = this.getIndexForIndexes(indexes);
+		return this.elements.get(index);
+
+	}
+	Void set(List[Number] indexes, X element)
+	{
+		Number index = this.getIndexForIndexes(indexes);
+		this.elements.set(index, element);
+	}
+
+	Number getIndexForIndexes(List[Number] indexes)
+	{
+		Number index = 0;
+		Number i = 0;
+		while i < this.ms.count()
+		{
+			index += ( indexes.get(i) * this.ms.get(i) );
+			i += 1;
+		}
+		index -= this.k;
+		return index;
+	}
+
+}
+
+Void main(String arg)
+{
+	Range r1 = new Range(2, 4);
+	Range r2 = new Range(3, 6);
+	Range r3 = new Range(4, 5);
+	Array[String] arr = new Array[String]({r1, r2, r3}:Range);
+	arr.set({2, 4, 5}:Number, "Lay");
+	write(arr.get({2, 4, 5}:Number));
+}

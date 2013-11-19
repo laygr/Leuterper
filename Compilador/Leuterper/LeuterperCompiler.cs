@@ -18,22 +18,15 @@ namespace Leuterper
 
         public bool compilingTopLeveIActions;
 
-        public int classesCounter;
-        private int proceduresCounter;
-
         public List<LClass> classDefinitions;
         public List<int> functionsParameters;
         public List<List<MachineInstruction>> functionActions;
         public List<MachineInstructions.Literal> literals;
         public List<MachineInstructions.MachineInstruction> topLeveIActions;
 
-        StandardLibrary standradLibrary;
         public LeuterperCompiler(String filePath)
         {
             StandardLibrary.singleton = new StandardLibrary();
-            this.standradLibrary = StandardLibrary.singleton;
-            this.classesCounter = this.standradLibrary.standardClasses.Count();
-            this.proceduresCounter = this.standradLibrary.standardProcedures.Count() + this.standradLibrary.standardFunctions.Count();
 
             this.globalVariablesCounter = 0;
             this.mostVaribalesInAFunction = 3;
@@ -52,10 +45,11 @@ namespace Leuterper
         public void compile()
         {
             parse();
-            program.symbolsRegistration(this);
+            program.symbolsRegistrationPass();
             program.symbolsUnificationPass();
+
             program.classesGenerationPass();
-            program.simplificationAndValidationPass();
+            program.simplificationPass();
             program.codeGenerationPass(this);
             printGeneratedCode();
             printSymbols();
@@ -100,11 +94,6 @@ namespace Leuterper
             foreach(LClass c in this.classDefinitions)
             {
                 writer.WriteLine(c.attributes.Count());
-                //c.attributes.ForEach(a => writer.WriteLine(a.getType().getName()));
-            }
-            for (int i = 0; i < this.classDefinitions.Count(); i++)
-            {
-                writer.WriteLine(this.classDefinitions[i]);
             }
 
             writer.WriteLine(this.functionActions.Count());
@@ -139,7 +128,6 @@ namespace Leuterper
         {
             this.classDefinitions.Add(aClass);
         }
-
         public void addAction(MachineInstruction action)
         {
             if (this.compilingTopLeveIActions)
@@ -161,20 +149,6 @@ namespace Leuterper
         {
             this.literals.Add(literal);
         }
-        public void assignIdentifierToClass(LClass c)
-        {
-            if (c is LClassSpecial) return;
-
-            c.identifier = this.classesCounter;
-            this.classesCounter++;
-        }
-        public void assignIdentifierToProcedure(Procedure p)
-        {
-            if (p is FunctionSpecial || p is MethodSpecial || p is ConstructorSpecial) return;
-
-            p.identifier = this.proceduresCounter;
-            this.proceduresCounter++;
-        }
         public void printSymbols()
         {
             Console.WriteLine("Classes:");
@@ -182,7 +156,6 @@ namespace Leuterper
             Console.WriteLine("Functions:");
             this.program.functions.ForEach(f => Console.WriteLine(f));
         }
-
         public static void Main(String[] args)
         {
             try

@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Leuterper.Constructions;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Leuterper.Constructions;
 
 namespace Leuterper
 {
@@ -58,10 +54,10 @@ namespace Leuterper
                 new MethodSpecial(0, LNumber.type, "/", Utils.typesToParameters(n), new List<IAction>(), 9),
                 new MethodSpecial(0, LNumber.type, "^", Utils.typesToParameters(n), new List<IAction>(), 10),
                 new MethodSpecial(0, LBoolean.type, "!=", Utils.typesToParameters(n), new List<IAction>(), 11),
-                new MethodSpecial(0, LNumber.type, "+=", Utils.typesToParameters(n), new List<IAction>(), 12),
-                new MethodSpecial(0, LNumber.type, "-=", Utils.typesToParameters(n), new List<IAction>(), 13),
-                new MethodSpecial(0, LNumber.type, "*=", Utils.typesToParameters(n), new List<IAction>(), 14),
-                new MethodSpecial(0, LNumber.type, "/=", Utils.typesToParameters(n), new List<IAction>(), 15),
+                new MethodSpecial(0, LVoid.type, "+=", Utils.typesToParameters(n), new List<IAction>(), 12),
+                new MethodSpecial(0, LVoid.type, "-=", Utils.typesToParameters(n), new List<IAction>(), 13),
+                new MethodSpecial(0, LVoid.type, "*=", Utils.typesToParameters(n), new List<IAction>(), 14),
+                new MethodSpecial(0, LVoid.type, "/=", Utils.typesToParameters(n), new List<IAction>(), 15),
                 new MethodSpecial(0, LBoolean.type, "<", Utils.typesToParameters(n), new List<IAction>(), 16),
                 new MethodSpecial(0, LBoolean.type, "<=", Utils.typesToParameters(n), new List<IAction>(), 17),
                 new MethodSpecial(0, LBoolean.type, ">=", Utils.typesToParameters(n), new List<IAction>(), 18),
@@ -92,90 +88,41 @@ namespace Leuterper
                 new MethodSpecial(0, new LType(0, "A"), "get", Utils.typesToParameters(n), new List<IAction>(), 37),
                 new MethodSpecial(0, LVoid.type, "set", Utils.typesToParameters(na), new List<IAction>(), 38),
             
-            
                 //string
                 new ConstructorSpecial(0, "String", new List<Parameter>(), new List<Expression>(), new List<IAction>(), 39),
                 new MethodSpecial(0, LString.type, "==", Utils.typesToParameters(s), new List<IAction>(), 40),
-                new MethodSpecial(0, LNumber.type, "toNumber", Utils.typesToParameters(e), new List<IAction>(), 41)
+                new MethodSpecial(0, LNumber.type, "toNumber", Utils.typesToParameters(e), new List<IAction>(), 41),
+                new MethodSpecial(0, LString.type, "+", Utils.typesToParameters(s), new List<IAction>(), 42),
+                new MethodSpecial(0, LVoid.type, "+=", Utils.typesToParameters(s), new List<IAction>(), 43)
             });
 
             this.standardClasses = new List<LClass>(new LClass[]{
                 //void
                 new LClassSpecial(0, LVoid.type, null, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(), (int)StandardClasses.LVoid),
                 //object
-                new LClassSpecial(0, LObject.type, null, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[0], //Constructor
-                    standardProcedures[1],
-                    standardProcedures[2]}
-                    ), (int)StandardClasses.LObject),
-
+                new LClassSpecial(0, LObject.type, null, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(0, 3)), (int)StandardClasses.LObject),
                 //number
-                new LClassSpecial(0, LNumber.type, LObject.type, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[3], //Constructor
-                    standardProcedures[4],
-                    standardProcedures[5],
-                    standardProcedures[6],
-                    standardProcedures[7],
-                    standardProcedures[8],
-                    standardProcedures[9],
-                    standardProcedures[10],
-                    standardProcedures[11],
-                    standardProcedures[12],
-                    standardProcedures[13],
-                    standardProcedures[14],
-                    standardProcedures[15],
-                    standardProcedures[16],
-                    standardProcedures[17],
-                    standardProcedures[18],
-                    standardProcedures[19],
-                }
-                    ), (int)StandardClasses.LNumber),
-
+                new LClassSpecial(0, LNumber.type, LObject.type, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(3, 17)), (int)StandardClasses.LNumber),
                 //boolean
-                new LClassSpecial(0, LBoolean.type, LObject.type, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[18],
-                    standardProcedures[19],
-                    standardProcedures[20],
-                    standardProcedures[21],
-                    standardProcedures[22],
-                    standardProcedures[23],
-                    standardProcedures[24],
-                    standardProcedures[25],
-                }), (int)StandardClasses.LChar),
-
+                new LClassSpecial(0, LBoolean.type, LObject.type, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(20, 6)), (int)StandardClasses.LChar),
                 //char
-                new LClassSpecial(0, LChar.type, LObject.type, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[26],
-                    standardProcedures[27],
-                    standardProcedures[28],
-                }), (int)StandardClasses.LChar),
-
+                new LClassSpecial(0, LChar.type, LObject.type, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(26,3)), (int)StandardClasses.LChar),
                 //list
-                new LClassSpecial(0, LList.type, LObject.type, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[29], // constructor
-                    standardProcedures[30], // constructor
-                    standardProcedures[31],
-                    standardProcedures[32],
-                    standardProcedures[33],
-                    standardProcedures[34],
-                    standardProcedures[35],
-                    standardProcedures[36],
-                    standardProcedures[37],
-                    standardProcedures[38],
-                }), (int)StandardClasses.LList),
-
+                new LClassSpecial(0, LList.type, LObject.type, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(29, 10)), (int)StandardClasses.LList),
                 //string
-                new LClassSpecial(0, LString.type, LString.type.parentType, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(new Class_Procedure[]{
-                    standardProcedures[39],
-                    standardProcedures[40],
-                    standardProcedures[41],
-                }), (int)StandardClasses.LString)
+                new LClassSpecial(0, LString.type, LString.type.parentType, new UniquesList<LAttribute>(),
+                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(39, 5)), (int)StandardClasses.LString)
             });
 
             this.standardFunctions = new List<Function>(new Function[]
             {
-                new FunctionSpecial(0, LString.type, "read", Utils.typesToParameters(e), new List<IAction>(), 42),
-                new FunctionSpecial(0, LVoid.type, "write", Utils.typesToParameters(s), new List<IAction>(), 43),
+                new FunctionSpecial(0, LString.type, "read", Utils.typesToParameters(e), new List<IAction>(), 44),
+                new FunctionSpecial(0, LVoid.type, "write", Utils.typesToParameters(s), new List<IAction>(), 45),
             });
         }
     }

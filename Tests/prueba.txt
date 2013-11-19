@@ -1,0 +1,4 @@
+Void main(String arg)
+{
+	+1;
+}

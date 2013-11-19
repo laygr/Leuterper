@@ -1,9 +1,62 @@
-class Class2[A,B] inherits Class1 {
-
-	
-	Class2()
+class Foo[X, Y]
+{
+	X x;
+	Y y;
+	Foo(X x, Y y)
 	{
-		this.a = 3;
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	X getX()
+	{
+		return this.x;
+	}
+	Y getY()
+	{
+		return this.y;
 	}
 }
-seis = cinco + cinco;
+
+class FooN[Number, X] inherits Foo[Number, X]
+{
+	FooN(Number n, X x) : (n, x)
+	{
+		return this;
+	}
+}
+
+class FooNN inherits FooN[Number, Number]
+{
+	FooNN(Number n1, Number n2) : (n1, n2)
+	{
+		return this;
+	}
+}
+
+class FooS[X, String] inherits Foo[X, String]
+{
+	FooS(X x, String s) : (x, s)
+	{
+		return this;
+	}
+}
+
+class FooSS inherits FooS[String, String]
+{
+	FooSS(String s1, String s2) : (s1, s2)
+	{
+		return this;
+	}
+}
+
+Void main(String args)
+{
+	FooNN fnn = new FooNN(1, 2);
+	write(fnn.getX());
+	write(fnn.getY());
+
+	FooSS fss = new FooSS("hola", "adios");
+	write(fss.getX());
+	write(fnn.getY());
+}

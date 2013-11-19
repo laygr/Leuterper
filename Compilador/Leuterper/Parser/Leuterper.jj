@@ -356,10 +356,9 @@ public LNumber parse_LNumber() :
 	Token sign = null;
 }
 {
-	(
-		LOOKAHEAD(<S> <NUMBER>)
-		sign = <S>
-	)?
+	[
+		sign = <SYMBOLS>
+	]
 	theNumber = <NUMBER> { return new LNumber(theNumber.beginLine, sign, theNumber.image); }
 }
 
@@ -546,7 +545,7 @@ TOKEN :
 	<LC:"{">	| <RC: "}">	| <LP: "(">	| <RP: ")">	| <LB: "[">	| <RB: "]">  | <CLASS: "class"> |
 	<ASS: "=">	| <C: ":">	| <SC: ";"> | <DOT: ".">|<DO: "do"> | <IF: "if"> | <COMMA: ",">		|
 	<ELSE: "else">	| <NULL: "null"> | <INH: "inherits"> | <NEW: "new"> | <RTN: "return">		|
-	<WHILE: "while">| <BOOL: ("true" | "false")> | <NUMBER: (<D>)+ ("\\."<D>)? >
+	<WHILE: "while">| <BOOL: ("true" | "false")> | <NUMBER: (<D>)+ ("\\."(<D>)*)? >
 }
 
 TOKEN :
@@ -568,7 +567,7 @@ TOKEN :
 	|
 	<SL: ["a"-"z"]>
 	|
-	<S: ("==" | "=" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
+	<S: "==" | "=" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">" >
 	|
 	<CHAR: "'" ( ("\\" ~[]) | ( ~["'"] )) "'">
 	|

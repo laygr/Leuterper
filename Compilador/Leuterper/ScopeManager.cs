@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Leuterper.Constructions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Leuterper;
-using Leuterper.Constructions;
 
 namespace Leuterper
 {
@@ -11,17 +9,9 @@ namespace Leuterper
     {
         public static int GetIndexOfFirstVarInScope(IScope scope)
         {
-            if (scope.getScope() == null)
-            {
-                return LObject.literalsCounter;
-            }
-            else
-            {
-                return
-                    ScopeManager.GetIndexOfFirstVarInScope(scope.getScope())
-                    +
-                    scope.getScope().getDeclarations().Count();
-            }
+            return getProgram(scope).literalsCounter
+                 +
+                 getProgram(scope).getDeclarations().Count();
         }
         public static int getIndexOfVarNamed(IScope scope, string name)
         {
@@ -111,7 +101,6 @@ namespace Leuterper
             }
             return ScopeManager.getClassScope(scope.getScope());
         }
-
         public static LClass getClassForName(IScope scope, String name)
         {
             List<LClass> classes = ScopeManager.getProgram(scope).getClasses();
