@@ -45,6 +45,8 @@
 39 - String String(this)    //es un constructor de valor default que agrega un ""
 40 - Boolean ==(String, String)
 41 - Number toNumber(String)
+42 - String +(String, String)
+43 - String +=(String, String)
 
-42 - String read()
-43 - Void write(String)
+44 - String read()
+45 - Void write(String)
