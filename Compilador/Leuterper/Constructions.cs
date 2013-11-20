@@ -40,6 +40,10 @@ namespace Leuterper.Constructions
             this.declarations = new UniquesList<Declaration>();
 
             this.parameters.ForEach(p => this.declarations.AddUnique(p));
+            if(name.Equals("fibIterativo"))
+            {
+                Console.WriteLine();
+            }
             this.expandActions(actions);
             this.scopeSettingPass();
         }
@@ -117,10 +121,7 @@ namespace Leuterper.Constructions
         }
         public UniquesList<Declaration> getDeclarations()
         {
-            UniquesList<Declaration> result = new UniquesList<Declaration>();
-            this.parameters.ForEach(p => result.Add(p));
-            this.declarations.ForEach(v => result.Add(v));
-            return result;
+            return this.declarations;
         }
         public List<Construction> getChildren() { return this.children; }
         public void addChild(Construction c)
@@ -176,6 +177,10 @@ namespace Leuterper.Constructions
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
+            if(lhs.getIndex() == 31)
+            {
+                Console.WriteLine();
+            }
             rhs.codeGenerationPass(compiler);
             compiler.addAction(new MachineInstructions.Assignment(lhs.getIndex()));
         }
@@ -642,7 +647,7 @@ namespace Leuterper.Constructions
         }
         public void assignIdentifierToProcedure(Procedure p)
         {
-            if (p is FunctionSpecial || p is MethodSpecial || p is ConstructorSpecial) return;
+            if (p is Program || p is FunctionSpecial || p is MethodSpecial || p is ConstructorSpecial) return;
 
             p.identifier = this.proceduresCounter;
             this.proceduresCounter++;
@@ -1007,7 +1012,7 @@ namespace Leuterper.Constructions
         public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            this.literalIndex = compiler.literals.Count();
+            //this.literalIndex = compiler.literals.Count();
             if (this.shouldBePushedToStack)
             {
                 compiler.addAction(new MachineInstructions.Push(this.literalIndex));
@@ -1247,6 +1252,7 @@ namespace Leuterper.Constructions
         public override string encodeAsString() { return ""; }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
+            base.codeGenerationPass(compiler);
             compiler.addLiteral(new MachineInstructions.Literal("Void", encodeAsString()));
         }
     }
@@ -1595,11 +1601,11 @@ namespace Leuterper.Constructions
             this.arguments.ForEach(a => a.codeGenerationPass(compiler));
             if (this.shouldBePushedToStack)
             {
-                compiler.addAction(new MachineInstructions.NewP(this.getProcedureIdentifier()));
+                compiler.addAction(new MachineInstructions.NewP(this.getProcedureIdentifier(), ScopeManager.getClassForType(this.getScope(), this.type).identifier));
             }
             else
             {
-                compiler.addAction(new MachineInstructions.New(this.getProcedureIdentifier()));
+                compiler.addAction(new MachineInstructions.New(this.getProcedureIdentifier(), ScopeManager.getClassForType(this.getScope(), this.type).identifier));
             }
         }
     }

@@ -1,256 +1,158 @@
-2
-3
+0
 4
-6
-3
-9
-push 31
-newp 0
-set 0
-push 31
-push 32
-set 1
-push 31
-push 33
-set 2
-2
-114
-push 31
-newp 0
-set 0
-push 31
-push 32
-callp 36
+1
+23
+push 27
 push 0
-callp 6
-newp 30
-set 2
+callp 17
+jmpf 6
 push 1
-ass 35
+rtn
+push 27
 push 2
-ass 36
-push 35
-push 32
-callp 36
 callp 16
-jmpf 38
-push 32
-push 35
-callp 37
-ass 37
-push 37
-get 2
-push 37
-get 1
+jmpf 13
 push 3
-callp 6
-callp 7
-ass 38
-push 36
-push 38
-call 14
-push 35
+rtn
+jmpf 23
+push 27
 push 4
-call 12
-jmp 14
-push 31
-get 2
+callp 7
+callp 46
+push 27
 push 5
-push 36
-call 38
-push 6
-ass 35
-push 35
-push 32
-callp 36
-callp 16
-jmpf 80
-push 32
-push 35
-push 7
 callp 7
-callp 37
-ass 37
-push 37
-get 2
-push 37
-get 1
-push 8
+callp 46
 callp 6
-callp 7
-ass 38
-push 31
-get 2
-push 35
-push 31
-get 2
-push 35
-push 9
-callp 7
-callp 37
-push 38
-callp 9
-call 38
-push 35
-push 10
-call 12
-jmp 45
-push 31
-push 11
-set 3
-push 12
-ass 35
-push 35
-push 32
-callp 36
-callp 16
-jmpf 108
-push 31
-get 3
-push 31
-get 2
-push 35
-push 13
-callp 6
-callp 37
-push 32
-push 35
-callp 37
-get 1
-callp 8
-call 12
-push 35
-push 14
-call 12
-jmp 85
-push 31
-push 36
-newp 30
-set 1
-push 31
-rtn
-2
-9
-push 31
-push 32
-callp 51
-ass 35
-push 31
-get 1
-push 35
-callp 37
-rtn
-3
-9
-push 31
-push 32
-callp 51
-ass 37
-push 31
-get 1
-push 37
-push 33
-call 38
-2
-30
-push 15
-ass 35
-push 16
-ass 36
-push 36
-push 31
-get 2
-callp 36
-callp 16
-jmpf 24
-push 35
-push 32
-push 36
-callp 37
-push 31
-get 2
-push 36
-callp 37
-callp 8
-call 12
-push 36
-push 17
-call 12
-jmp 4
-push 35
-push 31
-get 3
-call 13
-push 35
 rtn
 1
-32
-push 18
-push 19
-newp 47
-ass 33
-push 20
-push 21
-newp 47
-ass 34
-push 22
-push 23
-newp 47
-ass 35
-push 33
-push 34
-push 35
-addp 3
-newp 48
-ass 36
-push 36
-push 24
-push 25
-push 26
-addp 3
+36
 push 27
-call 50
-push 36
-push 28
+push 6
+callp 17
+jmpf 6
+push 7
+rtn
+push 27
+push 8
+callp 16
+jmpf 12
+push 9
+rtn
+push 10
+ass 28
+push 11
+ass 29
+push 12
+ass 30
+push 27
+push 13
+callp 19
+jmpf 34
 push 29
+push 28
+callp 6
+ass 30
+push 29
+ass 28
 push 30
-addp 3
-callp 49
-call 45
+ass 29
+push 27
+push 14
+call 13
+jmp 18
+push 30
+rtn
+1
 31
+push 15
+ass 28
+push 27
+push 16
+callp 4
+jmpf 9
+push 28
+rtn
+jmpf 29
+push 27
+push 17
+callp 16
+jmpf 18
+push 18
+ass 28
+push 27
+push 19
+call 14
+push 27
+push 20
+callp 19
+jmpf 29
+push 28
+push 21
+call 43
+push 27
+push 22
+call 13
+jmp 18
+push 28
+rtn
+1
+25
+push 27
+callp 41
+ass 28
+push 23
+push 28
+newp 3 2
+callp 46
+callp 5
+callp 42
+call 45
+push 24
+push 28
+newp 3 2
+callp 47
+callp 5
+callp 42
+call 45
+push 25
+push 28
+newp 3 2
+callp 48
+callp 42
+call 45
+push 26
+rtn
+27
 0
-5
-Number 1
-Number 0
-Number 1
-Number 1
-Number 1
-Number 0
-Number 1
-Number 1
-Number 1
-Number 1
-Number 1
+4
 Number 0
 Number 0
-Number 1
-Number 1
-Number 0
-Number 0
-Number 1
-Number 2
-Number 4
 Number 3
-Number 6
-Number 4
-Number 5
+Number 1
+Number 1
 Number 2
-Number 4
-Number 5
-String 76 97 121
-Number 2
-Number 4
-Number 5
+Number 0
+Number 0
+Number 3
+Number 1
+Number 0
+Number 1
+Number 1
+Number 1
+Number 1
+String 
+Number 0
+Number 0
+String 45
+Number -1
+Number 0
+String 49
+Number 1
+String 70 105 98 32 114 101 99 117 114 115 105 118 111 58 32
+String 70 105 98 32 105 116 101 114 97 116 105 118 111 58 32
+String 69 110 32 117 110 97 114 105 111 58 32
+Void 
 2
 callp 44
-call 52
+call 49

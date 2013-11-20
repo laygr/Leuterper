@@ -20,15 +20,15 @@ Number fibIterativo(Number n)
 		return 1;
 	}
 
-	Number n_menos_dos = 1;
+	Number n_menos_dos = 0;
 	Number n_menos_uno = 1;
-	Number acum = 0;
-	while n > 2
+	Number acum = 1;
+
+	while(n > 1)
 	{
-		Number aux = acum;
-		acum += (n_menos_uno + n_menos_dos);
+		acum = n_menos_uno + n_menos_dos;
 		n_menos_dos = n_menos_uno;
-		n_menos_uno = aux;
+		n_menos_uno = acum;
 		n -= 1;
 	}
 	return acum;
@@ -51,7 +51,7 @@ String numeroAUnario(Number n)
 		}
 		while n > 0
 		{
-			result + "1";
+			result += "1";
 			n -= 1;
 		}
 	}
@@ -61,7 +61,9 @@ String numeroAUnario(Number n)
 Void main(String arg)
 {
 	Number n = arg.toNumber();
-	write("Fib recursivo: " + fibRecursivo(n).toString());
-	write("Fib iterativo: " + fibIterativo(n).toString());
-	write("En unario: " + numeroAUnario(n));
+	write("Fib recursivo: " + fibRecursivo(new Number(n)).toString());
+	write("Fib iterativo: " + fibIterativo(new Number(n)).toString());
+	write("En unario: " + numeroAUnario(new Number(n)));
+
+	return null;
 }

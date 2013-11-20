@@ -69,13 +69,14 @@ namespace Leuterper.MachineInstructions
     class New : MachineInstruction
     {
         public int procedureId;
-        public New(int procedureId) { this.procedureId = procedureId; }
-        public override string ToString() { return String.Format("new {0}", procedureId); }
+        public int classId;
+        public New(int procedureId, int classId) { this.procedureId = procedureId; this.classId = classId; }
+        public override string ToString() { return String.Format("new {0} {1}", procedureId, classId); }
     }
     class NewP : New
     {
-        public NewP(int procedureId) : base(procedureId) { }
-        public override string ToString() { return String.Format("newp {0}", procedureId); }
+        public NewP(int procedureId, int classId) : base(procedureId, classId) { }
+        public override string ToString() { return String.Format("newp {0} {1}", procedureId, classId); }
     }
     class Number : MachineInstruction
     {
