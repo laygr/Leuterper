@@ -15,8 +15,8 @@ PARSER_END(TheParser)
 
 public Program parse_Program() :
 {
-	List<LClass> classes = new List<LClass>();
-	List<Function> functions = new List<Function>();
+	UniquesList<LClass> classes = new UniquesList<LClass>();
+	UniquesList<Function> functions = new UniquesList<Function>();
 	List<IAction> actions = new List<IAction>();
 }
 {
@@ -41,8 +41,8 @@ public LClass parse_Class() :
 {
 	LType type;
 	LType declarationInheritance = null;
-	List<LAttribute> LAttributesDeclarations = new List<LAttribute>();
-	List<Class_Procedure> classProcedures = new List<Class_Procedure>();
+	UniquesList<LAttribute> LAttributesDeclarations = new UniquesList<LAttribute>();
+	UniquesList<Class_Procedure> classProcedures = new UniquesList<Class_Procedure>();
 	Token c;
 }
 {
@@ -174,12 +174,12 @@ public IAction parse_IAction() :
 public Return_From_Block parse_Return_From_Block() :
 {
 	Expression returningExpression;
-	Token rin;
+	Token rtn;
 }
 {
-	rin = <RTN>
+	rtn = <RTN>
 	returningExpression = parse_Expression()
-	{ return new Return_From_Block(rin.beginLine, returningExpression); }
+	{ return new Return_From_Block(rtn.beginLine, returningExpression); }
 }
 
 public Expression parse_Expression() :
@@ -356,10 +356,9 @@ public LNumber parse_LNumber() :
 	Token sign = null;
 }
 {
-	(
-		LOOKAHEAD(<S> <NUMBER>)
-		sign = <S>
-	)?
+	[
+		sign = <SYMBOLS>
+	]
 	theNumber = <NUMBER> { return new LNumber(theNumber.beginLine, sign, theNumber.image); }
 }
 
@@ -480,16 +479,16 @@ public void parse_LTypes(List<LType> types) :
 	]
 }
 
-public void parse_Class_Procedures(List<Class_Procedure> classProcedures) :
+public void parse_Class_Procedures(UniquesList<Class_Procedure> classProcedures) :
 {
 	Class_Procedure classProcedure;
 }
 {
 	(
 		LOOKAHEAD(parse_Method())
-		classProcedure = parse_Method() { classProcedures.Add(classProcedure); }
+		classProcedure = parse_Method() { classProcedures.AddUnique(classProcedure); }
 		|
-		classProcedure = parse_Constructor() { classProcedures.Add(classProcedure); }
+		classProcedure = parse_Constructor() { classProcedures.AddUnique(classProcedure); }
 	)*
 }
 
@@ -510,16 +509,16 @@ public void parse_Parameters(List<Parameter> parameters) :
 	]
 }
 
-public void parse_Classes(List<LClass> classes) :
+public void parse_Classes(UniquesList<LClass> classes) :
 	{ LClass aClass; }
-	{ ( aClass = parse_Class() { classes.Add(aClass); } )* }
+	{ ( aClass = parse_Class() { classes.AddUnique(aClass); } )* }
 
-public void parse_Functions(List<Function> functions) :
+public void parse_Functions(UniquesList<Function> functions) :
 { Function f; }
 {
 	(
 		LOOKAHEAD(parse_Function())
-		f = parse_Function() { functions.Add(f); }
+		f = parse_Function() { functions.AddUnique(f); }
 	)*
 }
 
@@ -527,13 +526,12 @@ public void parse_IActions(List<IAction> actions) :
 	{ IAction action; }
 	{ ( action = parse_IAction() { actions.Add(action); } )* }
 
-public void parse_LAttributes(List<LAttribute> attributes) :
+public void parse_LAttributes(UniquesList<LAttribute> attributes) :
 	{ LAttribute lAttribute; }
 { 
-	
 	( 
 		LOOKAHEAD(parse_LAttribute())
-		lAttribute = parse_LAttribute() { attributes.Add(lAttribute); }
+		lAttribute = parse_LAttribute() { attributes.AddUnique(lAttribute); }
 	)*
 }
 
@@ -547,7 +545,7 @@ TOKEN :
 	<LC:"{">	| <RC: "}">	| <LP: "(">	| <RP: ")">	| <LB: "[">	| <RB: "]">  | <CLASS: "class"> |
 	<ASS: "=">	| <C: ":">	| <SC: ";"> | <DOT: ".">|<DO: "do"> | <IF: "if"> | <COMMA: ",">		|
 	<ELSE: "else">	| <NULL: "null"> | <INH: "inherits"> | <NEW: "new"> | <RTN: "return">		|
-	<WHILE: "while">| <BOOL: ("true" | "false")> | <NUMBER: (<D>)+ ("\\."<D>)? >
+	<WHILE: "while">| <BOOL: ("true" | "false")> | <NUMBER: (<D>)+ ("\\."(<D>)*)? >
 }
 
 TOKEN :
@@ -569,7 +567,7 @@ TOKEN :
 	|
 	<SL: ["a"-"z"]>
 	|
-	<S: ("==" | "=" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">")>
+	<S: "==" | "=" | "+" | "-" | "*" | "/" | "!" | "#" | "%" | "&" | "?" | "|" | "<" | ">" >
 	|
 	<CHAR: "'" ( ("\\" ~[]) | ( ~["'"] )) "'">
 	|

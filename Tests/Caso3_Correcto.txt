@@ -1,12 +1,29 @@
+class Matrix[X] inherits List[List[X]]
+{
+	Matrix()
+	{
+		return this;
+	}
+
+	X get(Number row, Number column)
+	{
+		return this.get(row).get(column);
+	}
+
+	Void set(Number row, Number column, X element)
+	{
+		this.get(row).set(column, element);
+	}
+}
+
 Void main(String arg)
 {
+	Matrix[Number] m = new Matrix[Number]();
+	List[Number] row1 = {1, 2, 3} : Number;
+	List[Number] row2 = {4, 5, 6} : Number;
+	List[Number] row3 = {7, 8, 9} : Number;
 
-	Number x = 1;
-	Number y = 2;
-	Number z = 3;
-	Number a = 3;
-
-	write( (1 + 2).toString() );
-
-	return null;
+	m.add(row1);
+	m.add(row2);
+	m.add(row3);
 }

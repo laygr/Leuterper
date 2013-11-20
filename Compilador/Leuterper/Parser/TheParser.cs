@@ -9,8 +9,8 @@
   class TheParser : TheParserConstants {
 
   public Program parse_Program() {
-        List<LClass> classes = new List<LClass>();
-        List<Function> functions = new List<Function>();
+        UniquesList<LClass> classes = new UniquesList<LClass>();
+        UniquesList<Function> functions = new UniquesList<Function>();
         List<IAction> actions = new List<IAction>();
     parse_Classes(classes);
     parse_Functions(functions);
@@ -39,8 +39,8 @@
   public LClass parse_Class() {
         LType type;
         LType declarationInheritance = null;
-        List<LAttribute> LAttributesDeclarations = new List<LAttribute>();
-        List<Class_Procedure> classProcedures = new List<Class_Procedure>();
+        UniquesList<LAttribute> LAttributesDeclarations = new UniquesList<LAttribute>();
+        UniquesList<Class_Procedure> classProcedures = new UniquesList<Class_Procedure>();
         Token c;
     c = jj_consume_token(CLASS);
     type = parse_LType();
@@ -206,7 +206,7 @@
         case BOOL:
         case NUMBER:
         case SID:
-        case S:
+        case SYMBOLS:
         case CHAR:
         case STRING:
           action = parse_Expression();
@@ -235,10 +235,10 @@
 
   public Return_From_Block parse_Return_From_Block() {
         Expression returningExpression;
-        Token rin;
-    rin = jj_consume_token(RTN);
+        Token rtn;
+    rtn = jj_consume_token(RTN);
     returningExpression = parse_Expression();
-          {if (true) return new Return_From_Block(rin.beginLine, returningExpression);}
+          {if (true) return new Return_From_Block(rtn.beginLine, returningExpression);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -255,7 +255,7 @@
       case BOOL:
       case NUMBER:
       case SID:
-      case S:
+      case SYMBOLS:
       case CHAR:
       case STRING:
         result = parse_GExpression();
@@ -443,7 +443,7 @@
       case LC:
       case BOOL:
       case NUMBER:
-      case S:
+      case SYMBOLS:
       case CHAR:
       case STRING:
         term = parse_LObject();
@@ -484,7 +484,7 @@
     case LC:
     case BOOL:
     case NUMBER:
-    case S:
+    case SYMBOLS:
     case CHAR:
     case STRING:
       theObject = parse_LObject();
@@ -517,7 +517,7 @@
           LObject theObject;
     switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
     case NUMBER:
-    case S:
+    case SYMBOLS:
       theObject = parse_LNumber();
       break;
     case STRING:
@@ -545,10 +545,14 @@
   public LNumber parse_LNumber() {
         Token theNumber;
         Token sign = null;
-    if (jj_2_9(2147483647)) {
-      sign = jj_consume_token(S);
-    } else {
-      ;
+    switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
+    case SYMBOLS:
+      sign = jj_consume_token(SYMBOLS);
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+      ;break;
+      
     }
     theNumber = jj_consume_token(NUMBER);
                                {if (true) return new LNumber(theNumber.beginLine, sign, theNumber.image);}
@@ -630,7 +634,7 @@
       conditional = parse_Loop_Do_While();
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();break;
       
@@ -657,7 +661,7 @@
       jj_consume_token(RC);
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[20] = jj_gen;
       ;break;
       
     }
@@ -692,7 +696,7 @@
       jj_consume_token(RB);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
       ;break;
       
     }
@@ -712,7 +716,7 @@
           ;
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[22] = jj_gen;
           goto label_4;break;
           
         }
@@ -724,13 +728,13 @@
       
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[23] = jj_gen;
       ;break;
       
     }
   }
 
-  public void parse_Class_Procedures(List<Class_Procedure> classProcedures) {
+  public void parse_Class_Procedures(UniquesList<Class_Procedure> classProcedures) {
         Class_Procedure classProcedure;
     while (true) {
       switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
@@ -738,21 +742,21 @@
         ;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[24] = jj_gen;
         goto label_5;break;
         
       }
-      if (jj_2_10(2147483647)) {
+      if (jj_2_9(2147483647)) {
         classProcedure = parse_Method();
-                                                  classProcedures.Add(classProcedure);
+                                                  classProcedures.AddUnique(classProcedure);
       } else {
         switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
         case BID:
           classProcedure = parse_Constructor();
-                                                       classProcedures.Add(classProcedure);
+                                                       classProcedures.AddUnique(classProcedure);
           break;
         default:
-          jj_la1[24] = jj_gen;
+          jj_la1[25] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();break;
           
@@ -773,7 +777,7 @@
     case BOOL:
     case NUMBER:
     case SID:
-    case S:
+    case SYMBOLS:
     case CHAR:
     case STRING:
       expression = parse_Expression();
@@ -784,7 +788,7 @@
           ;
           break;
         default:
-          jj_la1[25] = jj_gen;
+          jj_la1[26] = jj_gen;
           goto label_6;break;
           
         }
@@ -796,7 +800,7 @@
       
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[27] = jj_gen;
       ;break;
       
     }
@@ -814,7 +818,7 @@
           ;
           break;
         default:
-          jj_la1[27] = jj_gen;
+          jj_la1[28] = jj_gen;
           goto label_7;break;
           
         }
@@ -826,13 +830,13 @@
       
       break;
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;break;
       
     }
   }
 
-  public void parse_Classes(List<LClass> classes) {
+  public void parse_Classes(UniquesList<LClass> classes) {
           LClass aClass;
     while (true) {
       switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
@@ -840,27 +844,27 @@
         ;
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[30] = jj_gen;
         goto label_8;break;
         
       }
       aClass = parse_Class();
-                                     classes.Add(aClass);
+                                     classes.AddUnique(aClass);
     }
     label_8: ;
     
   }
 
-  public void parse_Functions(List<Function> functions) {
+  public void parse_Functions(UniquesList<Function> functions) {
   Function f;
     while (true) {
-      if (jj_2_11(2147483647)) {
+      if (jj_2_10(2147483647)) {
         ;
       } else {
         goto label_9;
       }
       f = parse_Function();
-                                       functions.Add(f);
+                                       functions.AddUnique(f);
     }
     label_9: ;
     
@@ -882,13 +886,13 @@
       case NUMBER:
       case BID:
       case SID:
-      case S:
+      case SYMBOLS:
       case CHAR:
       case STRING:
         ;
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[31] = jj_gen;
         goto label_10;break;
         
       }
@@ -899,16 +903,16 @@
     
   }
 
-  public void parse_LAttributes(List<LAttribute> attributes) {
+  public void parse_LAttributes(UniquesList<LAttribute> attributes) {
           LAttribute lAttribute;
     while (true) {
-      if (jj_2_12(2147483647)) {
+      if (jj_2_11(2147483647)) {
         ;
       } else {
         goto label_11;
       }
       lAttribute = parse_LAttribute();
-                                                  attributes.Add(lAttribute);
+                                                  attributes.AddUnique(lAttribute);
     }
     label_11: ;
     
@@ -991,13 +995,6 @@
     finally { jj_save(10, xla); }
   }
 
-  private bool jj_2_12(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_12(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(11, xla); }
-  }
-
   private bool jj_3R_75() {
     if (jj_3R_13()) return true;
     if (jj_scan_token(SC)) return true;
@@ -1027,7 +1024,7 @@
     return false;
   }
 
-  private bool jj_3_12() {
+  private bool jj_3_11() {
     if (jj_3R_21()) return true;
     return false;
   }
@@ -1035,7 +1032,7 @@
   private bool jj_3R_67() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(37)) jj_scanpos = xsp;
+    if (jj_scan_token(32)) jj_scanpos = xsp;
     if (jj_scan_token(NUMBER)) return true;
     return false;
   }
@@ -1087,7 +1084,7 @@
     return false;
   }
 
-  private bool jj_3_11() {
+  private bool jj_3_10() {
     if (jj_3R_20()) return true;
     return false;
   }
@@ -1152,6 +1149,12 @@
     return false;
   }
 
+  private bool jj_3R_83() {
+    if (jj_scan_token(ASS)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
   private bool jj_3R_50() {
     if (jj_3R_64()) return true;
     Token xsp;
@@ -1159,12 +1162,6 @@
       xsp = jj_scanpos;
       if (jj_3R_65()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private bool jj_3R_83() {
-    if (jj_scan_token(ASS)) return true;
-    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1188,6 +1185,11 @@
     return false;
   }
 
+  private bool jj_3R_18() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
   private bool jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1205,18 +1207,13 @@
     return false;
   }
 
-  private bool jj_3R_18() {
-    if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private bool jj_3_10() {
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
   private bool jj_3R_29() {
     if (jj_3R_47()) return true;
+    return false;
+  }
+
+  private bool jj_3_9() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1321,14 +1318,6 @@
     return false;
   }
 
-  private bool jj_3R_32() {
-    if (jj_3R_48()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_49()) jj_scanpos = xsp;
-    return false;
-  }
-
   private bool jj_3R_19() {
     if (jj_3R_32()) return true;
     Token xsp;
@@ -1343,6 +1332,14 @@
     if (jj_scan_token(LC)) return true;
     if (jj_3R_35()) return true;
     if (jj_scan_token(RC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_32() {
+    if (jj_3R_48()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_49()) jj_scanpos = xsp;
     return false;
   }
 
@@ -1389,6 +1386,13 @@
     return false;
   }
 
+  private bool jj_3R_12() {
+    if (jj_3R_22()) return true;
+    if (jj_scan_token(ASS)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
   private bool jj_3R_88() {
     if (jj_scan_token(IF)) return true;
     if (jj_3R_23()) return true;
@@ -1398,13 +1402,6 @@
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_91()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private bool jj_3R_12() {
-    if (jj_3R_22()) return true;
-    if (jj_scan_token(ASS)) return true;
-    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1419,11 +1416,6 @@
     return false;
   }
 
-  private bool jj_3R_87() {
-    if (jj_3R_90()) return true;
-    return false;
-  }
-
   private bool jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1431,6 +1423,11 @@
     jj_scanpos = xsp;
     if (jj_3R_53()) return true;
     }
+    return false;
+  }
+
+  private bool jj_3R_87() {
+    if (jj_3R_90()) return true;
     return false;
   }
 
@@ -1490,15 +1487,6 @@
     return false;
   }
 
-  private bool jj_3R_89() {
-    if (jj_scan_token(WHILE)) return true;
-    if (jj_3R_23()) return true;
-    if (jj_scan_token(LC)) return true;
-    if (jj_3R_35()) return true;
-    if (jj_scan_token(RC)) return true;
-    return false;
-  }
-
   private bool jj_3R_25() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1506,6 +1494,15 @@
     jj_scanpos = xsp;
     if (jj_3R_45()) return true;
     }
+    return false;
+  }
+
+  private bool jj_3R_89() {
+    if (jj_scan_token(WHILE)) return true;
+    if (jj_3R_23()) return true;
+    if (jj_scan_token(LC)) return true;
+    if (jj_3R_35()) return true;
+    if (jj_scan_token(RC)) return true;
     return false;
   }
 
@@ -1542,6 +1539,11 @@
     return false;
   }
 
+  private bool jj_3R_41() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
   private bool jj_3R_90() {
     if (jj_scan_token(DO)) return true;
     if (jj_scan_token(LC)) return true;
@@ -1550,11 +1552,6 @@
     if (jj_scan_token(WHILE)) return true;
     if (jj_3R_23()) return true;
     if (jj_scan_token(SC)) return true;
-    return false;
-  }
-
-  private bool jj_3R_41() {
-    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -1616,13 +1613,13 @@
     return false;
   }
 
-  private bool jj_3R_71() {
-    if (jj_scan_token(BOOL)) return true;
+  private bool jj_3_1() {
+    if (jj_3R_12()) return true;
     return false;
   }
 
-  private bool jj_3_1() {
-    if (jj_3R_12()) return true;
+  private bool jj_3R_71() {
+    if (jj_scan_token(BOOL)) return true;
     return false;
   }
 
@@ -1633,12 +1630,6 @@
     jj_scanpos = xsp;
     if (jj_3R_38()) return true;
     }
-    return false;
-  }
-
-  private bool jj_3_9() {
-    if (jj_scan_token(S)) return true;
-    if (jj_scan_token(NUMBER)) return true;
     return false;
   }
 
@@ -1653,14 +1644,14 @@
     return false;
   }
 
-  private bool jj_3R_68() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
   private bool jj_3R_76() {
     if (jj_3R_23()) return true;
     if (jj_scan_token(SC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_68() {
+    if (jj_scan_token(STRING)) return true;
     return false;
   }
 
@@ -1673,7 +1664,7 @@
   public bool lookingAhead = false;
   private bool jj_semLA;
   private long jj_gen;
-  private long[] jj_la1 = new long[31];
+  private long[] jj_la1 = new long[32];
   static private long[] jj_la1_0;
   static private long[] jj_la1_1;
   static TheParser(){
@@ -1681,12 +1672,12 @@
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new long[] {0x1000000,0x10000,0x80000000,0x8000,0x40000000,0xbe980500,0xb2800500,0x2000000,0x800400,0x40000,0x40000,0x40000,0x40000,0x40000,0x30000100,0x200000,0x30000100,0x30000100,0x8180000,0x400000,0x1000,0x200000,0x40000000,0x40000000,0x40000000,0x200000,0xb2800500,0x200000,0x40000000,0x4000,0xfe980500,};
+      jj_la1_0 = new long[] {0x1000000,0x10000,0x80000000,0x8000,0x40000000,0xbe980500,0xb2800500,0x2000000,0x800400,0x40000,0x40000,0x40000,0x40000,0x40000,0x30000100,0x200000,0x30000100,0x30000100,0x0,0x8180000,0x400000,0x1000,0x200000,0x40000000,0x40000000,0x40000000,0x200000,0xb2800500,0x200000,0x40000000,0x4000,0xfe980500,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new long[] {0x0,0x0,0x1,0x0,0x0,0xe0,0xe0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0xe0,0x0,0xe0,0xe0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe0,0x0,0x0,0x0,0xe0,};
+      jj_la1_1 = new long[] {0x0,0x0,0x1,0x0,0x0,0xc1,0xc1,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0xc1,0x0,0xc1,0xc1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc1,0x0,0x0,0x0,0xc1,};
    }
-  private JJCalls[] jj_2_rtns = new JJCalls[12];
+  private JJCalls[] jj_2_rtns = new JJCalls[11];
   private bool jj_rescan = false;
   private long jj_gc = 0;
 
@@ -1696,7 +1687,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1706,7 +1697,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1716,7 +1707,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1726,7 +1717,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1735,7 +1726,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1744,7 +1735,7 @@
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 32; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1862,7 +1853,7 @@
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 32; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1899,7 +1890,7 @@
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 11; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1917,7 +1908,6 @@
             case 8: jj_3_9(); break;
             case 9: jj_3_10(); break;
             case 10: jj_3_11(); break;
-            case 11: jj_3_12(); break;
           }
         }
         p = p.next;

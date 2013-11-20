@@ -1,0 +1,256 @@
+2
+3
+4
+6
+3
+9
+push 31
+newp 0
+set 0
+push 31
+push 32
+set 1
+push 31
+push 33
+set 2
+2
+114
+push 31
+newp 0
+set 0
+push 31
+push 32
+callp 36
+push 0
+callp 6
+newp 30
+set 2
+push 1
+ass 35
+push 2
+ass 36
+push 35
+push 32
+callp 36
+callp 16
+jmpf 38
+push 32
+push 35
+callp 37
+ass 37
+push 37
+get 2
+push 37
+get 1
+push 3
+callp 6
+callp 7
+ass 38
+push 36
+push 38
+call 14
+push 35
+push 4
+call 12
+jmp 14
+push 31
+get 2
+push 5
+push 36
+call 38
+push 6
+ass 35
+push 35
+push 32
+callp 36
+callp 16
+jmpf 80
+push 32
+push 35
+push 7
+callp 7
+callp 37
+ass 37
+push 37
+get 2
+push 37
+get 1
+push 8
+callp 6
+callp 7
+ass 38
+push 31
+get 2
+push 35
+push 31
+get 2
+push 35
+push 9
+callp 7
+callp 37
+push 38
+callp 9
+call 38
+push 35
+push 10
+call 12
+jmp 45
+push 31
+push 11
+set 3
+push 12
+ass 35
+push 35
+push 32
+callp 36
+callp 16
+jmpf 108
+push 31
+get 3
+push 31
+get 2
+push 35
+push 13
+callp 6
+callp 37
+push 32
+push 35
+callp 37
+get 1
+callp 8
+call 12
+push 35
+push 14
+call 12
+jmp 85
+push 31
+push 36
+newp 30
+set 1
+push 31
+rtn
+2
+9
+push 31
+push 32
+callp 51
+ass 35
+push 31
+get 1
+push 35
+callp 37
+rtn
+3
+9
+push 31
+push 32
+callp 51
+ass 37
+push 31
+get 1
+push 37
+push 33
+call 38
+2
+30
+push 15
+ass 35
+push 16
+ass 36
+push 36
+push 31
+get 2
+callp 36
+callp 16
+jmpf 24
+push 35
+push 32
+push 36
+callp 37
+push 31
+get 2
+push 36
+callp 37
+callp 8
+call 12
+push 36
+push 17
+call 12
+jmp 4
+push 35
+push 31
+get 3
+call 13
+push 35
+rtn
+1
+32
+push 18
+push 19
+newp 47
+ass 33
+push 20
+push 21
+newp 47
+ass 34
+push 22
+push 23
+newp 47
+ass 35
+push 33
+push 34
+push 35
+addp 3
+newp 48
+ass 36
+push 36
+push 24
+push 25
+push 26
+addp 3
+push 27
+call 50
+push 36
+push 28
+push 29
+push 30
+addp 3
+callp 49
+call 45
+31
+0
+5
+Number 1
+Number 0
+Number 1
+Number 1
+Number 1
+Number 0
+Number 1
+Number 1
+Number 1
+Number 1
+Number 1
+Number 0
+Number 0
+Number 1
+Number 1
+Number 0
+Number 0
+Number 1
+Number 2
+Number 4
+Number 3
+Number 6
+Number 4
+Number 5
+Number 2
+Number 4
+Number 5
+String 76 97 121
+Number 2
+Number 4
+Number 5
+2
+callp 44
+call 52

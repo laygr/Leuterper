@@ -42,48 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constructions\Construction.cs" />
-    <Compile Include="Constructions\Declaration\Declaration.cs" />
-    <Compile Include="Constructions\Expressions\Calls\Call_Procedure.cs" />
-    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Constructor.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LVoid.cs" />
-    <Compile Include="Constructions\Procedures\Class_Procedure\ConstructorSpecial.cs" />
-    <Compile Include="Exceptions\SyntacticErrorException.cs" />
+    <Compile Include="Constructions.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Constructions\Assignment.cs" />
-    <Compile Include="Constructions\Conditionals\Conditional.cs" />
-    <Compile Include="Constructions\Conditionals\If_Then_Else.cs" />
-    <Compile Include="Constructions\Conditionals\Loop_Do_While.cs" />
-    <Compile Include="Constructions\Conditionals\Loop_While.cs" />
-    <Compile Include="Constructions\Expressions\Calls\Call_Function.cs" />
-    <Compile Include="Constructions\Expressions\Calls\Call_Class_Procedure\Call_Method.cs" />
-    <Compile Include="Constructions\Expressions\Expression.cs" />
-    <Compile Include="Constructions\Expressions\Terms\AttributeAccess.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LBoolean.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Term.cs" />
-    <Compile Include="Constructions\Expressions\Terms\VarAccess.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LChar.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LList.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LNumber.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LObject.cs" />
-    <Compile Include="Constructions\Expressions\Terms\Objects\LString.cs" />
-    <Compile Include="Constructions\Return_From_Block.cs" />
-    <Compile Include="Constructions\Definition_Classes\LClassSpecial.cs" />
-    <Compile Include="Constructions\Procedures\Class_Procedure\Class_Procedure.cs" />
-    <Compile Include="Constructions\Procedures\Class_Procedure\Constructor.cs" />
-    <Compile Include="Constructions\Procedures\Class_Procedure\MethodSpecial.cs" />
-    <Compile Include="Constructions\Procedures\Procedure.cs" />
-    <Compile Include="Constructions\LSet.cs" />
-    <Compile Include="Constructions\Declaration\Attribute.cs" />
-    <Compile Include="Constructions\Declaration\Var.cs" />
-    <Compile Include="Constructions\Declaration\Parameter.cs" />
-    <Compile Include="Constructions\Program.cs" />
-    <Compile Include="Constructions\LType.cs" />
-    <Compile Include="Constructions\Definition_Classes\LClass.cs" />
-    <Compile Include="Constructions\Procedures\Function.cs" />
-    <Compile Include="Constructions\Procedures\Class_Procedure\Method.cs" />
-    <Compile Include="Constructions\Procedures\FunctionSpecial.cs" />
-    <Compile Include="Exceptions\SemanticErrorException.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="MachineInstructions.cs" />
     <Compile Include="Parser\ParseException.cs" />
     <Compile Include="Parser\SimpleCharStream.cs" />
@@ -96,10 +57,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScopeManager.cs" />
     <Compile Include="StandardLibrary.cs" />
-    <Compile Include="UtilFunctions.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableIndexFindStrategy.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableInsideClass.cs" />
-    <Compile Include="VariableIndexFindStrategies\VariableNotInsideAClass.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VariableIndexFindStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -107,7 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Parser\csjavacc.jar" />
-    <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
