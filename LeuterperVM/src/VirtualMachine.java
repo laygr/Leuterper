@@ -57,7 +57,10 @@ public class VirtualMachine {
                 break;
                 
             case 3:
-                argumentsStack.push(new LNumber());
+                LNumber number1 = (LNumber) argumentsStack.pop();
+                LNumber number2 = new LNumber();
+                number2.setValue(number1.getValue());
+                argumentsStack.push(number2);
                 break;
                 
             case 4:
@@ -70,7 +73,7 @@ public class VirtualMachine {
                 
             case 5:
                 // toString(Number)
-                LNumber number1 = (LNumber) argumentsStack.pop();
+                number1 = (LNumber) argumentsStack.pop();
                 LString lstring = new LString();
                 lstring.setValue(String.valueOf(number1.getValue()));
                 argumentsStack.push(lstring);
@@ -78,7 +81,7 @@ public class VirtualMachine {
                 
             case 6:
                 // +(Number, Number)
-                LNumber number2 = (LNumber) argumentsStack.pop();
+                number2 = (LNumber) argumentsStack.pop();
                 number1 = (LNumber) argumentsStack.pop();
                 double result = number1.getValue() + number2.getValue();
                 LNumber number3 = new LNumber();
@@ -143,7 +146,7 @@ public class VirtualMachine {
                 number2 = (LNumber) argumentsStack.pop();
                 number1 = (LNumber) argumentsStack.pop();
                 number1.setValue(number1.getValue()+number2.getValue());
-                argumentsStack.push(new LUndefined());
+                argumentsStack.push(new LVoid());
                 break; 
                 
             case 13:
@@ -151,7 +154,7 @@ public class VirtualMachine {
                 number2 = (LNumber) argumentsStack.pop();
                 number1 = (LNumber) argumentsStack.pop();
                 number1.setValue(number1.getValue()-number2.getValue());
-                argumentsStack.push(new LUndefined());
+                argumentsStack.push(new LVoid());
                 break;    
                 
             case 14:
@@ -159,7 +162,7 @@ public class VirtualMachine {
                 number2 = (LNumber) argumentsStack.pop();
                 number1 = (LNumber) argumentsStack.pop();
                 number1.setValue(number1.getValue()*number2.getValue());
-                argumentsStack.push(new LUndefined());
+                argumentsStack.push(new LVoid());
                 break;   
                 
             case 15:
@@ -167,7 +170,7 @@ public class VirtualMachine {
                 number2 = (LNumber) argumentsStack.pop();
                 number1 = (LNumber) argumentsStack.pop();
                 number1.setValue(number1.getValue()/number2.getValue());
-                argumentsStack.push(new LUndefined());
+                argumentsStack.push(new LVoid());
                 break;
             
             case 16:
@@ -323,8 +326,8 @@ public class VirtualMachine {
                 
             case 33:
                 //Void add(LList<A>, A other)
-                llist1 = (LList) argumentsStack.pop();
                 LeuterperObject lobject = argumentsStack.pop();
+                llist1 = (LList) argumentsStack.pop();
                 llist1.getValue().add(lobject);
                 argumentsStack.push(llist1);
                 break;
@@ -374,6 +377,7 @@ public class VirtualMachine {
                 dindex = number1.getValue();
                 index = (int)dindex;
                 llist1.getValue().set(index, lobject);
+                argumentsStack.push(new LVoid());
                 break;
                 
             case 39:
@@ -394,8 +398,27 @@ public class VirtualMachine {
                 number1 = new LNumber(lstring1.getValue());
                 argumentsStack.push(number1);
                 break;
-                
+              
             case 42:
+                // +(String, String)
+                LString lstring2 = (LString) argumentsStack.pop();
+                lstring1 = (LString) argumentsStack.pop();
+                String appended = lstring1.getValue() + lstring2.getValue();
+                LString resultString = new LString();
+                resultString.setValue(appended);
+                argumentsStack.push(resultString);
+                break;
+                
+            case 43:
+                // +=(String, String)
+                lstring2 = (LString) argumentsStack.pop();
+                lstring1 = (LString) argumentsStack.pop();
+                appended = lstring1.getValue() + lstring2.getValue();
+                lstring1.setValue(appended);
+                argumentsStack.push(new LVoid());
+                break;
+                
+            case 44:
                 // read()
                 String line = sc.nextLine();
                 lstring = new LString();
@@ -403,7 +426,7 @@ public class VirtualMachine {
                 argumentsStack.push(lstring);
                 break;
                 
-            case 43:
+            case 45:
                 // write(String)
                 LString printedString = (LString) argumentsStack.pop();
                 System.out.println("Leuterper says: "+printedString.getValue());
@@ -446,11 +469,11 @@ public class VirtualMachine {
                     
                 case("call"):
                     int indiceFuncion = Integer.parseInt(actionArr[1]);
-                    if(indiceFuncion<=43)
+                    if(indiceFuncion<=45)
                         //It is a special function
                         executeSpecialFunction(indiceFuncion);
                     else{
-                        FunctionDefinition fnc = funcs.get(indiceFuncion-44);
+                        FunctionDefinition fnc = funcs.get(indiceFuncion-46);
                         //A context for this function is created:
                         if(currentContext!=null)
                             contextStack.push(currentContext);
@@ -472,18 +495,19 @@ public class VirtualMachine {
                                 currentContext.setActionsCheckpoint(currentContext.getActionsCheckpoint()+1); //actionsCheckpoint++
                             }
                         }
-                        currentContext = contextStack.pop();
+                        if(!contextStack.empty())
+                            currentContext = contextStack.pop();
                     }
                     argumentsStack.pop();
                     break;
                     
                 case("callp"):
                     indiceFuncion = Integer.parseInt(actionArr[1]);
-                    if(indiceFuncion<=43)
+                    if(indiceFuncion<=45)
                         //It is a special function
                         executeSpecialFunction(indiceFuncion);
                     else{
-                        FunctionDefinition fnc = funcs.get(indiceFuncion-44);
+                        FunctionDefinition fnc = funcs.get(indiceFuncion-46);
                         //A context for this function is created:
                         if(currentContext!=null)
                             contextStack.push(currentContext);
@@ -513,11 +537,11 @@ public class VirtualMachine {
                 case("new"):
                     indiceFuncion = Integer.parseInt(actionArr[1]);
                     int indiceClase = Integer.parseInt(actionArr[2]);
-                    if(indiceFuncion<=43)
+                    if(indiceFuncion<=45)
                         //It is a special function
                         executeSpecialFunction(indiceFuncion);
                     else{
-                        FunctionDefinition fnc = funcs.get(indiceFuncion-44);
+                        FunctionDefinition fnc = funcs.get(indiceFuncion-46);
                         //A context for this function is created:
                         if(currentContext!=null)
                             contextStack.push(currentContext);
@@ -531,7 +555,8 @@ public class VirtualMachine {
                         for(int i=0; i<numberOfAttributes; i++){
                             lstructuredObject.getValue().add(new LUndefined());
                         }
-                        for(int i=parametrosFuncion; i>0; i--){
+                        contextVars[0] = lstructuredObject;
+                        for(int i=parametrosFuncion-1; i>0; i--){
                             contextVars[i] = argumentsStack.pop();
                         }
                         while(currentContext.getActionsCheckpoint()<fnc.getActions().length){
@@ -552,12 +577,12 @@ public class VirtualMachine {
                     
                 case("newp"):
                     indiceFuncion = Integer.parseInt(actionArr[1]);
-                    indiceClase = Integer.parseInt(actionArr[2]);
-                    if(indiceFuncion<=43)
+                    if(indiceFuncion<=45)
                         //It is a special function
                         executeSpecialFunction(indiceFuncion);
                     else{
-                        FunctionDefinition fnc = funcs.get(indiceFuncion-44);
+                        indiceClase = Integer.parseInt(actionArr[2])-7;
+                        FunctionDefinition fnc = funcs.get(indiceFuncion-46);
                         //A context for this function is created:
                         if(currentContext!=null)
                             contextStack.push(currentContext);
@@ -571,7 +596,8 @@ public class VirtualMachine {
                         for(int i=0; i<numberOfAttributes; i++){
                             lstructuredObject.getValue().add(new LUndefined());
                         }
-                        for(int i=parametrosFuncion; i>0; i--){
+                        contextVars[0] = lstructuredObject;
+                        for(int i=parametrosFuncion-1; i>0; i--){
                             contextVars[i] = argumentsStack.pop();
                         }
                         while(currentContext.getActionsCheckpoint()<fnc.getActions().length){
@@ -597,25 +623,25 @@ public class VirtualMachine {
                     break;
                     
                 case("set"):
-                    lstructuredObject = (LStructuredObject) argumentsStack.pop();
                     lobject = argumentsStack.pop();
+                    lstructuredObject = (LStructuredObject) argumentsStack.pop();
                     attributeNumber = Integer.parseInt(actionArr[1]);
                     lobjectList = lstructuredObject.getValue();
                     lobjectList.set(attributeNumber, lobject);
                     break;
                 
-                case("add"):
+                case("list"):
                     int numElements = Integer.parseInt(actionArr[1]);
                     for(int i=0; i<numElements; i++){
                         argumentsStack.pop();
                     }
                     break;
                     
-                case("addp"):
+                case("listp"):
                     numElements = Integer.parseInt(actionArr[1]);
                     LList llist = new LList();
                     for(int i=0; i<numElements; i++){
-                        llist.getValue().add(argumentsStack.pop());
+                        llist.getValue().add(0, argumentsStack.pop());
                     }
                     argumentsStack.push(llist);
                     break;

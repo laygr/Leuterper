@@ -4,12 +4,16 @@ public class LString extends LeuterperObject<String>{
         value = "";
     }//I see.. a rhinoceros
     
-    public LString(String value){
-        String[] asciiValues = value.split(" ");
+    public LString(String numbers){
+        if(numbers.equals("")){
+            value="";
+            return;
+        }
+        String[] asciiValues = numbers.split(" ");
         value = "";
         for(int i=0; i<asciiValues.length; i++){
-            value = "";
             value += (char) Integer.parseInt(asciiValues[i].trim());
         }
+        System.out.println("String = "+value);
     }
 }
