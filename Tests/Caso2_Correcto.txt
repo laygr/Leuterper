@@ -1,9 +1,9 @@
-class Foo1 inherits Object
+class Foo1
 {
 	Number a;
 	Number b;
 
-	Foo1(Number a, Number b) :()
+	Foo1(Number a, Number b)
 	{
 		this.a = a;
 		this.b = b;
@@ -12,7 +12,7 @@ class Foo1 inherits Object
 
 	Number addAll()
 	{
-		return a + b;
+		return this.a + this.b;
 	}
 }
 
@@ -30,7 +30,7 @@ class Foo2 inherits Foo1
 
 	Number addAll()
 	{
-		return c + d + this.super.addAll();
+		return this.c + this.d + this.super.addAll();
 	}
 }
 
@@ -48,17 +48,18 @@ class Foo3 inherits Foo2
 
 	Number addAll()
 	{
-		return e + f + this.super.addAll();
+		return this.e + this.f + this.super.addAll();
 	}
 }
 
 Void main(String arg)
 {
 	Foo3 f = new Foo3(1, 2, 3, 4, 5, 6);
-
 	Number result1 = f.a + f.b + f.c + f.d + f.e + f.f;
 	Number result2 = f.addAll();
 
 	write("result 1: " + result1.toString());
 	write("result 2: " + result2.toString());
+
+	return null;
 }

@@ -136,4 +136,17 @@ namespace Leuterper
             this.Insert(p, newElement);
         }
     }
+
+    class DeclarationLocator<X> where X : Declaration
+    {
+        public X declaration;
+        public int index;
+        public int hierarchyDistance;
+        public DeclarationLocator(int hierarchyDistance, int location, X declaration)
+        {
+            this.hierarchyDistance = hierarchyDistance;
+            this.index = location;
+            this.declaration = declaration;
+        }
+    }
 }

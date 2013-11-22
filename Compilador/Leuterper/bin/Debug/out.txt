@@ -1,157 +1,92 @@
-0
+1
+1
 4
 1
-23
-push 27
-push 0
-callp 17
-jmpf 6
-push 1
-rtn
-push 27
-push 2
-callp 16
-jmpf 13
-push 3
-rtn
-jmpf 23
-push 27
-push 4
-callp 7
-callp 46
-push 27
-push 5
-callp 7
-callp 46
-callp 6
-rtn
-1
-36
-push 27
-push 6
-callp 17
-jmpf 6
-push 7
-rtn
-push 27
-push 8
-callp 16
-jmpf 12
-push 9
-rtn
-push 10
-ass 28
-push 11
-ass 29
-push 12
-ass 30
-push 27
+5
 push 13
-callp 19
-jmpf 34
-push 29
-push 28
-callp 6
-ass 30
-push 29
-ass 28
-push 30
-ass 29
-push 27
+newp 29 5
+set 0
+push 13
+rtn
+3
+7
+push 13
+get 0
 push 14
-call 13
-jmp 18
-push 30
-rtn
-1
-31
+callp 37
 push 15
-ass 28
-push 27
-push 16
-callp 4
-jmpf 9
-push 28
+callp 37
 rtn
-jmpf 29
-push 27
-push 17
-callp 16
-jmpf 18
-push 18
-ass 28
-push 27
-push 19
-call 14
-push 27
-push 20
-callp 19
-jmpf 29
-push 28
-push 21
-call 43
-push 27
-push 22
-call 13
-jmp 18
-push 28
+4
+8
+push 13
+get 0
+push 14
+callp 37
+push 15
+push 16
+callp 38
 rtn
 1
-25
-push 27
-callp 41
-ass 28
-push 23
-push 28
-newp 3 2
-callp 46
-callp 5
-callp 42
-call 45
-push 24
-push 28
-newp 3 2
+43
+newp 46 7
+ass 14
+push 0
+push 1
+push 2
+listp 3
+ass 15
+push 3
+push 4
+push 5
+listp 3
+ass 16
+push 6
+push 7
+push 8
+listp 3
+ass 17
+push 14
+get 0
+push 15
+call 33
+push 14
+get 0
+push 16
+call 33
+push 14
+get 0
+push 17
+call 33
+push 9
+push 14
+push 10
+push 11
 callp 47
 callp 5
 callp 42
 call 45
-push 25
-push 28
-newp 3 2
-callp 48
-callp 42
+push 14
+get 0
+callp 32
 call 45
-push 26
+push 12
 rtn
-27
+13
 0
-4
-Number 0
-Number 0
-Number 3
-Number 1
+5
 Number 1
 Number 2
-Number 0
-Number 0
 Number 3
+Number 4
+Number 5
+Number 6
+Number 7
+Number 8
+Number 9
+String 82 111 119 32 49 44 32 67 111 108 117 109 110 50 58 32
 Number 1
-Number 0
-Number 1
-Number 1
-Number 1
-Number 1
-String 
-Number 0
-Number 0
-String 45
-Number -1
-Number 0
-String 49
-Number 1
-String 70 105 98 32 114 101 99 117 114 115 105 118 111 58 32
-String 70 105 98 32 105 116 101 114 97 116 105 118 111 58 32
-String 69 110 32 117 110 97 114 105 111 58 32
+Number 2
 Void 
 2
 callp 44

@@ -13,7 +13,7 @@ namespace Leuterper
                  +
                  getProgram(scope).getDeclarations().Count();
         }
-        public static int getIndexOfVarNamed(IScope scope, string name)
+        public static void locateVarNamed(IScope scope, string name, DeclarationLocator<Declaration>locator)
         {
             if (name.Equals("super")) return ScopeManager.GetIndexOfFirstVarInScope(scope);
             List<Declaration> vars = scope.getDeclarations();
@@ -27,7 +27,7 @@ namespace Leuterper
             IScope parentScope = scope.getScope();
             if(parentScope != null)
             {
-                return ScopeManager.getIndexOfVarNamed(parentScope, name);
+                return ScopeManager.locateVarNamed(parentScope, name);
             }
             return -1;
         }
@@ -42,10 +42,6 @@ namespace Leuterper
         }
         public static Declaration getDeclarationNamed(IScope scope, string name)
         {
-            if(scope == null)
-            {
-                Console.WriteLine();
-            }
             foreach (Declaration d in scope.getDeclarations())
             {
                 if (d.getName().Equals(name))
@@ -85,10 +81,6 @@ namespace Leuterper
             if(scope is Program)
             {
                 return scope as Program;
-            }
-            if(scope.getScope() == null)
-            {
-                Console.WriteLine();
             }
             return ScopeManager.getProgram(scope.getScope());
         }

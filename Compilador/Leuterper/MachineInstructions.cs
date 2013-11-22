@@ -14,16 +14,16 @@ namespace Leuterper.MachineInstructions
         public Assignment(int destinationAddress) { this.destinationAddress = destinationAddress; }
         public override string ToString() { return String.Format("ass {0}", destinationAddress); }
     }
-    class Add : MachineInstruction
+    class List : MachineInstruction
     {
         public int howMany { get; set; }
-        public Add(int howMany) { this.howMany = howMany; }
-        public override string ToString() { return String.Format("add {0}", this.howMany); }
+        public List(int howMany) { this.howMany = howMany; }
+        public override string ToString() { return String.Format("list {0}", this.howMany); }
     }
-    class AddP : Add
+    class ListP : List
     {
-        public AddP(int howMany) : base(howMany) { }
-        public override string ToString() { return String.Format("addp {0}", this.howMany); }
+        public ListP(int howMany) : base(howMany) { }
+        public override string ToString() { return String.Format("listp {0}", this.howMany); }
     }
     class Call : MachineInstruction
     {
