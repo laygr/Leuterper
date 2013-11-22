@@ -1,0 +1,146 @@
+3
+3
+3
+3
+7
+3
+11
+push 9
+newp 0 1
+set 0
+push 9
+push 10
+set 1
+push 9
+push 11
+set 2
+push 9
+rtn
+1
+6
+push 9
+get 1
+push 9
+get 2
+callp 6
+rtn
+5
+13
+push 9
+push 10
+push 11
+newp 46 7
+set 0
+push 9
+push 12
+set 1
+push 9
+push 13
+set 2
+push 9
+rtn
+1
+10
+push 9
+get 1
+push 9
+get 2
+push 9
+get 0
+callp 47
+callp 6
+callp 6
+rtn
+7
+15
+push 9
+push 10
+push 11
+push 12
+push 13
+newp 48 8
+set 0
+push 9
+push 14
+set 1
+push 9
+push 15
+set 2
+push 9
+rtn
+1
+10
+push 9
+get 1
+push 9
+get 2
+push 9
+get 0
+callp 49
+callp 6
+callp 6
+rtn
+1
+47
+push 0
+push 1
+push 2
+push 3
+push 4
+push 5
+newp 50 9
+ass 10
+push 10
+get 0
+get 0
+get 1
+push 10
+get 0
+get 0
+get 2
+push 10
+get 0
+get 1
+push 10
+get 0
+get 2
+push 10
+get 1
+push 10
+get 2
+callp 6
+callp 6
+callp 6
+callp 6
+callp 6
+ass 11
+push 10
+callp 51
+ass 12
+push 6
+push 11
+callp 5
+callp 42
+call 45
+push 7
+push 12
+callp 5
+callp 42
+call 45
+push 8
+rtn
+9
+0
+7
+Number 1
+Number 2
+Number 3
+Number 4
+Number 5
+Number 6
+String 114 101 115 117 108 116 32 49 58 32
+String 114 101 115 117 108 116 32 50 58 32
+Void 
+2
+callp 44
+call 52

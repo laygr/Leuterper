@@ -1,0 +1,62 @@
+0
+2
+1
+31
+push 0
+ass 11
+push 10
+push 1
+callp 4
+jmpf 9
+push 11
+rtn
+jmpf 29
+push 10
+push 2
+callp 16
+jmpf 18
+push 3
+ass 11
+push 10
+push 4
+call 14
+push 10
+push 5
+callp 19
+jmpf 29
+push 11
+push 6
+call 43
+push 10
+push 7
+call 13
+jmp 18
+push 11
+rtn
+1
+9
+push 10
+callp 41
+ass 11
+push 8
+push 11
+callp 46
+callp 42
+call 45
+rtn
+10
+0
+3
+String 
+Number 0
+Number 0
+String 45
+Number -1
+Number 0
+String 49
+Number 1
+String 69 110 32 117 110 97 114 105 111 58 32
+Void 
+2
+callp 44
+call 47

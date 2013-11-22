@@ -1,0 +1,33 @@
+0
+1
+1
+18
+push 0
+ass 6
+push 1
+ass 7
+push 2
+ass 8
+push 3
+ass 9
+push 6
+push 7
+push 8
+push 9
+callp 6
+callp 8
+callp 6
+callp 5
+call 43
+rtn
+5
+0
+5
+Number 1
+Number 2
+Number 3
+Number 3
+Void 
+2
+callp 42
+call 44
