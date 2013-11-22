@@ -45,7 +45,7 @@ namespace Leuterper
            
                 //number
                 //Constructor de valor default:
-                new ConstructorSpecial(0, "Number", new List<Parameter>(), new List<Expression>(), new List<IAction>(), 3),
+                new ConstructorSpecial(0, "Number", Utils.typesToParameters(n), new List<Expression>(), new List<IAction>(), 3),
                 new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(n), new List<IAction>(), 4),
                 new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>(), 5),
                 new MethodSpecial(0, LNumber.type, "+", Utils.typesToParameters(n), new List<IAction>(), 6),

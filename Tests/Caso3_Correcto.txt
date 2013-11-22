@@ -12,7 +12,7 @@ class Matrix[X] inherits List[List[X]]
 
 	Void set(Number row, Number column, X element)
 	{
-		this.get(row).set(column, element);
+		return this.get(row).set(column, element);
 	}
 }
 
@@ -26,4 +26,9 @@ Void main(String arg)
 	m.add(row1);
 	m.add(row2);
 	m.add(row3);
+
+	write("Row 1, Column2: " + m.get(1, 2).toString());
+	write(m.toString());
+
+	return null;
 }
