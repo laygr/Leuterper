@@ -142,11 +142,20 @@ namespace Leuterper
         public X declaration;
         public int index;
         public int hierarchyDistance;
-        public DeclarationLocator(int hierarchyDistance, int location, X declaration)
+        public bool found;
+        public DeclarationLocator(X declaration, int hierarchyDistance, int index, bool found)
         {
             this.hierarchyDistance = hierarchyDistance;
-            this.index = location;
+            this.index = index;
             this.declaration = declaration;
+            this.found = found;
+        }
+        public DeclarationLocator() : this(null, 0, 0, false) { }
+        public void wasFound(X declaration, int index)
+        {
+            this.declaration = declaration;
+            this.index = index;
+            this.found = true;
         }
     }
 }

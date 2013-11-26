@@ -123,6 +123,7 @@ namespace Leuterper
             {
                 new FunctionSpecial(0, LString.type, "read", Utils.typesToParameters(e), new List<IAction>(), 44),
                 new FunctionSpecial(0, LVoid.type, "write", Utils.typesToParameters(s), new List<IAction>(), 45),
+                new FunctionSpecial(0, LVoid.type, "error", Utils.typesToParameters(s), new List<IAction>(), 46)
             });
         }
     }

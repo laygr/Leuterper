@@ -173,12 +173,8 @@ namespace Leuterper.Constructions
         }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            if(lhs.getIndex() == 31)
-            {
-                Console.WriteLine();
-            }
             rhs.codeGenerationPass(compiler);
-            compiler.addAction(new MachineInstructions.Assignment(lhs.getIndex()));
+            compiler.addAction(new MachineInstructions.Assignment(lhs.locateVar().index));
         }
     }
     class LType : Construction, ISignable<LType>, IRedefinable<LType>
@@ -279,7 +275,7 @@ namespace Leuterper.Constructions
         }
         public override void classesGenerationPass()
         {
-            if (!this.definingClass.getType().isCompletelyDefined)
+            if (this.rootIsDefined && !this.isCompletelyDefined)
             {
                 this.redefineWithSubstitutionTypes(this.typeVariables);
             }
@@ -495,9 +491,7 @@ namespace Leuterper.Constructions
             }
             return -1;
         }
-
         public string getClassName() { return this.getType().getName(); }
-
         public Constructor getConstructorForTypes(List<LType> types)
         {
             foreach (Constructor c in this.constructorDefinitions)
@@ -884,7 +878,7 @@ namespace Leuterper.Constructions
         }
         override public LType getType()
         {
-            DeclarationLocator<Declaration> locator = this.locate();
+            DeclarationLocator<Var> locator = this.locate();
             LClass c = this.theObject.getType().getDefiningClass();
             return c.getTypeOfLAttribute(locator.hierarchyDistance, locator.index);
         }
@@ -904,7 +898,7 @@ namespace Leuterper.Constructions
             theObject.codeGenerationPass(compiler);
             if (!this.willBeUsedForSet)
             {
-                DeclarationLocator<Declaration> locator = this.locate();
+                DeclarationLocator<Var> locator = this.locate();
                 while(locator.hierarchyDistance > 0)
                 {
                     compiler.addAction(new MachineInstructions.Get(0));
@@ -913,7 +907,7 @@ namespace Leuterper.Constructions
                 compiler.addAction(new MachineInstructions.Get(locator.index));
             }
         }
-        public DeclarationLocator<Declaration> locate()
+        public DeclarationLocator<Var> locate()
         {
             int LAttributeIndex = -1;
             int parentClassesWalked = 0;
@@ -932,7 +926,7 @@ namespace Leuterper.Constructions
             {
                 throw new SyntacticErrorException("Accessed an undeclared LAttribute: " + this.LAttributeName, this.getLine());
             }
-            return new DeclarationLocator<Declaration>(parentClassesWalked, LAttributeIndex, null);
+            return new DeclarationLocator<Var>(null, parentClassesWalked, LAttributeIndex, true);
         }
     }
     abstract class Term : Expression
@@ -945,16 +939,7 @@ namespace Leuterper.Constructions
         public VarAccess(int line, String name) : base(line)  { this.name = name; }
         override public LType getType()
         {
-            Declaration d = ScopeManager.getDeclarationLineage(this.getScope(), this.getName());
-            if (d == null)
-            {
-                throw new SyntacticErrorException("Using undeclared var " + this.getName(), this.getLine());
-            }
-            return d.getType();
-        }
-        public int getIndex()
-        {
-            return ScopeManager.locateVarNamed(this.getScope(), this.getName());
+            return this.locateVar().declaration.getType();
         }
         public override void scopeSettingPass() { }
         public override void symbolsRegistrationPass() { }
@@ -963,14 +948,25 @@ namespace Leuterper.Constructions
         public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            int varIndex = ScopeManager.locateVarNamed(this.getScope(), this.getName());
-            if (varIndex == -1)
+            DeclarationLocator<Declaration> dL = this.locateVar();
+            while(dL.hierarchyDistance > 0)
+            {
+                dL.hierarchyDistance--;
+                compiler.addAction(new MachineInstructions.Get(0));
+            }
+            compiler.addAction(new MachineInstructions.Push(dL.index));
+        }
+        public string getName() { return this.name; }
+        public DeclarationLocator<Declaration>locateVar()
+        {
+            DeclarationLocator<Declaration> dL = new DeclarationLocator<Declaration>();
+            ScopeManager.locateVarNamed(this.getScope(), this.getName(), dL);
+            if (!dL.found)
             {
                 throw new SyntacticErrorException("Using undeclared var: " + this.getName(), this.getLine());
             }
-            compiler.addAction(new MachineInstructions.Push(varIndex));
+            return dL;
         }
-        public string getName() { return this.name; }
     }
     abstract class LObject : Term
     {
@@ -989,7 +985,6 @@ namespace Leuterper.Constructions
         public override void simplificationPass() { }
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
-            //this.literalIndex = compiler.literals.Count();
             if (this.shouldBePushedToStack)
             {
                 compiler.addAction(new MachineInstructions.Push(this.literalIndex));
@@ -1179,14 +1174,7 @@ namespace Leuterper.Constructions
                 e.shouldBePushedToStack = true;
                 e.codeGenerationPass(compiler);
             }
-            if (this.shouldBePushedToStack)
-            {
-                compiler.addAction(new MachineInstructions.ListP(this.elements.Count()));
-            }
-            else
-            {
-                compiler.addAction(new MachineInstructions.List(this.elements.Count()));
-            }
+            compiler.addAction(new MachineInstructions.List(this.elements.Count(), !this.shouldBePushedToStack));
         }
     }
     class LNumber : LObject
@@ -1480,9 +1468,7 @@ namespace Leuterper.Constructions
     }
     class Call_Function : Call_Procedure
     {
-        public Call_Function(int line, String procedureName, List<Expression> arguments) : base(line, procedureName, arguments)
-        {
-        }
+        public Call_Function(int line, String procedureName, List<Expression> arguments) : base(line, procedureName, arguments) {}
         public override Procedure getProcedureDefinition()
         {
             return ScopeManager.getFunctionForGivenNameAndArguments(this.getScope(), this.procedureName, this.arguments);
@@ -1532,14 +1518,7 @@ namespace Leuterper.Constructions
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.arguments.ForEach(a => a.codeGenerationPass(compiler));
-            if (this.shouldBePushedToStack)
-            {
-                compiler.addAction(new MachineInstructions.CallP(this.getProcedureIdentifier()));
-            }
-            else
-            {
-                compiler.addAction(new MachineInstructions.Call(this.getProcedureIdentifier()));
-            }
+            compiler.addAction(new MachineInstructions.Call(this.getProcedureIdentifier(), !this.shouldBePushedToStack));
         }
     }
     class Call_Constructor : Call_Procedure
@@ -1574,14 +1553,7 @@ namespace Leuterper.Constructions
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             this.arguments.ForEach(a => a.codeGenerationPass(compiler));
-            if (this.shouldBePushedToStack)
-            {
-                compiler.addAction(new MachineInstructions.NewP(this.getProcedureIdentifier(), ScopeManager.getClassForType(this.getScope(), this.type).identifier));
-            }
-            else
-            {
-                compiler.addAction(new MachineInstructions.New(this.getProcedureIdentifier(), ScopeManager.getClassForType(this.getScope(), this.type).identifier));
-            }
+            compiler.addAction(new MachineInstructions.New(this.getProcedureIdentifier(), ScopeManager.getClassForType(this.getScope(), this.type).identifier, !this.shouldBePushedToStack));
         }
     }
     class Call_Method : Call_Procedure
@@ -1609,29 +1581,52 @@ namespace Leuterper.Constructions
         }
         public override Procedure getProcedureDefinition()
         {
-            return this.getMethodWithNameAndTypes();
+            return this.getMethodWithNameAndTypes().declaration;
         }
-        private Method getMethodWithNameAndTypes()
+        private DeclarationLocator<Method> getMethodWithNameAndTypes()
         {
             LType calleeType = theObject.getType();
-            return this.getMethodFromClass(calleeType.getDefiningClass());
+            DeclarationLocator<Method> methodLocator = new DeclarationLocator<Method>();
+            this.locateMethodFromClass(calleeType.getDefiningClass(), methodLocator);
+            return methodLocator;
         }
-        public override LType getType() { return this.getMethodWithNameAndTypes().getType(); }
-        private Method getMethodFromClass(LClass aClass)
+        public override LType getType() { return this.getMethodWithNameAndTypes().declaration.getType(); }
+        private void locateMethodFromClass(LClass aClass, DeclarationLocator<Method> methodLocator)
         {
+            if(aClass == null)
+            {
+                Console.WriteLine();
+            }
             List<LType> argumentsTypes = Utils.expressionsToTypes(this.arguments);
             foreach (Method m in aClass.methodsDefinitions)
             {
-                if (m.isCompatibleWithNameAndTypes(this.procedureName, argumentsTypes)) return m;
+                if (m.isCompatibleWithNameAndTypes(this.procedureName, argumentsTypes))
+                {
+                    methodLocator.declaration = m;
+                    return;
+                }
             }
             if (aClass.getParentClass() != null)
             {
-                return this.getMethodFromClass(aClass.getParentClass());
+                methodLocator.hierarchyDistance++;
+                this.locateMethodFromClass(aClass.getParentClass(), methodLocator);
+                return;
             }
             throw new SyntacticErrorException(
                 String.Format("Used an undefined method.\n\t{0}\n\t{1}",
                 this.procedureName,
                 Utils.listOfTypesAsString(argumentsTypes)), this.getLine());
+        }
+        public override void codeGenerationPass(LeuterperCompiler compiler)
+        {
+            DeclarationLocator<Method> methodLocator = this.getMethodWithNameAndTypes();
+            while(methodLocator.hierarchyDistance > 0)
+            {
+                methodLocator.hierarchyDistance--;
+               this.arguments[0] = new LAttributeAccess(this.getLine(), this.arguments[0], "super");
+            }
+            this.arguments.ForEach(a => a.codeGenerationPass(compiler));
+            compiler.addAction(new MachineInstructions.Call(this.getProcedureIdentifier(), !this.shouldBePushedToStack));
         }
     }
 }

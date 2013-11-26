@@ -60,6 +60,6 @@ Void main(String arg)
 
 	write("result 1: " + result1.toString());
 	write("result 2: " + result2.toString());
-
+	
 	return null;
 }

@@ -16,25 +16,17 @@ namespace Leuterper.MachineInstructions
     }
     class List : MachineInstruction
     {
-        public int howMany { get; set; }
-        public List(int howMany) { this.howMany = howMany; }
-        public override string ToString() { return String.Format("list {0}", this.howMany); }
-    }
-    class ListP : List
-    {
-        public ListP(int howMany) : base(howMany) { }
-        public override string ToString() { return String.Format("listp {0}", this.howMany); }
+        public int howMany;
+        bool shouldPop;
+        public List(int howMany, bool shouldPop) { this.howMany = howMany; this.shouldPop = shouldPop; }
+        public override string ToString() { return String.Format("list {0} {1}", this.howMany, this.shouldPop); }
     }
     class Call : MachineInstruction
     {
-        public int functionId { get; set; }
-        public Call(int functionId) { this.functionId = functionId; }
-        public override string ToString() { return String.Format("call {0}", this.functionId); }
-    }
-    class CallP : Call
-    {
-        public CallP(int functionId) : base(functionId) {}
-        public override string ToString() { return String.Format("callp {0}", this.functionId); }
+        public int functionId;
+        public bool shouldPop;
+        public Call(int functionId, bool shouldPop) { this.functionId = functionId; this.shouldPop = shouldPop; }
+        public override string ToString() { return String.Format("call {0} {1}", this.functionId, this.shouldPop); }
     }
     public class JMP : MachineInstruction
     {
@@ -70,13 +62,9 @@ namespace Leuterper.MachineInstructions
     {
         public int procedureId;
         public int classId;
-        public New(int procedureId, int classId) { this.procedureId = procedureId; this.classId = classId; }
-        public override string ToString() { return String.Format("new {0} {1}", procedureId, classId); }
-    }
-    class NewP : New
-    {
-        public NewP(int procedureId, int classId) : base(procedureId, classId) { }
-        public override string ToString() { return String.Format("newp {0} {1}", procedureId, classId); }
+        bool shouldPush;
+        public New(int procedureId, int classId, bool shouldPush) { this.procedureId = procedureId; this.classId = classId; this.shouldPush = shouldPush; }
+        public override string ToString() { return String.Format("new {0} {1} {2}", procedureId, classId, shouldPush); }
     }
     class Number : MachineInstruction
     {
