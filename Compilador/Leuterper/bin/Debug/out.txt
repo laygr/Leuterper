@@ -1,146 +1,358 @@
 3
 3
+4
 3
+9
 3
-7
-3
-11
-push 9
+9
+push 49
 new 0 1 False
 set 0
-push 9
-push 10
+push 49
+push 50
 set 1
-push 9
-push 11
+push 49
+push 51
 set 2
-push 9
-rtn
-1
-6
-push 9
-get 1
-push 9
-get 2
-call 6 False
-rtn
-5
-13
-push 9
-push 10
-push 11
-new 47 7 False
+2
+114
+push 49
+new 0 1 False
 set 0
-push 9
-push 12
-set 1
-push 9
-push 13
-set 2
-push 9
-rtn
-1
-10
-push 9
-get 1
-push 9
-get 2
-push 9
-get 0
-call 48 False
-call 6 False
-call 6 False
-rtn
-7
-15
-push 9
-push 10
-push 11
-push 12
-push 13
-new 49 8 False
-set 0
-push 9
-push 14
-set 1
-push 9
-push 15
-set 2
-push 9
-rtn
-1
-10
-push 9
-get 1
-push 9
-get 2
-push 9
-get 0
-call 50 False
-call 6 False
-call 6 False
-rtn
-1
-47
+push 49
+push 50
+call 36 False
 push 0
+call 6 False
+new 30 5 False
+set 2
 push 1
+ass 51
 push 2
+ass 52
+push 51
+push 50
+call 36 False
+call 16 False
+jmpf 38
+push 50
+push 51
+call 37 False
+ass 53
+push 53
+get 2
+push 53
+get 1
 push 3
+call 6 False
+call 7 False
+ass 54
+push 52
+push 54
+call 14 True
+push 51
 push 4
+call 12 True
+jmp 14
+push 49
+get 2
 push 5
-new 51 9 False
-ass 10
-push 10
-get 0
-get 0
-get 1
-push 10
-get 0
-get 0
-get 2
-push 10
-get 0
-get 1
-push 10
-get 0
-get 2
-push 10
-get 1
-push 10
-get 2
-call 6 False
-call 6 False
-call 6 False
-call 6 False
-call 6 False
-ass 11
-push 10
-call 52 False
-ass 12
+push 52
+call 38 True
 push 6
-push 11
-call 5 False
-call 42 False
-call 45 True
+ass 51
+push 51
+push 50
+call 36 False
+call 16 False
+jmpf 80
+push 50
+push 51
 push 7
-push 12
-call 5 False
-call 42 False
-call 45 True
+call 7 False
+call 37 False
+ass 53
+push 53
+get 2
+push 53
+get 1
 push 8
+call 6 False
+call 7 False
+ass 54
+push 49
+get 2
+push 51
+push 49
+get 2
+push 51
+push 9
+call 7 False
+call 37 False
+push 54
+call 9 False
+call 38 True
+push 51
+push 10
+call 12 True
+jmp 45
+push 49
+push 11
+set 3
+push 12
+ass 51
+push 51
+push 50
+call 36 False
+call 16 False
+jmpf 108
+push 49
+get 3
+push 49
+get 2
+push 51
+push 13
+call 6 False
+call 37 False
+push 50
+push 51
+call 37 False
+get 1
+call 8 False
+call 12 True
+push 51
+push 14
+call 12 True
+jmp 85
+push 49
+push 52
+new 30 5 False
+set 1
+push 49
 rtn
+2
 9
+push 49
+push 50
+call 51 False
+ass 51
+push 49
+get 1
+push 51
+call 37 False
+rtn
+3
+9
+push 49
+push 50
+call 51 False
+ass 52
+push 49
+get 1
+push 52
+push 51
+call 38 True
+2
+30
+push 15
+ass 51
+push 16
+ass 52
+push 52
+push 49
+get 2
+call 36 False
+call 16 False
+jmpf 24
+push 51
+push 50
+push 52
+call 37 False
+push 49
+get 2
+push 52
+call 37 False
+call 8 False
+call 12 True
+push 52
+push 17
+call 12 True
+jmp 4
+push 51
+push 49
+get 3
+call 13 True
+push 51
+rtn
+3
+27
+push 49
+new 0 1 False
+set 0
+push 49
+push 18
+set 2
+push 49
+get 2
+push 50
+push 49
+get 2
+call 6 False
+new 47 7 False
+ass 52
+push 49
+get 2
+push 51
+push 49
+get 2
+call 6 False
+new 47 7 False
+ass 53
+push 52
+push 53
+list 2 False
+new 48 8 False
+ass 50
+4
+15
+get 0
+push 50
+push 50
+get 0
+push 51
+call 6 False
+push 51
+get 0
+push 51
+call 6 False
+list 2 False
+push 52
+call 50 True
+push 19
+rtn
+3
+13
+get 0
+push 50
+push 50
+get 0
+push 51
+call 6 False
+push 51
+get 0
+push 51
+call 6 False
+list 2 False
+call 49 False
+rtn
+1
+54
+push 20
+push 21
+new 52 9 False
+ass 50
+push 50
+push 22
+push 23
+push 24
+call 53 True
+push 50
+push 25
+push 26
+push 27
+call 53 True
+push 50
+push 28
+push 29
+push 30
+call 53 True
+push 50
+push 31
+push 32
+push 33
+call 53 True
+push 50
+push 34
+push 35
+push 36
+call 53 True
+push 50
+push 37
+push 38
+push 39
+call 53 True
+push 50
+push 40
+push 41
+push 42
+call 53 True
+push 50
+push 43
+push 44
+push 45
+call 53 True
+push 50
+push 46
+push 47
+push 48
+call 53 True
+push 50
+get 1
+get 0
+call 2 False
+call 45 True
+49
 0
-7
+6
+Number 1
+Number 0
+Number 1
+Number 1
+Number 1
+Number 0
+Number 1
+Number 1
+Number 1
+Number 1
+Number 1
+Number 0
+Number 0
+Number 1
+Number 1
+Number 0
+Number 0
+Number 1
+Number -1
+Void 
+Number 3
+Number 3
+Number 0
+Number 0
+Number 0
+Number 0
+Number 1
+Number 1
+Number 0
+Number 2
+Number 2
+Number 1
+Number 0
+Number 3
+Number 1
+Number 1
+Number 4
 Number 1
 Number 2
-Number 3
-Number 4
 Number 5
+Number 2
+Number 0
 Number 6
-String 114 101 115 117 108 116 32 49 58 32
-String 114 101 115 117 108 116 32 50 58 32
-Void 
+Number 2
+Number 1
+Number 7
+Number 2
+Number 2
+Number 8
 2
 call 44 False
-call 53 True
+call 55 True

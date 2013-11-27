@@ -164,15 +164,13 @@ namespace Leuterper.Constructions
             this.lhs.classesGenerationPass();
             this.rhs.classesGenerationPass();
         }
-        public override void simplificationPass()
+        public override void simplificationPass() {}
+        public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             if (!rhs.getType().typeOrSuperTypeUnifiesWith(lhs.getType()))
             {
                 throw new SyntacticErrorException("Type mismatch", this.getLine());
             }
-        }
-        public override void codeGenerationPass(LeuterperCompiler compiler)
-        {
             rhs.codeGenerationPass(compiler);
             compiler.addAction(new MachineInstructions.Assignment(lhs.locateVar().index));
         }
@@ -275,10 +273,10 @@ namespace Leuterper.Constructions
         }
         public override void classesGenerationPass()
         {
-            if (this.rootIsDefined && !this.isCompletelyDefined)
-            {
+            //if (this.rootIsDefined && !this.isCompletelyDefined)
+            //{
                 this.redefineWithSubstitutionTypes(this.typeVariables);
-            }
+            //}
         }
         public override void simplificationPass() { }
         public string getName() { return this.name; }
@@ -502,7 +500,15 @@ namespace Leuterper.Constructions
         }
         public Constructor getConstructor(String procedureName, List<LType> argumentsTypes)
         {
-            Constructor c = this.constructorDefinitions.First(cd => cd.isCompatibleWithNameAndTypes(procedureName, argumentsTypes));
+            Constructor c = null;
+            foreach(Constructor aConstructor in this.constructorDefinitions)
+            {
+                if(aConstructor.isCompatibleWithNameAndTypes(procedureName, argumentsTypes))
+                {
+                    c = aConstructor;
+                    break;
+                }
+            }
             if(c == null && this.getParentClass() != null)
             {
                 return this.getParentClass().getConstructor(procedureName, argumentsTypes);
@@ -1595,7 +1601,7 @@ namespace Leuterper.Constructions
         {
             if(aClass == null)
             {
-                Console.WriteLine();
+                throw new SemanticErrorException(String.Format("Method not found. {0}", this.procedureName), this.getLine());
             }
             List<LType> argumentsTypes = Utils.expressionsToTypes(this.arguments);
             foreach (Method m in aClass.methodsDefinitions)

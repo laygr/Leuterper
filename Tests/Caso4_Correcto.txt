@@ -84,12 +84,47 @@ class Array[X]
 
 }
 
+class MatrixNumber
+{
+	Array[Number] m;
+	Number c;
+
+	MatrixNumber(Number rows, Number columns)
+	{
+		this.c = -1;
+		Range rInf = new Range(this.c, rows + this.c);
+		Range rSup = new Range(this.c, columns + this.c);
+		m = new Array({rInf, rSup}:Range);
+	}
+
+	Void set(Number row, Number column, Number value)
+	{
+		m.set({row + c, column + c}:Range, value);
+		return null;
+	}
+
+	Number get(Number row, Number column)
+	{
+		return m.get({row + c, column + c}:Range);
+	}
+
+}
+
+
 Void main(String arg)
 {
-	Range r1 = new Range(2, 4);
-	Range r2 = new Range(3, 6);
-	Range r3 = new Range(4, 5);
-	Array[String] arr = new Array[String]({r1, r2, r3}:Range);
-	arr.set({2, 4, 5}:Number, "Lay");
-	write(arr.get({2, 4, 5}:Number));
+	MatrixNumber m = new MatrixNumber(3, 3);
+	m.set(0, 0, 0);
+	m.set(0, 1, 1);
+	m.set(0, 2, 2);
+
+	m.set(1, 0, 3);
+	m.set(1, 1, 4);
+	m.set(1, 2, 5);
+
+	m.set(2, 0, 6);
+	m.set(2, 1, 7);
+	m.set(2, 2, 8);
+
+	write(m.m.toString());
 }

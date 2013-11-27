@@ -1,76 +1,36 @@
-class Matrix[X] inherits List[List[X]]
+Void sort(List[Number] lista)
 {
-	Matrix()
+	Number index = 0;
+	Number indexOfLowest;
+	while index < lista.count()
 	{
-		return this;
-	}
-
-	X get(Number row, Number column)
-	{
-		return this.get(row).get(column);
-	}
-
-	Void set(Number row, Number column, X element)
-	{
-		return this.get(row).set(column, element);
-	}
-
-	Matrix[X] *(Matrix[X] m)
-	{
-		Matrix[X] result = new Matrix[X]();
-		Number thisRows = this.count();
-		if thisRows == 0 {
-			error("No se puede multiplicar una matriz vacia");
-		}
-		Number thisColumns = this.get(0).count();
-		if this.get(0).count() != m.count()
+		indexOfLowest = index;
+		Number iterator = new Number(indexOfLowest);
+		Number currentLowest = lista.get(indexOfLowest);
+		while iterator < lista.count()
 		{
-			error("Estas matrices no son multiplicables.");
-		}
-		Number otherColumns = m.get(0).count();
-
-		Number i = 0;
-		while ( i < thisRows)
-		{
-			Number j = 0;
-			while( j < otherColumns)
+			if lista.get(iterator) < lista.get(indexOfLowest)
 			{
-				X acum = this.get(i).get(0) * m.get(j).get(0);
-				Number k = 1;
-				while( k < thisColumns)
-				{
-					acum = acum + (this.get(i).get(k) * m.get(j).get(k));
-					k += 1;
-				}
-				result.set(i, j, acum);
-				j += 1;
+				indexOfLowest = new Number(iterator);
+				currentLowest = lista.get(iterator);
 			}
-			i += 1;
+			iterator += 1;
 		}
-		return result;
+		Number aux = lista.get(index);
+		lista.set(index, lista.get(indexOfLowest));
+		lista.set(indexOfLowest, aux);
+		index += 1;
 	}
+	return null;
 }
 
 Void main(String arg)
 {
-	Matrix[Number] m1 = new Matrix[Number]();
-	Matrix[Number] m2 = new Matrix[Number]();
+	List[Number] unsorted = {4, 2, 5, 3, 4, 6, 1} : Number;
 
-	List[Number] row1 = {1, 2, 3} : Number;
-	List[Number] row2 = {4, 5, 6} : Number;
-	List[Number] row3 = {7, 8, 9} : Number;
+	sort(unsorted);
 
-	m1.add(row1);
-	m1.add(row2);
-	m1.add(row3);
-
-	m2.add(row1);
-	m2.add(row2);
-	m2.add(row3);
-
-	Matrix[Number] m3 = m1 * m2;
-
-	write(m.toString());
+	write(unsorted.toString());
 
 	return null;
 }
