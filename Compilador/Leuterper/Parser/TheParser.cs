@@ -15,7 +15,14 @@
     parse_Classes(classes);
     parse_Functions(functions);
     parse_IActions(actions);
-          {if (true) return new Program(classes, functions, actions);}
+          {if (true) return new Program(parse_Classes_List(), functions, actions);}
+    throw new System.Exception("Missing return statement in function");
+  }
+
+  public UiquesList<LClass> parse_Classes_List() {
+        UniquesList<LClass> classes = new UniquesList<LClass>();
+    parse_Classes(classes);
+          {if (true) return classes;}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -995,35 +1002,6 @@
     finally { jj_save(10, xla); }
   }
 
-  private bool jj_3R_75() {
-    if (jj_3R_13()) return true;
-    if (jj_scan_token(SC)) return true;
-    return false;
-  }
-
-  private bool jj_3R_82() {
-    if (jj_scan_token(RTN)) return true;
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private bool jj_3R_74() {
-    if (jj_3R_12()) return true;
-    if (jj_scan_token(SC)) return true;
-    return false;
-  }
-
-  private bool jj_3R_73() {
-    if (jj_3R_80()) return true;
-    if (jj_scan_token(SC)) return true;
-    return false;
-  }
-
-  private bool jj_3R_69() {
-    if (jj_scan_token(CHAR)) return true;
-    return false;
-  }
-
   private bool jj_3_11() {
     if (jj_3R_21()) return true;
     return false;
@@ -1652,6 +1630,35 @@
 
   private bool jj_3R_68() {
     if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  private bool jj_3R_75() {
+    if (jj_3R_13()) return true;
+    if (jj_scan_token(SC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_82() {
+    if (jj_scan_token(RTN)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  private bool jj_3R_74() {
+    if (jj_3R_12()) return true;
+    if (jj_scan_token(SC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_73() {
+    if (jj_3R_80()) return true;
+    if (jj_scan_token(SC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_69() {
+    if (jj_scan_token(CHAR)) return true;
     return false;
   }
 

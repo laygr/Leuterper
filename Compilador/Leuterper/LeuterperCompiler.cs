@@ -18,22 +18,20 @@ namespace Leuterper
 
         public bool compilingTopLeveIActions;
 
-        public List<LClass> classDefinitions;
+        public List<DefinedClass> classDefinitions;
         public List<int> functionsParameters;
         public List<List<MachineInstruction>> functionActions;
         public List<MachineInstructions.Literal> literals;
         public List<MachineInstructions.MachineInstruction> topLeveIActions;
+        
 
         public LeuterperCompiler(String filePath)
         {
-            StandardLibrary.singleton = new StandardLibrary();
-
             this.globalVariablesCounter = 0;
             this.mostVaribalesInAFunction = 3;
             this.compilingTopLeveIActions = false;
 
-
-            this.classDefinitions = new List<LClass>();
+            this.classDefinitions = new List<DefinedClass>();
             this.functionsParameters = new List<int>();
             this.functionActions = new List<List<MachineInstruction>>();
             this.literals = new List<MachineInstructions.Literal>();
@@ -45,11 +43,12 @@ namespace Leuterper
         public void compile()
         {
             parse();
-            program.symbolsRegistrationPass();
-            program.symbolsUnificationPass();
 
-            program.classesGenerationPass();
-            program.simplificationPass();
+            program.symbolsUnificationPass();
+            //program.symbolsRegistrationPass();
+
+            //program.classesGenerationPass();
+            //program.simplificationPass();
             program.codeGenerationPass(this);
             printGeneratedCode();
             printSymbols();
@@ -83,7 +82,6 @@ namespace Leuterper
                     s.Close();
                     File.Delete(tempFile);
                 }
-
             }
         }
         public void printGeneratedCode()
@@ -91,7 +89,7 @@ namespace Leuterper
             StreamWriter writer = new StreamWriter("out.txt");
 
             writer.WriteLine(this.classDefinitions.Count());
-            foreach(LClass c in this.classDefinitions)
+            foreach(DefinedClass c in this.classDefinitions)
             {
                 writer.WriteLine(c.attributes.Count());
             }
@@ -124,7 +122,7 @@ namespace Leuterper
 
             writer.Close();
         }
-        public void addClassDefinition(LClass aClass)
+        public void addClassDefinition(DefinedClass aClass)
         {
             this.classDefinitions.Add(aClass);
         }
@@ -152,7 +150,7 @@ namespace Leuterper
         public void printSymbols()
         {
             Console.WriteLine("Classes:");
-            this.program.classes.ForEach(c => Console.WriteLine(c));
+            this.program.templates.ForEach(c => Console.WriteLine(c));
             Console.WriteLine("Functions:");
             this.program.functions.ForEach(f => Console.WriteLine(f));
         }

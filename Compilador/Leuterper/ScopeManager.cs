@@ -7,11 +7,11 @@ namespace Leuterper
 {
     class ScopeManager
     {
-        public static int GetIndexOfFirstVarInScope(IScope scope)
+        public static int GetIndexOfFirstVarInScope(Program program)
         {
-            return getProgram(scope).literalsCounter
+            return program.literalsCounter
                  +
-                 getProgram(scope).getDeclarations().Count();
+                 program.getDeclarations().Count();
         }
         public static void locateVarNamed(IScope scope, string name, DeclarationLocator<Declaration>locator)
         {
@@ -28,7 +28,7 @@ namespace Leuterper
                 Declaration var = vars[i];
                 if(vars[i].getName().Equals(name))
                 {
-                    locator.wasFound(var, i + ScopeManager.GetIndexOfFirstVarInScope(scope));
+                    locator.wasFound(var, i + ScopeManager.GetIndexOfFirstVarInScope(locator.declaration.getProgram()));
                     return;
                 }
             }
@@ -59,23 +59,19 @@ namespace Leuterper
             }
             return null;
         }
-        static int getIndexOfFunctionWithNameAndArguments(IScope scope, string name, List<Expression> arguments)
+        static int getIndexOfFunctionWithNameAndArguments(Program program, string name, List<Expression> arguments)
         {
-            return ScopeManager.getFunctionForGivenNameAndArguments(scope, name, arguments).identifier;
+            return ScopeManager.getFunctionForGivenNameAndArguments(program, name, arguments).identifier;
         }
-        public static Function getFunctionForGivenNameAndTypes(IScope scope, string name, List<LType> types)
+        public static Function getFunctionForGivenNameAndArguments(Program program, string name, List<Expression> arguments)
         {
-            return ScopeManager.getProgram(scope).getFunctionForGivenNameAndTypes(name, types);
+            return program.getFunctionForGivenNameAndTypes(name, Utils.expressionsToTypes(arguments));
         }
-        public static Function getFunctionForGivenNameAndArguments(IScope scope, string name, List<Expression> arguments)
-        {
-            return ScopeManager.getFunctionForGivenNameAndTypes(scope, name, Utils.expressionsToTypes(arguments));
-        }
-        public static LClass getClassForType(IScope scope, LType type)
+        public static LClassTemplate getClassForType(IScope scope, LType type)
         {
             if (type == null) return null;
 
-            foreach (LClass aClassD in ScopeManager.getProgram(scope).getClasses())
+            foreach (LClassTemplate aClassD in ScopeManager.getProgram(scope).getClasses())
             {
                 if (aClassD.getType().getName().Equals(type.getName()))
                 {
@@ -84,31 +80,10 @@ namespace Leuterper
             }
             return null;
         }
-        public static Program getProgram(IScope scope)
+        public static LClassTemplate getClassForName(IScope scope, String name)
         {
-            if(scope is Program)
-            {
-                return scope as Program;
-            }
-            return ScopeManager.getProgram(scope.getScope());
-        }
-
-        public static LClass getClassScope(IScope scope)
-        {
-            if (scope is LClass)
-            {
-                return scope as LClass;
-            }
-            if(scope == null)
-            {
-                return null;
-            }
-            return ScopeManager.getClassScope(scope.getScope());
-        }
-        public static LClass getClassForName(IScope scope, String name)
-        {
-            List<LClass> classes = ScopeManager.getProgram(scope).getClasses();
-            foreach (LClass aClassD in classes)
+            List<LClassTemplate> classes = ScopeManager.getProgram(scope).getClasses();
+            foreach (LClassTemplate aClassD in classes)
             {
                 if (aClassD.getType().getName().Equals(name))
                 {

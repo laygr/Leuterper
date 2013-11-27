@@ -9,8 +9,6 @@ namespace Leuterper
 
     interface IScope
     {
-        List<Construction> getChildren();
-        void addChild(Construction c);
         IScope getScope();
         UniquesList<Declaration> getDeclarations();
     }
@@ -36,10 +34,13 @@ namespace Leuterper
     interface ICompilable
     {
         void scopeSettingPass();
-        void symbolsRegistrationPass();
         void symbolsUnificationPass();
+
+        /*
+        void symbolsRegistrationPass();
         void classesGenerationPass();
         void simplificationPass();
+         */
         void codeGenerationPass(LeuterperCompiler compiler);
     }
     interface IBlock

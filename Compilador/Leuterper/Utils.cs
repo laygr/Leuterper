@@ -136,7 +136,23 @@ namespace Leuterper
             this.Insert(p, newElement);
         }
     }
+    class TypeVariablesComparer : IEqualityComparer<List<LType>>
+    {
+        public bool Equals(List<LType> x, List<LType> y)
+        {
+            if(x.Count() != y.Count()) return false;
+            for (int i = 0; i < x.Count(); i++)
+            {
+                if (!x[i].UnifiesWith(y[i])) return false;
+            }
+            return true;
+        }
 
+        public int GetHashCode(List<LType> obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
     class DeclarationLocator<X> where X : Declaration
     {
         public X declaration;

@@ -21,7 +21,16 @@ public Program parse_Program() :
 }
 {
 	parse_Classes(classes) parse_Functions(functions) parse_IActions(actions)
-	{ return new Program(classes, functions, actions); }
+	{ return new Program(parse_Classes_List(), functions, actions); }
+}
+
+UiquesList<LClass> parse_Classes_List() :
+{
+	UniquesList<LClass> classes = new UniquesList<LClass>();
+}
+{
+	parse_Classes(classes)
+	{ return classes; }
 }
 
 public Function parse_Function() :
