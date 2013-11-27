@@ -1,111 +1,85 @@
-class Range
+class SimpleMatrix[X]
 {
-	Number inferior;
-	Number superior;
+	List[X] m;
+	Number rows;
+	Number columns;
 
-	Range(Number inferior, Number superior)
+	SimpleMatrix(Number rows, Number columns)
 	{
-		this.inferior = inferior;
-		this.superior = superior;
-	}
-}
-
-class Array[X]
-{
-	List[X] elements;
-	List[Number] ms;
-	Number k;
-
-	Array(List[Range] ranges)
-	{
-		this.ms = new List[Number](ranges.count() + 1);
-
-		//Calculo del total
-		Number i = 0;
-		Number total = 1;
-		while i < ranges.count()
-		{
-			Range range = ranges.get(i);
-			Number rangeSize = range.superior - range.inferior + 1;
-			total *= rangeSize;
-			i += 1;
-		}
-
-		//Calculo de las m's
-		this.ms.set(0, total);
-		i = 1;
-		while i < ranges.count()
-		{
-			range = ranges.get(i-1);
-			rangeSize = range.superior - range.inferior + 1;
-			this.ms.set(i, this.ms.get(i-1) / rangeSize);
-			i += 1;
-		}
-		
-		//Calculo de la k
-		this.k = 0;
-		i = 0;
-		while i < ranges.count()
-		{
-			this.k += ( this.ms.get(i+1) * ranges.get(i).inferior);
-			i += 1;
-		}
-
-		//Creacion de la memoria
-		this.elements = new List[X](total);
-
+		this.m = new List[X](rows * columns);
+		this.rows = rows;
+		this.columns = columns;
 		return this;
 	}
 
-	X get(List[Number] indexes)
+	Void set(Number row, Number column, X value)
 	{
-		Number index = this.getIndexForIndexes(indexes);
-		return this.elements.get(index);
-
-	}
-	Void set(List[Number] indexes, X element)
-	{
-		Number index = this.getIndexForIndexes(indexes);
-		this.elements.set(index, element);
+		return this.m.set(this.indexForRowIndex(row, column) , value);
 	}
 
-	Number getIndexForIndexes(List[Number] indexes)
+	X get(Number row, Number column)
 	{
-		Number index = 0;
-		Number i = 0;
-		while i < this.ms.count()
-		{
-			index += ( indexes.get(i) * this.ms.get(i) );
-			i += 1;
-		}
-		index -= this.k;
-		return index;
+		return this.m.get(this.indexForRowIndex(row, column));
 	}
 
+	Number indexForRowIndex(Number row, Number column)
+	{
+		return (row * this.columns) + column;
+	}
 }
 
-class MatrixNumber
+class SimpleMatrixNumber inherits SimpleMatrix[Number]
 {
-	Array[Number] m;
-	Number c;
-
-	MatrixNumber(Number rows, Number columns)
+	SimpleMatrixNumber(Number rows, Number columns) : (rows, columns)
 	{
-		this.c = -1;
-		Range rInf = new Range(this.c, rows + this.c);
-		Range rSup = new Range(this.c, columns + this.c);
-		m = new Array({rInf, rSup}:Range);
+		return this;
 	}
 
-	Void set(Number row, Number column, Number value)
+	Void *(Number n)
 	{
-		m.set({row + c, column + c}:Range, value);
+		Number i = 0;
+		while i < this.m.count()
+		{
+			Number v = this.m.get(i);
+			this.m.set(i, v * n);
+			i += 1;
+		}
 		return null;
 	}
 
-	Number get(Number row, Number column)
+	SimpleMatrixNumber *(SimpleMatrixNumber other)
 	{
-		return m.get({row + c, column + c}:Range);
+        if this.rows == 0 {
+            error("No se puede multiplicar una matriz vacia");
+        }
+        if this.columns != other.rows
+        {
+        	error("Estas matrices no son multiplicables.");
+        }
+
+        SimpleMatrixNumber result = new SimpleMatrixNumber(this.rows, other.columns);
+
+        Number i = 0;
+        while ( i < this.rows )
+        {
+            Number j = new Number(0);
+            while( j < other.columns)
+            {
+            	Number acum = new Number(0);
+            	Number k = new Number(0);
+            	while( k < this.columns)
+                {
+                  	Number v1 = this.get(i, k);
+                   	Number v2 = other.get(k, j);
+                   	acum += (v1 * v2);
+                    k += 1;
+                }
+                result.set(i, j, acum);
+                j += 1;
+            }
+            i += 1;
+        }
+        return result;
 	}
 
 }
@@ -113,7 +87,8 @@ class MatrixNumber
 
 Void main(String arg)
 {
-	MatrixNumber m = new MatrixNumber(3, 3);
+	
+	SimpleMatrixNumber m = new SimpleMatrixNumber(3, 3);
 	m.set(0, 0, 0);
 	m.set(0, 1, 1);
 	m.set(0, 2, 2);
@@ -126,5 +101,28 @@ Void main(String arg)
 	m.set(2, 1, 7);
 	m.set(2, 2, 8);
 
+	m  * 2;
+
 	write(m.m.toString());
+
+	SimpleMatrixNumber m2 = new SimpleMatrixNumber(3, 3);
+	m2.set(0, 0, 0);
+	m2.set(0, 1, 1);
+	m2.set(0, 2, 2);
+
+	m2.set(1, 0, 3);
+	m2.set(1, 1, 4);
+	m2.set(1, 2, 5);
+
+	m2.set(2, 0, 6);
+	m2.set(2, 1, 7);
+	m2.set(2, 2, 8);
+
+	write(m.get(1, 2).toString());
+
+	SimpleMatrixNumber m3 = m * m2;
+
+	write(m3.m.toString());
+
+	return null;
 }

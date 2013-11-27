@@ -1,72 +1,21 @@
-class Foo[X, Y]
+Number find(List[Number] lista, Number n)
 {
-	X x;
-	Y y;
-	Foo(X x, Y y) : ()
+	Number iterator = 0;
+	while iterator < lista.count()
 	{
-		this.x = x;
-		this.y = y;
-		return this;
+		if lista.get(iterator) == n
+		{
+			return iterator;
+		}
+		iterator += 1;
 	}
-	X getX()
-	{
-		return this.x;
-	}
-	Y getY()
-	{
-		return this.y;
-	}
+	return -1;
 }
 
-class FooN[Number, X] inherits Foo[Number, X]
-{
-	FooN(Number n, X x) : (n, x)
-	{
-		return this;
-	}
-}
-
-class FooNN inherits FooN[Number, Number]
-{
-	FooNN(Number n1, Number n2) : (n1, n2)
-	{
-		return this;
-	}
-}
-
-
-class FooNS inherits FooN[Number, String]
-{
-	FooNN(Number n, String s) : (n, s)
-	{
-		return this;
-	}
-}
-
-class FooS[X, String] inherits Foo[X, String]
-{
-	FooS(X x, String s) : (x, s)
-	{
-		return this;
-	}
-}
-
-class FooSS inherits FooS[String, String]
-{
-	FooSS(String s1, String s2) : (s1, s2)
-	{
-		return this;
-	}
-}
 
 Void main(String args)
 {
-	FooNN fnn = 
-		new FooNN(1, 2);
-	write(fnn.getX());
-	write(fnn.getY());
-
-	FooSS fss = new FooSS("hola", "adios");
-	write(fss.getX());
-	write(fnn.getY());
+	Number index = find({6, 5, 4, 3, 2, 1, 0}:Number, 4);
+	write(index.toString());
+	return null;
 }

@@ -521,7 +521,7 @@ namespace Leuterper.Constructions
             LClass pC = this;
             while(parentClassesWalked > 0)
             {
-                pC.getParentClass();
+                pC = pC.getParentClass();
                 parentClassesWalked--;
             }
             return pC.attributes[p].getType();
@@ -915,6 +915,10 @@ namespace Leuterper.Constructions
         }
         public DeclarationLocator<Var> locate()
         {
+            if(this.LAttributeName.Equals("this"))
+            {
+                Console.WriteLine();
+            }
             int LAttributeIndex = -1;
             int parentClassesWalked = 0;
             LClass c = this.theObject.getType().getDefiningClass();
@@ -1609,6 +1613,7 @@ namespace Leuterper.Constructions
                 if (m.isCompatibleWithNameAndTypes(this.procedureName, argumentsTypes))
                 {
                     methodLocator.declaration = m;
+                    methodLocator.index = m.identifier;
                     return;
                 }
             }

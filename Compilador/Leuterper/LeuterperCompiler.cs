@@ -47,13 +47,10 @@ namespace Leuterper
             parse();
             program.symbolsRegistrationPass();
             program.symbolsUnificationPass();
-
             program.classesGenerationPass();
             program.simplificationPass();
             program.codeGenerationPass(this);
             printGeneratedCode();
-            printSymbols();
-
         }
         public void parse()
         {
