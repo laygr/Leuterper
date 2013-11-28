@@ -915,10 +915,6 @@ namespace Leuterper.Constructions
         }
         public DeclarationLocator<Var> locate()
         {
-            if(this.LAttributeName.Equals("this"))
-            {
-                Console.WriteLine();
-            }
             int LAttributeIndex = -1;
             int parentClassesWalked = 0;
             LClass c = this.theObject.getType().getDefiningClass();
@@ -1403,6 +1399,8 @@ namespace Leuterper.Constructions
     {
         public Loop_Do_While(int line, Expression booleanExpression, List<IAction> thenActions)
             : base(line, booleanExpression, thenActions) { }
+
+
         public override void codeGenerationPass(LeuterperCompiler compiler)
         {
             int beginningOfLoop = compiler.getIndexOfNextActionInCurrentFunction();
