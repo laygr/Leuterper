@@ -43,11 +43,6 @@ namespace Leuterper
         public void compile()
         {
             parse();
-
-            //program.symbolsRegistrationPass();
-
-            //program.classesGenerationPass();
-            //program.simplificationPass();
             program.codeGenerationPass(this);
             printGeneratedCode();
             printSymbols();
@@ -121,9 +116,9 @@ namespace Leuterper
 
             writer.Close();
         }
-        public void addClassDefinition(DefinedClass aClass)
+        public void addClassDefinition(DefinedClass c)
         {
-            this.classDefinitions.Add(aClass);
+            this.classDefinitions.Add(c);
         }
         public void addAction(MachineInstruction action)
         {
@@ -149,7 +144,7 @@ namespace Leuterper
         public void printSymbols()
         {
             Console.WriteLine("Classes:");
-            this.program.templates.ForEach(c => Console.WriteLine(c));
+            this.program.definedClasses.ForEach(c => Console.WriteLine(c));
             Console.WriteLine("Functions:");
             this.program.Functions.ForEach(f => Console.WriteLine(f));
         }

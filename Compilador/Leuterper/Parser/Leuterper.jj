@@ -59,21 +59,22 @@ public LClassTemplate parse_Class() :
 
 public Constructor parse_Constructor() :
 {
-	Token id;
+	LType type;
+	Token t;
 	List<Parameter> parameters = new List<Parameter>();
 	List<Expression> baseCallArguments = new List<Expression>();
 	List<IAction> actions = new List<IAction>();
 }
 {
-	id = parse_BID()
-	<LP>
+	type = parse_LType()
+	t = <LP>
 	parse_Parameters(parameters)
 	<RP>
 	[ <C> <LP> parse_Arguments(baseCallArguments) <RP> ]
 	<LC>
 	parse_IActions(actions)
 	<RC>
-	{ return new Constructor(id.beginLine, id.image, parameters, baseCallArguments, actions); }
+	{ return new Constructor(t.beginLine, type, parameters, baseCallArguments, actions); }
 }
 
 public Method parse_Method() :

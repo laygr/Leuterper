@@ -63,12 +63,13 @@
   }
 
   public Constructor parse_Constructor() {
-        Token id;
+        LType type;
+        Token t;
         List<Parameter> parameters = new List<Parameter>();
         List<Expression> baseCallArguments = new List<Expression>();
         List<IAction> actions = new List<IAction>();
-    id = parse_BID();
-    jj_consume_token(LP);
+    type = parse_LType();
+    t = jj_consume_token(LP);
     parse_Parameters(parameters);
     jj_consume_token(RP);
     switch ((jj_ntk==-1)?jj_init_ntk():jj_ntk) {
@@ -86,7 +87,7 @@
     jj_consume_token(LC);
     parse_IActions(actions);
     jj_consume_token(RC);
-          {if (true) return new Constructor(id.beginLine, id.image, parameters, baseCallArguments, actions);}
+          {if (true) return new Constructor(t.beginLine, type, parameters, baseCallArguments, actions);}
     throw new System.Exception("Missing return statement in function");
   }
 
@@ -996,12 +997,6 @@
     finally { jj_save(10, xla); }
   }
 
-  private bool jj_3R_82() {
-    if (jj_scan_token(RTN)) return true;
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
   private bool jj_3R_74() {
     if (jj_3R_12()) return true;
     if (jj_scan_token(SC)) return true;
@@ -1653,6 +1648,12 @@
   private bool jj_3R_75() {
     if (jj_3R_13()) return true;
     if (jj_scan_token(SC)) return true;
+    return false;
+  }
+
+  private bool jj_3R_82() {
+    if (jj_scan_token(RTN)) return true;
+    if (jj_3R_23()) return true;
     return false;
   }
 

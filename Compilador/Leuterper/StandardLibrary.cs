@@ -27,24 +27,28 @@ namespace Leuterper
         static List<LType> bb = new List<LType>(new LType[] { LBoolean.type, LBoolean.type });
 
 
-        public List<Class_Procedure> standardProcedures;
+        public List<Constructor> standardConstructors;
+        public List<Method> standardMethods;
         public List<LClassTemplate> standardClasses;
         public List<Function> standardFunctions;
 
         public StandardLibrary(Program program)
         {
-            this.standardProcedures = new List<Class_Procedure>(new Class_Procedure[]{
+            this.standardConstructors = new List<Constructor>(new Constructor[]{
+                new ConstructorSpecial(0, "Object", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
+                new ConstructorSpecial(0, "Number", Utils.typesToParameters(n), new List<Expression>(), new List<IAction>()),
+                new ConstructorSpecial(0, "Boolean", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
+                new ConstructorSpecial(0, "Char", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
+                new ConstructorSpecial(0, "String", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
+            });
+            this.standardMethods = new List<Method>(new Method[]{
                 //void
 
                 //object
-                //Constructor default
-                new ConstructorSpecial(0, "Object", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(o), new List<IAction>()),
                 new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>()),
            
                 //number
-                //Constructor de valor default:
-                new ConstructorSpecial(0, "Number", Utils.typesToParameters(n), new List<Expression>(), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(n), new List<IAction>()),
                 new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>()),
                 new MethodSpecial(0, LNumber.type, "+", Utils.typesToParameters(n), new List<IAction>()),
@@ -63,7 +67,6 @@ namespace Leuterper
                 new MethodSpecial(0, LBoolean.type, ">", Utils.typesToParameters(n), new List<IAction>()),
 
                 //boolean
-                new ConstructorSpecial(0, "Boolean", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(b), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "||", Utils.typesToParameters(b), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "&&", Utils.typesToParameters(b), new List<IAction>()),
@@ -71,24 +74,10 @@ namespace Leuterper
                 new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>()),
 
                 //char
-                new ConstructorSpecial(0, "Char", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
                 new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(c), new List<IAction>()),
                 new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>()),
-
-                //list
-                new ConstructorSpecial(0, "List", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
-                new ConstructorSpecial(0, "List", Utils.typesToParameters(n), new List<Expression>(), new List<IAction>()),
-                new MethodSpecial(0, LBoolean.type, "==", Utils.typesToParameters(l), new List<IAction>()),
-                new MethodSpecial(0, LString.type, "toString", Utils.typesToParameters(e), new List<IAction>()),
-                new MethodSpecial(0, LVoid.type, "add", Utils.typesToParameters(a), new List<IAction>()),
-                new MethodSpecial(0, LVoid.type, "insertAt", Utils.typesToParameters(na), new List<IAction>()),
-                new MethodSpecial(0, LVoid.type, "removeAt", Utils.typesToParameters(n), new List<IAction>()),
-                new MethodSpecial(0, LNumber.type, "count", Utils.typesToParameters(e), new List<IAction>()),
-                new MethodSpecial(0, new LType(0, "A"), "get", Utils.typesToParameters(n), new List<IAction>()),
-                new MethodSpecial(0, LVoid.type, "set", Utils.typesToParameters(na), new List<IAction>()),
             
                 //string
-                new ConstructorSpecial(0, "String", new List<Parameter>(), new List<Expression>(), new List<IAction>()),
                 new MethodSpecial(0, LString.type, "==", Utils.typesToParameters(s), new List<IAction>()),
                 new MethodSpecial(0, LNumber.type, "toNumber", Utils.typesToParameters(e), new List<IAction>()),
                 new MethodSpecial(0, LString.type, "+", Utils.typesToParameters(s), new List<IAction>()),
@@ -97,25 +86,27 @@ namespace Leuterper
 
             this.standardClasses = new List<LClassTemplate>(new LClassTemplate[]{
                 //void
-                new SpecialDefinedClass(0, LVoid.type, null, new UniquesList<LAttribute>(), new UniquesList<Class_Procedure>(), program),
+                new SpecialDefinedClass(0, LVoid.type, null, new UniquesList<LAttribute>(), new UniquesList<Constructor>(), new UniquesList<Method>()),
                 //object
                 new SpecialDefinedClass(0, LObject.type, null, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(0, 3)), program),
+                    new UniquesList<Constructor>(standardConstructors.GetRange(0, 1)),
+                    new UniquesList<Method>(standardMethods.GetRange(0, 2))),
                 //number
                 new SpecialDefinedClass(0, LNumber.type, LObject.type, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(3, 17)), program),
+                    new UniquesList<Constructor>(standardConstructors.GetRange(1, 1)),
+                    new UniquesList<Method>(standardMethods.GetRange(2, 16))),
                 //boolean
                 new SpecialDefinedClass(0, LBoolean.type, LObject.type, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(20, 6)), program),
+                    new UniquesList<Constructor>(standardConstructors.GetRange(2, 1)),
+                    new UniquesList<Method>(standardMethods.GetRange(18, 5))),
                 //char
                 new SpecialDefinedClass(0, LChar.type, LObject.type, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(26,3)), program),
-                //list
-                new SpecialDefinedClass(0, LList.type, LObject.type, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(29, 10)), program),
+                    new UniquesList<Constructor>(standardConstructors.GetRange(3, 1)),
+                    new UniquesList<Method>(standardMethods.GetRange(23,2))),
                 //string
                 new SpecialDefinedClass(0, LString.type, LString.parentType, new UniquesList<LAttribute>(),
-                    new UniquesList<Class_Procedure>(standardProcedures.GetRange(39, 5)), program)
+                    new UniquesList<Constructor>(standardConstructors.GetRange(4, 1)),
+                    new UniquesList<Method>(standardMethods.GetRange(25, 4)))
             });
 
             this.standardFunctions = new List<Function>(new Function[]

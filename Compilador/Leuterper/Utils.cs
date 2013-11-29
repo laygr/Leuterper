@@ -102,7 +102,9 @@ namespace Leuterper
                     if (v.initialValue != null)
                     {
                         VarAccess var = new VarAccess(v.getLine(), v.getName());
-                        actions.Insert(i + 1, new Assignment(v.getLine(), var, v.initialValue));
+                        Assignment ass = new Assignment(v.getLine(), var, v.initialValue);
+                        ass.setScope(v.getScope());
+                        actions.Insert(i + 1, ass);
                         v.initialValue = null;
                     }
                 }
@@ -125,6 +127,30 @@ namespace Leuterper
             types.ForEach(t => newTypes.Add(t.Clone() as LType));
             return newTypes;
         }
+        public static void locateVarNamed(IScope scopeIterator, string name, DeclarationLocator<Declaration> locator)
+        {
+            if(name.Equals("this"))
+            {
+                locator.wasFound(new LAttribute(0, (scopeIterator as Construction).getClassScope().getType(), name), Program.singleton.getNumberOfVarsInProgram());
+                return;
+            }
+            List<Declaration> vars = scopeIterator.getDeclarations();
+            for (int i = 0; i < vars.Count(); i++)
+            {
+                Declaration var = vars[i];
+                if (vars[i].getName().Equals(name))
+                {
+                    locator.wasFound(var, i + Program.singleton.getNumberOfVarsInProgram());
+                    return;
+                }
+            }
+            scopeIterator = scopeIterator.getScope();
+            if (scopeIterator != null)
+            {
+                locator.hierarchyDistance++;
+                Utils.locateVarNamed(scopeIterator, name, locator);
+            }
+        }
         internal static List<Parameter> cloneParameters(List<Parameter> parameters)
         {
             List<Parameter> newParameters = new List<Parameter>();
@@ -144,6 +170,7 @@ namespace Leuterper
         public UniquesList(X[] elements) : base(elements) { }
         public UniquesList(List<X> elements) : base(elements) { }
         public UniquesList() { }
+
         private void validateUniqueness(X newElement)
         {
             Boolean reallyNew = this.TrueForAll(e => !e.HasSameSignatureAs(newElement));
@@ -174,7 +201,7 @@ namespace Leuterper
 
         public int GetHashCode(List<LType> obj)
         {
-            throw new NotImplementedException();
+            return obj.Count();
         }
     }
     class DeclarationLocator<X> where X : Declaration

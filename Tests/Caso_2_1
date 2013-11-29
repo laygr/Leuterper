@@ -1,0 +1,157 @@
+class Cons[X]
+{
+	X head;
+	Cons[X] tail;
+	Boolean hasValue;
+
+	Cons[X](X value)
+	{
+		this.head = value;
+		this.hasValue = true;
+		this.tail = new Cons[X]();
+		return this;
+	}
+
+	Cons[X](X head, Cons[X] tail)
+	{
+		this.head = head;
+		this.tail = tail;
+		this.hasValue = true;
+		return this;
+	}
+
+	Cons[X]()
+	{
+		this.hasValue = false;
+		return this;
+	}
+
+	Void set(X value)
+	{
+		if this.hasValue.not()
+		{
+			this.tail = new Cons[X]();
+		}
+		this.head = value;
+		return null;
+	}
+
+	Cons[X] get(Number index)
+	{
+		if (index < 0) || this.hasValue.not()
+		{
+			//error("out of bounds.");
+		}
+		if index == 0
+		{
+			return this;
+		}
+		return this.tail.get(index - 1);
+	}
+
+	Boolean hasNext()
+	{
+		if this.hasValue
+		{
+			return true;
+		}
+		return false;
+	}
+
+}
+
+class LinkedList[X]
+{
+	Cons[X] root;
+	Number count;
+
+	LinkedList[X]()
+	{
+		this.root = new Cons[X]();
+		this.count = 0;
+		return this;
+	}
+	LinkedList[X](Cons[X] root, Number count)
+	{
+		this.root = root;
+		this.count = count;
+		return this;
+	}
+
+	Void add(X element)
+	{
+		Cons[X] iterator = this.root;
+		while iterator.hasValue.not()
+		{
+			iterator = iterator.tail;
+		}
+		iterator.set(element);
+		count += 1;
+		return null;
+	}
+
+	X get(Number index)
+	{
+		return this.root.get(index).head;
+	}
+
+	Void set(Number index, X value)
+	{
+		this.root.get(index).head = value;
+		return null;
+	}
+	String toString()
+	{
+		String result = "";
+		Cons[X] iterator = this.root;
+		while iterator.hasNext()
+		{
+			result += iterator.head.toString();
+			iterator = iterator.tail;
+		}
+		return result;
+	}
+}
+
+class Foo[X]
+{
+	X x;
+	Foo[X](X x)
+	{
+		this.x = x;
+		return this;
+	}
+
+	X add(X x)
+	{
+		return this.x + x;
+	}
+}
+
+class FooNumber inherits Foo[Boolean]
+{
+	FooNumber(Boolean n) : (n)
+	{
+		return this;
+	}
+}
+
+class BooleanPlus inherits Boolean
+{
+	BooleanPlus(Boolean b) : ()
+	{
+		super = b;
+		return this;
+	}
+
+	Boolean +(Boolean other)
+	{
+		return super || other;
+	}
+}
+
+Void main(String args)
+{
+	Foo[BooleanPlus] fn = new Foo[BooleanPlus](new BooleanPlus(true));
+	FooNumber fnumber = new FooNumber(true);
+}

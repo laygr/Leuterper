@@ -1,146 +1,120 @@
-3
-3
-3
-3
+4
+1
+2
+1
+2
+8
+1
+10
+push 14
+new 34 6 False
+new 36 7 False
+ass 17
+push 15
+new 38 8 False
+ass 18
+push 16
+new 20 3 False
+set 0
+2
 7
-3
-11
-push 9
+push 16
+new 20 3 False
+set 0
+push 16
+ass 16
+push 16
+rtn
+2
+6
+push 16
+call 22 False
+rtn
+push 16
 new 0 1 False
 set 0
-push 9
-push 10
-set 1
-push 9
-push 11
-set 2
-push 9
-rtn
-1
-6
-push 9
-get 1
-push 9
-get 2
-call 6 False
-rtn
-5
-13
-push 9
-push 10
-push 11
-new 47 7 False
+2
+8
+push 16
+new 0 1 False
 set 0
-push 9
-push 12
+push 16
+push 16
 set 1
-push 9
-push 13
-set 2
-push 9
+push 16
 rtn
-1
-10
-push 9
-get 1
-push 9
-get 2
-push 9
-get 0
-call 48 False
-call 6 False
-call 6 False
-rtn
+2
 7
-15
-push 9
-push 10
-push 11
-push 12
-push 13
-new 49 8 False
+push 16
+call 35 False
+rtn
+push 16
+push 16
+new 39 9 False
 set 0
-push 9
-push 14
+2
+9
+push 16
+push 16
+new 39 9 False
+set 0
+push 16
+rtn
+push 16
+new 0 1 False
+set 0
+2
+8
+push 16
+new 0 1 False
+set 0
+push 16
+push 16
 set 1
-push 9
-push 15
-set 2
-push 9
+push 16
 rtn
-1
-10
-push 9
-get 1
-push 9
-get 2
-push 9
-get 0
-call 50 False
-call 6 False
+2
+19
+push 16
 call 6 False
 rtn
-1
-47
 push 0
 push 1
 push 2
 push 3
 push 4
 push 5
-new 51 9 False
-ass 10
-push 10
-get 0
-get 0
-get 1
-push 10
-get 0
-get 0
-get 2
-push 10
-get 0
-get 1
-push 10
-get 0
-get 2
-push 10
-get 1
-push 10
-get 2
-call 6 False
-call 6 False
-call 6 False
-call 6 False
-call 6 False
-ass 11
-push 10
-call 52 False
-ass 12
 push 6
-push 11
-call 5 False
-call 42 False
-call 45 True
 push 7
-push 12
-call 5 False
-call 42 False
-call 45 True
 push 8
-rtn
-9
+push 9
+push 10
+push 11
+push 12
+push 15
+push 14
+push 15
+18
 0
-7
-Number 1
-Number 2
+3
+Boolean 1
 Number 3
-Number 4
-Number 5
-Number 6
-String 114 101 115 117 108 116 32 49 58 32
-String 114 101 115 117 108 116 32 50 58 32
+Boolean 1
+Boolean 1
+Boolean 0
 Void 
+Number 0
+Number 0
+Number 1
+Boolean 1
+Boolean 0
+Number 0
+Number 1
+Void 
+Void 
+String 34 34
+Boolean 1
+Number 3
 2
-call 44 False
-call 53 True
+call 41 False
+call 44 True
