@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constructions.cs" />
+    <Compile Include="ICloneable.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="MachineInstructions.cs" />
@@ -63,6 +64,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="Parser\Leuterper.jj" />
   </ItemGroup>
   <ItemGroup>

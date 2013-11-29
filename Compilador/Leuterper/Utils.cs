@@ -63,14 +63,14 @@ namespace Leuterper
             }
             return true;
         }
-        public static List<IAction> reinstantiateActions(List<IAction> actions, List<LType> instantiatedTypes)
+        public static List<IAction> reinstantiateActionsWithSubstitutions(List<IAction> actions, Substitutions s)
         {
             List<IAction> newActions = new List<IAction>();
             foreach (IAction a in actions)
             {
                 if (a is Var)
                 {
-                    newActions.Add((a as Var).redefineWithSubstitutionTypes(instantiatedTypes));
+                    newActions.Add((a as Var).redefineWithSubstitutions(s));
                 }
                 else
                 {
@@ -79,10 +79,10 @@ namespace Leuterper
             }
             return newActions;
         }
-        public static List<Parameter> reinstantiateParameters(List<Parameter> parameters, List<LType> instantiatedTypes)
+        public static List<Parameter> reinstantiateParametersWithSubstitutions(List<Parameter> parameters, Substitutions substitutions)
         {
             List<Parameter> newParameters = new List<Parameter>();
-            parameters.ForEach(p => newParameters.Add(p.redefineWithSubstitutionTypes(instantiatedTypes)));
+            parameters.ForEach(p => newParameters.Add(p.reinstantiateWithSubstitutions(substitutions)));
             return newParameters;
         }
         public static LType expresionToType(Expression e) { return e.getType(); }
@@ -112,6 +112,30 @@ namespace Leuterper
                 }
                 deposit.Add(a);
             }
+        }
+        public static List<IAction> cloneIActions(List<IAction> actions)
+        {
+            List<IAction> newActions = new List<IAction>();
+            actions.ForEach(a => newActions.Add(a.Clone() as IAction));
+            return newActions;
+        }
+        public static List<LType> cloneLTypes(List<LType>types)
+        {
+            List<LType> newTypes = new List<LType>();
+            types.ForEach(t => newTypes.Add(t.Clone() as LType));
+            return newTypes;
+        }
+        internal static List<Parameter> cloneParameters(List<Parameter> parameters)
+        {
+            List<Parameter> newParameters = new List<Parameter>();
+            parameters.ForEach(p => newParameters.Add(p.Clone() as Parameter));
+            return newParameters;
+        }
+        internal static List<Expression> cloneExpressions(List<Expression> expressions)
+        {
+            List<Expression> newExpressions = new List<Expression>();
+            expressions.ForEach(e => newExpressions.Add(e.Clone() as Expression));
+            return newExpressions;
         }
     }
 
@@ -172,6 +196,81 @@ namespace Leuterper
             this.declaration = declaration;
             this.index = index;
             this.found = true;
+        }
+    }
+
+    class Substitution
+    {
+        public LType from;
+        public LType to;
+        public Substitution(LType from, LType to)
+        {
+            this.from = from;
+            this.to = to;
+        }
+    }
+    class Substitutions
+    {
+        public LClassTemplate oldTemplate;
+        List<Substitution> substitutions;
+        public Substitutions(LClassTemplate template, List<LType> instantiatingTypes)
+        {
+            this.oldTemplate = template;
+            if (template.type.typeVariables.Count() != instantiatingTypes.Count())
+            {
+                throw new SemanticErrorException("Invalid instantiation. Different number of type variables.", template.getLine());
+            }
+            this.substitutions = formSubstitutionsForTypeWithInstantiatingType(template.type, instantiatingTypes);
+        }
+        public Substitutions(LType type, List<LType> instantiatingTypes)
+        {
+            this.substitutions = Substitutions.formSubstitutionsForTypeWithInstantiatingType(type, instantiatingTypes);
+        }
+        public static List<Substitution> formSubstitutionsForTypeWithInstantiatingType(LType type, List<LType> instantiatingTypes)
+        {
+            List<Substitution> result = new List<Substitution>();
+            for (int i = 0; i < instantiatingTypes.Count(); i++)
+            {
+                result.Add(new Substitution(type.typeVariables[i], instantiatingTypes[i]));
+            }
+            return result;
+        }
+        private LType getSubstitutionForType(LType typeVar)
+        {
+            foreach(Substitution s in this.substitutions)
+            {
+                if (s.from.getName().Equals(typeVar.getName())) return s.to;
+            }
+            throw new SemanticErrorException("WTF", -1);
+        }
+        public LType substitute(LType typeVar)
+        {
+            if (typeVar.isCompletelyDefined()) return typeVar;
+            if(!typeVar.rootIsDefined())
+            {
+                return getSubstitutionForType(typeVar);
+            }
+            LType result = typeVar.Clone() as LType;
+            for(int i = 0; i < typeVar.typeVariables.Count(); i++)
+            {
+                result.typeVariables[i] = substitute(typeVar.typeVariables[i]);
+            }
+            return result;
+        }
+    }
+    class SubstituteParentClass
+    {
+        LClassTemplate childClass;
+        LClassTemplate oldParentClass;
+        LClassTemplate newParentClass;
+
+        public SubstituteParentClass(LClassTemplate template)
+        {
+            this.childClass = template;
+            this.oldParentClass = template.getProgram().getTemplateClassForType(this.childClass.parentType);
+            Substitutions s = new Substitutions(template.parentType, template.type.typeVariables);
+            LType newParentType = s.substitute(template.parentType);
+            this.newParentClass = template.getDefinedClassWithTypes(newParentType.typeVariables);
         }
     }
 }

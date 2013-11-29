@@ -15,22 +15,14 @@ PARSER_END(TheParser)
 
 public Program parse_Program() :
 {
-	UniquesList<LClass> classes = new UniquesList<LClass>();
+	Program p = new Program();
+	UniquesList<LClassTemplate> classes = new UniquesList<LClassTemplate>();
 	UniquesList<Function> functions = new UniquesList<Function>();
 	List<IAction> actions = new List<IAction>();
 }
 {
 	parse_Classes(classes) parse_Functions(functions) parse_IActions(actions)
-	{ return new Program(parse_Classes_List(), functions, actions); }
-}
-
-UiquesList<LClass> parse_Classes_List() :
-{
-	UniquesList<LClass> classes = new UniquesList<LClass>();
-}
-{
-	parse_Classes(classes)
-	{ return classes; }
+	{ p.init(classes, functions, actions); return p; }
 }
 
 public Function parse_Function() :
@@ -46,7 +38,7 @@ public Function parse_Function() :
 	{ return new Function(id.beginLine, type, id.image, parameters, actions); }
 }
 
-public LClass parse_Class() :
+public LClassTemplate parse_Class() :
 {
 	LType type;
 	LType declarationInheritance = null;
@@ -62,7 +54,7 @@ public LClass parse_Class() :
 	parse_LAttributes(LAttributesDeclarations)
 	parse_Class_Procedures(classProcedures)
 	<RC>
-	{ return new LClass(c.beginLine, type, declarationInheritance, LAttributesDeclarations, classProcedures); }
+	{ return new LClassTemplate(c.beginLine, type, declarationInheritance, LAttributesDeclarations, classProcedures); }
 }
 
 public Constructor parse_Constructor() :
@@ -308,8 +300,8 @@ public Call_Method parse_Call_Method(Expression theObject) :
 	{ return new Call_Method(methodId.beginLine, theObject, methodId.image, arguments); }
 }
 
-public Term parse_Term() :
-{ Term term; }
+public Expression parse_Term() :
+{ Expression term; }
 {
 	(	LOOKAHEAD(parse_VarAccess())
 		term = parse_VarAccess()
@@ -518,8 +510,8 @@ public void parse_Parameters(List<Parameter> parameters) :
 	]
 }
 
-public void parse_Classes(UniquesList<LClass> classes) :
-	{ LClass aClass; }
+public void parse_Classes(UniquesList<LClassTemplate> classes) :
+	{ LClassTemplate aClass; }
 	{ ( aClass = parse_Class() { classes.AddUnique(aClass); } )* }
 
 public void parse_Functions(UniquesList<Function> functions) :

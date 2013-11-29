@@ -44,7 +44,6 @@ namespace Leuterper
         {
             parse();
 
-            program.symbolsUnificationPass();
             //program.symbolsRegistrationPass();
 
             //program.classesGenerationPass();
@@ -152,7 +151,7 @@ namespace Leuterper
             Console.WriteLine("Classes:");
             this.program.templates.ForEach(c => Console.WriteLine(c));
             Console.WriteLine("Functions:");
-            this.program.functions.ForEach(f => Console.WriteLine(f));
+            this.program.Functions.ForEach(f => Console.WriteLine(f));
         }
         public static void Main(String[] args)
         {

@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Leuterper.Constructions.Construction" Collapsed="true">
+    <Position X="28.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAABAAAAAAAAAgAQAAAAAAIAAAggAAAAABAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Procedure" Collapsed="true">
+    <Position X="33" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gABAAAAAAAAAACAEAEgAAAACAAAAAABAwAAAAAKAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Assignment" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAJAABgAAAEAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.LType" Collapsed="true">
+    <Position X="45.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAEAAQAAABBgAAEAAAAAAACGggEcAAAgAAEEAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.LClassTemplate" Collapsed="true">
+    <Position X="48.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAQDAEAAADAAACARQBGgAAQACkEAEAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.DefinedClass" Collapsed="true">
+    <Position X="47.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAACAAAAAABAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Program" Collapsed="true">
+    <Position X="36.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gkAAAAAACAAAAAFgAIAAAAAAAQAAAAIAgABAAAACACE=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Return_From_Block" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.LSet" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAIAABgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Function" Collapsed="true">
+    <Position X="29.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.FunctionSpecial" Collapsed="true">
+    <Position X="29.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Class_Procedure" Collapsed="true">
+    <Position X="33" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Constructor" Collapsed="true">
+    <Position X="32" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAEAAAAAAAAAAAAAAAACAAAACAACAAAAAAJAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Method" Collapsed="true">
+    <Position X="34.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.ConstructorSpecial" Collapsed="true">
+    <Position X="32" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.MethodSpecial" Collapsed="true">
+    <Position X="34.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Expression" Collapsed="true">
+    <Position X="17.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAEEAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.LAttributeAccess" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAIgKAhAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.VarAccess" Collapsed="true">
+    <Position X="16.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAQAEAAAAgAAEEAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LObject" Collapsed="true">
+    <Position X="23" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAQABAAAAgAAAAAIAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LString" Collapsed="true">
+    <Position X="23" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAQABAAAAgAAAAAMAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LBoolean" Collapsed="true">
+    <Position X="18.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABACAAgAAAAAIAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LChar" Collapsed="true">
+    <Position X="20.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAABACAAgAAAAAIAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LList" Collapsed="true">
+    <Position X="23" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAABAAAAAAAAAAAQABAACAgAAAAAoAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LNumber" Collapsed="true">
+    <Position X="25.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQABACAAgAAAAAIAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LVoid" Collapsed="true">
+    <Position X="27.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAgAAAAAIAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.SpecialTemplate" Collapsed="true">
+    <Position X="50" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.SpecialDefinedClass" Collapsed="true">
+    <Position X="47.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.LAttribute" Collapsed="true">
+    <Position X="38.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Declaration" Collapsed="true">
+    <Position X="36.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAACARAFIAAAgAAEAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Parameter" Collapsed="true">
+    <Position X="41" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Var" Collapsed="true">
+    <Position X="43.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAACAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Conditional" Collapsed="true">
+    <Position X="54.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAQAAAAAoAAAAAgAAAAAAAAAAACAQAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Leuterper.Constructions.Loop_Do_While" Collapsed="true">
+    <Position X="56.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.If_Then_Else" Collapsed="true">
+    <Position X="52.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAgAAAAAAAAAAACAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Loop_While" Collapsed="true">
+    <Position X="54.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Call_Function" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Call_Procedure" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAIAAAAAAAAAAAAAQAgIAAAgAAAAAAgAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Call_Constructor" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAABIAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Leuterper.Constructions.Call_Method" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAIACAAAAAAAAAAAAAAAQAAIgAAgAAAAAAAAAA=</HashCode>
+      <FileName>Constructions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9.05" />
+</ClassDiagram>

@@ -10,11 +10,12 @@ namespace Leuterper
     interface IScope
     {
         IScope getScope();
+        void scopeSetting();
         UniquesList<Declaration> getDeclarations();
     }
 
-    interface IRedefinable<X>
-    {  X redefineWithSubstitutionTypes(List<LType> types); }
+    interface IReinstantiatable<X>
+    { X reinstantiateWithSubstitutions(Substitutions s); }
 
     interface IDefinition
     {
@@ -24,7 +25,7 @@ namespace Leuterper
 
     interface IDeclaration : IDefinition
     {  String getName();  }
-    interface IConstruction : ICompilable
+    interface IConstruction : ICompilable, ICloneable
     {
         IScope getScope();
         void setScope(IScope scope);
@@ -33,10 +34,10 @@ namespace Leuterper
     interface IAction : IConstruction { }
     interface ICompilable
     {
-        void scopeSettingPass();
+        /*
         void symbolsUnificationPass();
 
-        /*
+        
         void symbolsRegistrationPass();
         void classesGenerationPass();
         void simplificationPass();
